@@ -6,14 +6,17 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/18 17:01:57 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/10/24 16:33:48 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minishell.h"
+#include "../includes/minishell.h"
 
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
+	(void)  argc;
+	(void)  argv;
+	(void)	envp;
 	char	*input;
 
 	while (1)
@@ -27,7 +30,7 @@ int	main(void)
 		if (ft_strlen(input) > 0)
 		{
 			add_history(input);
-			printf("%s\n", input);
+			lexer(input);
 		}
 		free(input);
 	}

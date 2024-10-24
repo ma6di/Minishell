@@ -6,7 +6,7 @@
 #    By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/18 16:55:20 by nrauh             #+#    #+#              #
-#    Updated: 2024/10/18 17:13:44 by nrauh            ###   ########.fr        #
+#    Updated: 2024/10/24 13:06:17 by nrauh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,11 +15,12 @@ CFLAGS = -Wall -Wextra -Werror
 RM = rm -rf
 
 INCLUDES = -I includes/.
+SRC_DIR = src/
 
 NAME = minishell
 LIBFT = libft/libft.a
 
-SRC = main.c lexer.c \
+SRC = $(addprefix $(SRC_DIR), main.c lexer.c) \
 
 OBJ = $(SRC:.c=.o)
 
