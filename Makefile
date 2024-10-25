@@ -6,7 +6,7 @@
 #    By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/18 16:55:20 by nrauh             #+#    #+#              #
-#    Updated: 2024/10/24 13:06:17 by nrauh            ###   ########.fr        #
+#    Updated: 2024/10/25 16:52:09 by nrauh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ SRC_DIR = src/
 NAME = minishell
 LIBFT = libft/libft.a
 
-SRC = $(addprefix $(SRC_DIR), main.c lexer.c) \
+SRC = $(addprefix $(SRC_DIR), main.c) \
 
 OBJ = $(SRC:.c=.o)
 
