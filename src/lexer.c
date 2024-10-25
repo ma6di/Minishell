@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/24 19:15:04 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/10/25 12:12:45 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,12 @@ void	free_tokens(t_token **head)
 	head = NULL;
 }
 
+// COMMAND could also not be the first option, 
+// we need to include binary commands (found on the system)
+// structure is always like COMMAND [args...] ...
+// or REDIRECT FILE COMMAND [args...]
+// now when we find a token, we check the prev 2 tokens
+// if these are REDIRECT and FILE we know the next is a command
 t_TokenType	get_token_type(char *value)
 {
 	if (ft_strncmp(value, "echo", 4) == 0
@@ -107,7 +113,7 @@ t_TokenType	get_token_type(char *value)
 	else if (ft_strncmp(value, "|", 1) == 0)
 		return (PIPE);
 	else
-		return (STRING);
+		return (ARGUMENT);
 }
 
 void	create_token(t_token **head, char *value)
