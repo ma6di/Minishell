@@ -6,8 +6,69 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:07:56 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/24 13:08:24 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/10/26 12:07:19 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // all functions that manipulate the token list
+#include "../../includes/minishell.h"
+
+// function to add token to the end of double linked list and connect it
+void	add_token(t_token **head, t_token *new_token)
+{
+	t_token	*curr;
+
+	if (!(*head))
+	{
+		*head = new_token;
+		new_token->prev = NULL;
+		printf("created token %s\n", (*head)->value);
+	}
+	else
+	{
+		curr = *head;
+		while (curr->next)
+			curr = curr->next;
+		curr->next = new_token;
+		new_token->prev = curr;
+		printf("created token %s\n", curr->value);
+	}
+	new_token->next = NULL;
+}
+
+void	create_token(t_token **head, char *value)
+{
+	t_token	*new_token;
+
+	new_token = malloc(sizeof(t_token));
+	new_token->value = value;
+	new_token->type = get_token_type(value);
+	add_token(head, new_token);
+	printf("created token %s\n", new_token->value);
+}
+
+t_TokenType	get_token_type(char *value)
+{
+	if (ft_strncmp(value, "echo", 4) == 0
+		|| ft_strncmp(value, "cd", 2) == 0
+		|| ft_strncmp(value, "pwd", 3) == 0
+		|| ft_strncmp(value, "export", 6) == 0
+		|| ft_strncmp(value, "unset", 5) == 0
+		|| ft_strncmp(value, "env", 3) == 0
+		|| ft_strncmp(value, "exit", 4) == 0)
+		return (COMMAND);
+	else if (ft_strnstr(value, ".", ft_strlen(value)))
+		return (FILENAME);
+	else if (ft_strncmp(value, ">", 1) == 0)
+		return (REDIRECT);
+	else if (ft_strncmp(value, ">>", 2) == 0)
+		return (APPEND);
+	else if (ft_strncmp(value, "<", 1) == 0)
+		return (INPUT_REDIRECT);
+	else if (ft_strncmp(value, "<<", 2) == 0)
+		return (HEREDOC);
+	else if (ft_strncmp(value, "|", 1) == 0)
+		return (PIPE);
+	else
+		return (ARGUMENT);
+}
