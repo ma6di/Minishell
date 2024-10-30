@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:09:29 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/26 12:05:33 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/10/30 18:12:07 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ void	print_token_list(t_token **head)
 		i++;
 		printf("----------\n");
 		printf("#%d\n%s\n", i, curr->value);
-		if (curr->type == STRING)
+		printf("state %d\n", curr->state);
+		/*if (curr->type == STRING)
 			printf("String\n");
 		else if (curr->type == COMMAND)
 			printf("Command\n");
@@ -35,7 +36,7 @@ void	print_token_list(t_token **head)
 		else if (curr->type == FILENAME)
 			printf("Filename\n");
 		else if (curr->type == ARGUMENT)
-			printf("Argument\n");
+			printf("Argument\n");*/
 		printf("value length: %zu\n", ft_strlen(curr->value));
 		printf("----------\n");
 		printf(" <-    -> \n");

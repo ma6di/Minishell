@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/26 12:34:04 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/10/30 18:33:00 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,21 +31,38 @@ int	is_operator(char c)
 	return (-1);
 }
 
-void	finish_reading_token(int *pos, char *token_buffer, t_token **head)
+int	end_of_token(char c)
 {
-	printf("finish reading token");
-	token_buffer[*pos] = '\0';
-	create_token(head, ft_strdup(token_buffer));
-	ft_bzero(token_buffer, *pos);
-	*pos = 0;
+	if (c == OP_PIPE[0] || c == OP_REDIRECT[0] 
+		|| c == OP_INPUT_REDIRECT[0] || c == WHITESPACE[0])
+		return (0);
+	return (-1);
 }
 
-void	change_state(t_TokenState *curr_state, char c)
+void	finish_reading_token(int *pos, char *token_buffer, 
+								t_token **head, t_token_state *last_state)
+{
+	token_buffer[*pos] = '\0';
+	printf("finish reading token %s\n", token_buffer);
+	create_token(head, ft_strdup(token_buffer), *last_state);
+	ft_bzero(token_buffer, *pos);
+	*pos = 0;
+	*last_state = STATE_GENERAL;
+}
+
+void	change_state(t_token_state *curr_state, 
+						t_token_state *last_state, char c)
 {
 	if (*curr_state == STATE_GENERAL && c == '\'')
+	{
 		*curr_state = STATE_IN_QUOTE;
+		*last_state = STATE_IN_QUOTE;
+	}
 	else if (*curr_state == STATE_GENERAL && c == '"')
+	{
 		*curr_state = STATE_IN_DQUOTE;
+		*last_state = STATE_IN_DQUOTE;
+	}
 	else if ((*curr_state == STATE_IN_QUOTE && c == '\'')
 		|| (*curr_state == STATE_IN_DQUOTE && c == '"'))
 		*curr_state = STATE_GENERAL;
@@ -54,44 +71,44 @@ void	change_state(t_TokenState *curr_state, char c)
 // tokenize the received information
 void	lexer(char *input)
 {
-	t_TokenState	curr_state;
+	t_token_state	curr_state;
+	t_token_state	last_state;
 	t_token			*head;
 	char			token_buffer[100];
 	int				pos;
-	int				i;
 
 	curr_state = STATE_GENERAL;
-	i = 0;
+	last_state = STATE_GENERAL;
 	pos = 0;
 	head = NULL;
-	while (input[i])
+	while (*input)
 	{
 		// determine character type and change state in state machine
 			// if STATE_GENERAL and not WHITESPACE[0] then add c to token_buffer
 			// this creates the string that is later added to the struct
 			// if STATE_GENERAL is WHITESPACE and token_buffer != 0 add_token()
-		change_state(&curr_state, input[i]);
-		if (input[i] == '\'' || input[i] == '"')
-			i++;
+		change_state(&curr_state, &last_state, *input);
+		if (*(input - 1) != '\\' && (*input == '\'' || *input == '"'))
+			input++;
 		if (curr_state == STATE_GENERAL)
 		{
-			if (input[i] != WHITESPACE[0])
-				token_buffer[pos++] = input[i];
-			if (pos != 0 && input[i] == WHITESPACE[0])
-				finish_reading_token(&pos, token_buffer, &head);
-			if (pos == 0 && is_operator(input[i]) == 0)
+			if (*input != WHITESPACE[0])
+				token_buffer[pos++] = *input;
+			if (pos != 0 && *input == WHITESPACE[0])
+				finish_reading_token(&pos, token_buffer, &head, &last_state);
+			if (pos == 0 && is_operator(*input) == 0)
 			{
-				token_buffer[pos++] = input[i];
-				i++;
-				if (is_operator(input[i]))
+				token_buffer[pos++] = *input;
+				input++;
+				if (is_operator(*input))
 				{
-					token_buffer[pos++] = input[i];
-					i++;
+					token_buffer[pos++] = *input;
+					input++;
 				}
 			}
 		}
 		if (curr_state == STATE_IN_DQUOTE || curr_state == STATE_IN_QUOTE)
-			token_buffer[pos++] = input[i];
+			token_buffer[pos++] = *input;
 			// if c == "'"  is encountered change state to STATE_IN_QUOTE
 			// if STATE_IN_QUOTE add c to token_buffer
 			// if STATE_IN_QUOTE && c == "'" change state to STATE_GENERAL 
@@ -109,10 +126,10 @@ void	lexer(char *input)
 		// everytime after adding free token_buffer
 		// DID NOT ADD YET TO CHECK FOR VARIABLES $XXX
 		// DID NOT ADD YET TO CHECK FOR && or ||
-		i++;
+		input++;
 	}
 	if (pos != 0)
-		finish_reading_token(&pos, token_buffer, &head);
+		finish_reading_token(&pos, token_buffer, &head, &last_state);
 	print_token_list(&head);
 	printf("----- FREEING TOKENS -----\n");
 	free_tokens(&head);

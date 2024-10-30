@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:07:56 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/26 12:07:19 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/10/30 18:19:29 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@ void	add_token(t_token **head, t_token *new_token)
 {
 	t_token	*curr;
 
-	if (!(*head))
+	if (!(*head) || !head)
 	{
 		*head = new_token;
 		new_token->prev = NULL;
-		printf("created token %s\n", (*head)->value);
+		printf("added first token %s\n", (*head)->value);
 	}
 	else
 	{
@@ -31,23 +31,27 @@ void	add_token(t_token **head, t_token *new_token)
 			curr = curr->next;
 		curr->next = new_token;
 		new_token->prev = curr;
-		printf("created token %s\n", curr->value);
+		printf("added token %s\n", curr->value);
 	}
 	new_token->next = NULL;
 }
 
-void	create_token(t_token **head, char *value)
+void	create_token(t_token **head, char *value, t_token_state state)
 {
-	t_token	*new_token;
+	t_token			*new_token;
 
+	printf("string %s\n", value);
 	new_token = malloc(sizeof(t_token));
 	new_token->value = value;
-	new_token->type = get_token_type(value);
+	//new_token->type = NULL;
+	new_token->state = state;
+	//new_token->type = get_token_type(value);
 	add_token(head, new_token);
 	printf("created token %s\n", new_token->value);
 }
 
-t_TokenType	get_token_type(char *value)
+// happens later in expansion ...
+t_token_type	get_token_type(char *value)
 {
 	if (ft_strncmp(value, "echo", 4) == 0
 		|| ft_strncmp(value, "cd", 2) == 0

@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/24 16:33:48 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/10/30 15:58:02 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	(void)  argc;
-	(void)  argv;
-	(void)	envp;
-	char	*input;
+	char		*input;
 
+	(void )		argc;
+	(void )		argv;
+	(void )		envp;
 	while (1)
 	{
 		input = readline("PROMPT% ");

@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/26 11:59:58 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/10/30 18:20:05 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # define OP_HEREDOC "<<"
 # define OP_PIPE "|"
 
-typedef enum e_TokenType {
+typedef enum e_token_type {
 	COMMAND,
 	REDIRECT,
 	APPEND,
@@ -40,14 +40,13 @@ typedef enum e_TokenType {
 	FILENAME,
 	ENV_VAR,
 	SHELL_VAR
-}	t_TokenType;
+}	t_token_type;
 
-typedef enum e_TokenState{
+typedef enum e_token_state {
 	STATE_GENERAL, 
 	STATE_IN_QUOTE, 
-	STATE_IN_DQUOTE,
-	STATE_OPERATOR
-}	t_TokenState;
+	STATE_IN_DQUOTE
+}	t_token_state;
 
 typedef struct s_fds
 {
@@ -79,7 +78,8 @@ typedef struct s_command
 }						t_command;
 
 typedef struct s_token {
-	t_TokenType		type;
+	t_token_type	type;
+	t_token_state	state;
 	char			*value;
 	struct s_token	*prev;
 	struct s_token	*next;
@@ -94,11 +94,11 @@ typedef struct s_main
 	int			exit_code;
 }				t_main;
 
-void		lexer(char *input);
-void		print_token_list(t_token **head);
-void		free_tokens(t_token **head);
-void		add_token(t_token **head, t_token *new_token);
-void		create_token(t_token **head, char *value);
-t_TokenType	get_token_type(char *value);
+void			lexer(char *input);
+void			print_token_list(t_token **head);
+void			free_tokens(t_token **head);
+void			add_token(t_token **head, t_token *new_token);
+void			create_token(t_token **head, char *value, t_token_state state);
+t_token_type	get_token_type(char *value);
 
 #endif
