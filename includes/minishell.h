@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/30 18:20:05 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/10/31 12:29:24 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ typedef enum e_token_type {
 
 typedef enum e_token_state {
 	STATE_GENERAL, 
-	STATE_IN_QUOTE, 
-	STATE_IN_DQUOTE
+	STATE_QUOTE, 
+	STATE_DQUOTE
 }	t_token_state;
 
 typedef struct s_fds
@@ -62,7 +62,7 @@ typedef struct s_fds
 typedef struct s_command
 {
 	char				*command;
-	char				**args;
+	char				**args; // ["cmd", "arg1", ...]
 	char				*heredoc_delimiter;
 	char				*heredoc_content;
 	int					nr_of_pipes; // do we still need this?
@@ -94,7 +94,9 @@ typedef struct s_main
 	int			exit_code;
 }				t_main;
 
-void			lexer(char *input);
+void			lexer(char *input, char **envp);
+t_token			**parse(t_token **head, char *input);
+t_token			**expand(t_token **head, char **envp);
 void			print_token_list(t_token **head);
 void			free_tokens(t_token **head);
 void			add_token(t_token **head, t_token *new_token);
