@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/31 16:58:02 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/10/31 17:13:41 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ void	end_token(char **buffer,
 	*last_state = STATE_GENERAL;
 }
 
-int	is_escaped(char *str)
+int	quote_escaped(char *str, char c)
 {
-	if (*str == '\\')
+	if (*str != c || (*str == c && *(str - 1) == '\\'))
 		return (0);
 	return (-1);
 }
@@ -100,9 +100,6 @@ t_token	**parse(t_token **head, char *input)
 		printf("1: state %d, char %c\n", curr_state, *input);
 		change_state(&curr_state, &last_state, input);
 		printf("2: state %d, char %c\n", curr_state, *input);
-		//if (*(input - 1) != '\\' && (*input == '\'' || *input == '"'))
-		//	input++;
-		// " or ' is never read when in STATE_GENERAL
 		if (curr_state == STATE_GENERAL && *input != '\'' && *input != '"')
 		{
 			if (is_delimiter(*input) == -1)
@@ -120,25 +117,17 @@ t_token	**parse(t_token **head, char *input)
 				end_token(&buffer, head, &last_state);
 			}
 		}
-		else if (curr_state == STATE_DQUOTE)
-			//&& (*input == '"' && is_escaped(input - 1) == 0))
-			//	|| (*input == '\'')))
+		else if (curr_state == STATE_DQUOTE && quote_escaped(input, '"'))
+			//&& (*input != '"' || (*input == '"' && *(input - 1) == '\\')))
+				buffer = add_to_buffer(&buffer, *input);
+		else if (curr_state == STATE_QUOTE)
+		{
+			if (*input != '\'')
 			{
-				if (*input != '"' || (*input == '"' && *(input - 1) == '\\'))
-				{
-					printf("add %c in DQUOTE\n", *input);
-					buffer = add_to_buffer(&buffer, *input);
-				}
+				printf("add %c in QUOTE\n", *input);
+				buffer = add_to_buffer(&buffer, *input);
 			}
-		else if (curr_state == STATE_QUOTE && *input != '\'')
-			//&& (*input == '"' && is_escaped(input - 1) == 0))
-			{
-				if (*input != '\'')
-				{
-					printf("add %c in QUOTE\n", *input);
-					buffer = add_to_buffer(&buffer, *input);
-				}
-			}
+		}
 		input++;
 	}
 	if (buffer)
