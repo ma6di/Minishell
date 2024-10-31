@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/31 00:59:17 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/10/31 01:07:22 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ char	*add_to_buffer(char **buffer, char c)
 	return (new_buffer);
 }
 
+// try with operator as a state.....
 t_token	**parse(t_token **head, char *input)
 {
 	t_token_state	curr_state;
@@ -118,15 +119,10 @@ t_token	**parse(t_token **head, char *input)
 			input++;
 		if (curr_state == STATE_GENERAL)
 		{
-			if (*input != WHITESPACE[0] && is_operator(*input) == -1)
+			if (is_delimiter(*input) == -1)
 				token_buffer = add_to_buffer(&token_buffer, *input);
 			if (token_buffer && is_delimiter(*input) == 0)
 				end_token(&token_buffer, head, &last_state);
-			/*while (is_operator(*input) == 0)
-			{
-				token_buffer = add_to_buffer(&token_buffer, *input);
-				input++;
-			}*/
 			if (is_operator(*input) == 0)
 			{
 				token_buffer = add_to_buffer(&token_buffer, *input);
