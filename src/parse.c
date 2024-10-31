@@ -6,11 +6,14 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/31 17:13:41 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/10/31 18:02:47 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+// for 'he\'llo' it is counted as unclosed quote. 
+// show the quote> prompt to close the quote and then add it to the string....
 
 int	is_operator(char c)
 {
@@ -56,7 +59,7 @@ void	change_state(t_token_state *curr_state,
 		*curr_state = STATE_DQUOTE;
 		*last_state = STATE_DQUOTE;
 	}
-	else if ((*curr_state == STATE_QUOTE && *str == '\'' && !(*(str - 1) == '\\'))
+	else if ((*curr_state == STATE_QUOTE && *str == '\'')
 		|| (*curr_state == STATE_DQUOTE && *str == '"' && !(*(str - 1) == '\\')))
 		*curr_state = STATE_GENERAL;
 }
@@ -117,7 +120,7 @@ t_token	**parse(t_token **head, char *input)
 				end_token(&buffer, head, &last_state);
 			}
 		}
-		else if (curr_state == STATE_DQUOTE && quote_escaped(input, '"'))
+		else if (curr_state == STATE_DQUOTE && quote_escaped(input, '"') == 0)
 			//&& (*input != '"' || (*input == '"' && *(input - 1) == '\\')))
 				buffer = add_to_buffer(&buffer, *input);
 		else if (curr_state == STATE_QUOTE)
