@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/31 18:02:47 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/01 13:51:08 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,6 @@ void	end_token(char **buffer,
 	*last_state = STATE_GENERAL;
 }
 
-int	quote_escaped(char *str, char c)
-{
-	if (*str != c || (*str == c && *(str - 1) == '\\'))
-		return (0);
-	return (-1);
-}
-
 void	change_state(t_token_state *curr_state, 
 						t_token_state *last_state, char *str)
 {
@@ -60,7 +53,7 @@ void	change_state(t_token_state *curr_state,
 		*last_state = STATE_DQUOTE;
 	}
 	else if ((*curr_state == STATE_QUOTE && *str == '\'')
-		|| (*curr_state == STATE_DQUOTE && *str == '"' && !(*(str - 1) == '\\')))
+		|| (*curr_state == STATE_DQUOTE && *str == '"'))
 		*curr_state = STATE_GENERAL;
 }
 
@@ -120,20 +113,17 @@ t_token	**parse(t_token **head, char *input)
 				end_token(&buffer, head, &last_state);
 			}
 		}
-		else if (curr_state == STATE_DQUOTE && quote_escaped(input, '"') == 0)
-			//&& (*input != '"' || (*input == '"' && *(input - 1) == '\\')))
-				buffer = add_to_buffer(&buffer, *input);
-		else if (curr_state == STATE_QUOTE)
-		{
-			if (*input != '\'')
-			{
-				printf("add %c in QUOTE\n", *input);
-				buffer = add_to_buffer(&buffer, *input);
-			}
-		}
+		else if ((curr_state == STATE_DQUOTE && *input != '"')
+			|| (curr_state == STATE_QUOTE && *input != '\''))
+			buffer = add_to_buffer(&buffer, *input);
 		input++;
 	}
 	if (buffer)
 		end_token(&buffer, head, &last_state);
+	if (curr_state != STATE_GENERAL)
+	{
+		perror("Unclosed quote");
+		free_tokens(head);
+	}
 	return (head);
 }

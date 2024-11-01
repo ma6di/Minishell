@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/31 11:34:54 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/01 13:29:10 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,10 @@ void	lexer(char *input, char **envp)
 	head = &first;
 	head = parse(head, input);
 	//head = expand(head, envp);
-	print_token_list(head);
-	printf("----- FREEING TOKENS -----\n");
-	free_tokens(head);
+	if (*head)
+	{
+		print_token_list(head);
+		printf("----- FREEING TOKENS -----\n");
+		free_tokens(head);
+	}
 }
