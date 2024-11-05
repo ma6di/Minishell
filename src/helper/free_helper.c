@@ -29,3 +29,44 @@ void	free_tokens(t_token **head)
 	}
 	*head = NULL;
 }
+
+void	free_keys(char **env_keys)
+{
+	int	i;
+
+	i = 0;
+	while (env_keys[i])
+	{
+		free(env_keys[i]);
+		i++;
+	}
+	free(env_keys);
+}
+
+void	free_key_val(char ***envp_key_val) // [["HOME", "path"], ["USER", "username"]]
+{
+	int	i;
+	int j;
+
+	i = 0;
+	j = 0;
+	while (envp_key_val[i])
+		i++;
+	printf("there ARE i %d elements\n", i);
+	i = 0;
+	while (envp_key_val[i]) // 0 ["HOME", "path"] AND 1 ["USER", "username"]
+	{
+		while (envp_key_val[i][j]) // 0 "HOME" 1 "path"
+		{
+			printf("freeing %s | %p\n", envp_key_val[i][j], envp_key_val[i][j]);
+			free(envp_key_val[i][j]);
+			j++;
+		}
+		j = 0;
+		printf("freeing pointer i %d %p\n", i, envp_key_val[i]);
+		free(envp_key_val[i]);
+		i++;
+	}
+	printf("freeing pointer %p\n", envp_key_val);
+	free(envp_key_val);
+}

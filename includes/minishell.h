@@ -43,8 +43,8 @@ typedef enum e_token_type {
 }	t_token_type;
 
 typedef enum e_token_state {
-	STATE_GENERAL, 
-	STATE_QUOTE, 
+	STATE_GENERAL,
+	STATE_QUOTE,
 	STATE_DQUOTE
 }	t_token_state;
 
@@ -97,10 +97,14 @@ typedef struct s_main
 void			lexer(char *input, char **envp);
 t_token			**parse(t_token **head, char *input);
 t_token			**expand(t_token **head, char **envp);
-void			print_token_list(t_token **head);
 void			free_tokens(t_token **head);
 void			add_token(t_token **head, t_token *new_token);
 void			create_token(t_token **head, char *value, t_token_state state);
 t_token_type	get_token_type(char *value);
+void			print_token_list(t_token **head);
+void			print_keys(char **env_keys);
+void			print_key_val(char ***filtered_envp);
+void			free_keys(char **env_keys);
+void			free_key_val(char ***filtered_envp);
 
 #endif

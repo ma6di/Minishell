@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-// for 'he\'llo' it is counted as unclosed quote. 
+// for 'he\'llo' it is counted as unclosed quote.
 // show the quote> prompt to close the quote and then add it to the string....
 
 int	is_operator(char c)
@@ -24,13 +24,13 @@ int	is_operator(char c)
 
 int	is_delimiter(char c)
 {
-	if (c == OP_PIPE[0] || c == OP_REDIRECT[0] 
+	if (c == OP_PIPE[0] || c == OP_REDIRECT[0]
 		|| c == OP_INPUT_REDIRECT[0] || c == WHITESPACE[0])
 		return (0);
 	return (-1);
 }
 
-void	end_token(char **buffer, 
+void	end_token(char **buffer,
 					t_token **head, t_token_state *last_state)
 {
 	create_token(head, ft_strdup(*buffer), *last_state);
@@ -39,7 +39,7 @@ void	end_token(char **buffer,
 	*last_state = STATE_GENERAL;
 }
 
-void	change_state(t_token_state *curr_state, 
+void	change_state(t_token_state *curr_state,
 						t_token_state *last_state, char *str)
 {
 	if (*curr_state == STATE_GENERAL && *str == '\'')
@@ -60,13 +60,13 @@ void	change_state(t_token_state *curr_state,
 char	*add_to_buffer(char **buffer, char c)
 {
 	size_t	len;
-	int		i;
+	//int		i;
 	char	*new_buffer;
 	char	*tmp;
 
 	if (!(*buffer))
 		*buffer = strdup("");
-	i = 0;
+	//i = 0;
 	len = strlen(*buffer);
 	new_buffer = malloc((len + 2) * sizeof(char));
 	if (!new_buffer)
@@ -93,14 +93,14 @@ t_token	**parse(t_token **head, char *input)
 	buffer = NULL;
 	while (*input)
 	{
-		printf("1: state %d, char %c\n", curr_state, *input);
+		//printf("1: state %d, char %c\n", curr_state, *input);
 		change_state(&curr_state, &last_state, input);
-		printf("2: state %d, char %c\n", curr_state, *input);
+		//printf("2: state %d, char %c\n", curr_state, *input);
 		if (curr_state == STATE_GENERAL && *input != '\'' && *input != '"')
 		{
 			if (is_delimiter(*input) == -1)
 			{
-				printf("add %c in GENERAL\n", *input);
+				//printf("add %c in GENERAL\n", *input);
 				buffer = add_to_buffer(&buffer, *input);
 			}
 			if (buffer && is_delimiter(*input) == 0)

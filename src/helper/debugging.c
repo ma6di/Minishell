@@ -44,4 +44,32 @@ void	print_token_list(t_token **head)
 	}
 }
 
+void	print_keys(char **env_keys)
+{
+	int	i;
 
+	i = 0;
+	while (env_keys[i])
+	{
+		printf("key: %s\n", env_keys[i]);
+		i++;
+	}
+	printf("---------\n");
+}
+
+void	print_key_val(char ***envp_key_val)
+{
+	int	i;
+
+	i = 0;
+	while (envp_key_val[i])
+	{
+		printf("pointer %p i %d \n", envp_key_val[i], i);
+		printf("key: %s | %p\nvalue: %s | %p\n%s | %p\n",
+				envp_key_val[i][0], envp_key_val[i][0],
+				envp_key_val[i][1], envp_key_val[i][1],
+				envp_key_val[i][2], envp_key_val[i][2]);
+		printf("----------\n");
+		i++;
+	}
+}

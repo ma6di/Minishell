@@ -15,7 +15,7 @@
 // Where to do the error handling?
 // Input can also be cat "hello">file.txt & cat "hello" > file.txt
 
-// COMMAND could also not be the first option, 
+// COMMAND could also not be the first option,
 // we need to include binary commands (found on the system)
 // structure is always like COMMAND [args...] ...
 // or REDIRECT FILE COMMAND [args...]
@@ -23,7 +23,6 @@
 // if these are REDIRECT and FILE we know the next is a command
 
 // this doesnt matter right now, we do this later on
-
 
 void	lexer(char *input, char **envp)
 {
@@ -35,7 +34,7 @@ void	lexer(char *input, char **envp)
 	first = NULL;
 	head = &first;
 	head = parse(head, input);
-	//head = expand(head, envp);
+	head = expand(head, envp);
 	if (*head)
 	{
 		print_token_list(head);

@@ -21,7 +21,7 @@ NAME = minishell
 LIBFT = libft/libft.a
 
 SRC = $(addprefix $(SRC_DIR), main.c lexer.c parse.c expand.c \
-	$(addprefix helper/, debugging.c free_tokens.c token_list.c)) \
+	$(addprefix helper/, debugging.c free_helper.c token_list.c)) \
 
 OBJ = $(SRC:.c=.o)
 

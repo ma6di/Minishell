@@ -14,11 +14,14 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	char		*input;
+	char		*input = "$HOME";
 
 	(void )		argc;
 	(void )		argv;
-	while (1)
+	(void )		envp;
+	//char *test[3] = {"HOME=path", "USER=username", NULL};
+
+	/*while (1)
 	{
 		input = readline("PROMPT% ");
 		if (!input)
@@ -32,6 +35,7 @@ int	main(int argc, char **argv, char **envp)
 			lexer(input, envp);
 		}
 		free(input);
-	}
+	}*/
+	lexer(input, envp);
 	return (0);
 }
