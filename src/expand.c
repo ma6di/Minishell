@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/31 11:35:21 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/05 14:18:41 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	count_vars(char *str)
 	return (count);
 }
 
-char	**get_keys(char **env_keys, int keys, char *str)
+char	**get_keys(char **env_keys, int key_count, char *str)
 {
 	int		i;
 	char	*start;
@@ -34,7 +34,7 @@ char	**get_keys(char **env_keys, int keys, char *str)
 
 	i = 0;
 	len = 0;
-	while(i < keys)
+	while(i < key_count)
 	{
 		start = ft_strchr(str + len, '$') + 1;
 		while (start[len] >= 65 && start[len] <= 90)
@@ -71,12 +71,40 @@ char	**get_keys(char **env_keys, int keys, char *str)
 	return (filtered_envp);
 }*/
 
-char	*expand_values(char **env_keys, char ***envp_key_val, int key_count, t_token token)
+char	*get_value(char *env_key, char ***envp_key_val)
 {
+	int	i;
 
-	// receiving the current token so that the old value can be freed....
-	filtered_envp = filter_envp(envp, env_keys, key_count);
-	// take value after =
+	i = 0;
+	while (envp_key_val[i])
+	{
+		if (ft_strncmp(env_key, envp_key_val[i][0], ft_strlen(env_key)))
+			return (envp_key_val[i][1]);
+		i++;
+	}
+	return (strdup(""));
+}
+
+char	*expand_values(char **env_keys, char ***envp_key_val, int key_count, t_token *token)
+{
+	char	*joined;
+	char	*tmp_value;
+	int		start;
+	int		i;
+
+	i = 0;
+	while (env_keys[i])
+	{
+		tmp_value = get_value(env_keys[i], envp_key_val);
+		start = ft_strchr(token->value, '$');
+		// counting the first part of the str and create substr
+		// adding the value with strjoin
+		// counting the next part of the str and create substr
+		// if it is a env var adding the value with strjoin
+		// adding the last bit of the string with strjoin
+		// freeing accordingly ...
+		//joined = ft_strjoin(ft_substr(token->value, start, ), tmp_value);
+	}
 	// strjoin it to the str before the $ index (0 - ?)
 	// add the rest of the str after the last CAPS letter (? - END)
 	// free the value
@@ -84,7 +112,7 @@ char	*expand_values(char **env_keys, char ***envp_key_val, int key_count, t_toke
 	// free previous curr->value
 	free(token->value);
 	return (joined);
-}*/
+}
 
 char	***split_key_value(char **envp)
 {
@@ -121,7 +149,7 @@ t_token	**expand(t_token **head, char **envp)
 		return (free_key_val(envp_key_val), NULL);
 	print_key_val(envp_key_val);
 	free_key_val(envp_key_val);
-	*curr = *head;
+	curr = *head;
 	while (curr)
 	{
 		if (curr->state != STATE_QUOTE)
@@ -137,6 +165,6 @@ t_token	**expand(t_token **head, char **envp)
 			free_keys(env_keys);
 		}
 		curr = curr->next;
-	}*/
+	}
 	return (head);
 }
