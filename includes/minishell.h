@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/31 12:29:24 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/06 09:03:08 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,5 +106,8 @@ void			print_keys(char **env_keys);
 void			print_key_val(char ***filtered_envp);
 void			free_keys(char **env_keys);
 void			free_key_val(char ***filtered_envp);
+int				is_whitespace(char c);
+int				is_lower(char c);
+int				is_upper(char c);
 
 #endif

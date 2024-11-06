@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debugging.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:09:29 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/30 18:12:07 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/06 09:50:30 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,9 @@ void	print_key_val(char ***envp_key_val)
 	while (envp_key_val[i])
 	{
 		printf("pointer %p i %d \n", envp_key_val[i], i);
-		printf("key: %s | %p\nvalue: %s | %p\n%s | %p\n",
+		printf("key: %s | %p\nvalue: %s | %p\n",
 				envp_key_val[i][0], envp_key_val[i][0],
-				envp_key_val[i][1], envp_key_val[i][1],
-				envp_key_val[i][2], envp_key_val[i][2]);
+				envp_key_val[i][1], envp_key_val[i][1]);
 		printf("----------\n");
 		i++;
 	}

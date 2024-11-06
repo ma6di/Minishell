@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/05 14:18:41 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/06 15:42:21 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,32 +45,6 @@ char	**get_keys(char **env_keys, int key_count, char *str)
 	return (env_keys);
 }
 
-/*char	***filter_envp(char **envp, char **env_keys, int key_count)
-{
-	int		i;
-	int		j;
-	char	**tmp;
-	char	***filtered_envp;
-
-	i = 0;
-	j = 0;
-	filtered_envp = malloc((key_count + 1) * sizeof(char **));
-	filtered_envp[key_count] = NULL;
-	while (envp[i])
-	{
-		tmp = ft_split(envp[i], '=');
-		while (env_keys[j])
-		{
-			if (tmp[0] == env_keys[j])
-				filtered_envp[j] = tmp;
-			j++;
-		}
-		j = 0;
-		i++;
-	}
-	return (filtered_envp);
-}*/
-
 char	*get_value(char *env_key, char ***envp_key_val)
 {
 	int	i;
@@ -79,39 +53,10 @@ char	*get_value(char *env_key, char ***envp_key_val)
 	while (envp_key_val[i])
 	{
 		if (ft_strncmp(env_key, envp_key_val[i][0], ft_strlen(env_key)))
-			return (envp_key_val[i][1]);
+			return (ft_strdup(envp_key_val[i][1]));
 		i++;
 	}
-	return (strdup(""));
-}
-
-char	*expand_values(char **env_keys, char ***envp_key_val, int key_count, t_token *token)
-{
-	char	*joined;
-	char	*tmp_value;
-	int		start;
-	int		i;
-
-	i = 0;
-	while (env_keys[i])
-	{
-		tmp_value = get_value(env_keys[i], envp_key_val);
-		start = ft_strchr(token->value, '$');
-		// counting the first part of the str and create substr
-		// adding the value with strjoin
-		// counting the next part of the str and create substr
-		// if it is a env var adding the value with strjoin
-		// adding the last bit of the string with strjoin
-		// freeing accordingly ...
-		//joined = ft_strjoin(ft_substr(token->value, start, ), tmp_value);
-	}
-	// strjoin it to the str before the $ index (0 - ?)
-	// add the rest of the str after the last CAPS letter (? - END)
-	// free the value
-	// store joined str in the value
-	// free previous curr->value
-	free(token->value);
-	return (joined);
+	return (ft_strdup(""));
 }
 
 char	***split_key_value(char **envp)
@@ -137,34 +82,153 @@ char	***split_key_value(char **envp)
 	return (envp_key_val);
 }
 
+int is_end(char c)
+{
+  if (c == '\'' || c == ' ' || c == '$' || c == '"')
+    return (1);
+  return (0);
+}
+
+int	count_words(char *str)
+{
+	int	count;
+
+	count = 0;
+	while (*str)
+	{
+		if (*str != '$')
+		{
+			count++;
+			while (*str && *str != '$')
+				str++;
+		}
+		if (*str == '$')
+		{
+			count++;
+			str++;
+			while (*str && !is_end(*str))
+				str++;
+		}
+		if (*str == '"')
+			str++;
+	}
+	return (count);
+}
+
+/*char	*expand_keys(int key_count, char **split_keys, char *str)
+{
+	// goal is to split a string to pieces
+	// "first" "$KEY" "second" "$key"
+	// or "first" "$KEY" "$KEY"
+	int		i;
+	char	*start;
+	size_t	len;
+	char	**split;
+
+	i = 0;
+	len = 0;
+	while(i < key_count)
+	{
+		start = ft_strchr(str + len, '$') + 1;
+		while (start[len] >= 65 && start[len] <= 90)
+			len++;
+		split_keys[i] = ft_substr(str, start - str, len);
+		i++;
+	}
+	return (split_keys);
+}*/
+
+char	**expand_keys(char **split, char ***envp_key_val)
+{
+	// search through split
+	// if [0] == '$' search envp_key_val
+	// get_value store in tmp
+	// free the previous value (key)
+	// set tmp to current
+	int		i;
+	char	*tmp;
+
+	i = 0;
+	while (split[i])
+	{
+		if (split[i][0] == '$')
+		{
+			tmp = get_value(split[i], envp_key_val);
+			free(split[i]);
+			split[i] = tmp;
+		}
+		i++;
+	}
+	return (split);
+}
+
+char	**split_keys(int key_count, char **split, char *str)
+{
+	int		end;
+	int		i;
+
+	end = 0;
+	i = 0;
+	while(i < key_count)
+	{
+		while (str[end])
+		{
+			if (str[end] != '$')
+			{
+				while (str[end] && str[end] != '$')
+					end++;
+				split[i] = ft_substr(str, 0, end);
+				i++;
+				str = str + end;
+				end = 0;
+			}
+			if (str[end] == '$')
+			{
+				end++;
+				while (str[end] && !is_end(str[end]))
+					end++;
+				split[i] = ft_substr(str, 0, end);
+				i++;
+				str = str + end;
+				end = 0;
+			}
+			if (*str == '"')
+				end++;
+		}
+	}
+	return (split);
+}
+
 t_token	**expand(t_token **head, char **envp)
 {
 	t_token	*curr;
 	char	***envp_key_val;
-	char	**env_keys;
+	char	**split;
 	int		key_count;
 
 	envp_key_val = split_key_value(envp);
 	if (!envp_key_val)
 		return (free_key_val(envp_key_val), NULL);
-	print_key_val(envp_key_val);
-	free_key_val(envp_key_val);
 	curr = *head;
 	while (curr)
 	{
-		if (curr->state != STATE_QUOTE)
+		if (curr->state == STATE_DQUOTE)
 		{
-			key_count = count_vars(curr->value);
-			env_keys = malloc((key_count + 1) * sizeof(char *));
-			env_keys[key_count] = NULL;
-			env_keys = get_keys(env_keys, key_count, curr->value);
-			// should return updated list...
-			curr->value = expand_values(env_keys, envp, key_count, curr);
-			//printf("%s\n", value);
-			print_keys(env_keys);
-			free_keys(env_keys);
+			key_count = count_words(curr->value);
+			printf("key count%d\n", key_count);
+			split = malloc((key_count + 1) * sizeof(char *));
+			split[key_count] = NULL;
+			split = split_keys(key_count, split, curr->value);
+			split = expand_keys(split, envp_key_val);
+			// expansion could happen in the get_keys function (cause we work with start/end of key)
+			// then we save the extra **array for the keys
+			//curr->value = expand_values(env_keys, envp, key_count, curr);
+			print_keys(split);
+			free_keys(split);
 		}
 		curr = curr->next;
 	}
+	//print_key_val(envp_key_val);
+	free_key_val(envp_key_val);
 	return (head);
 }

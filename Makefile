@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+         #
+#    By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/18 16:55:20 by nrauh             #+#    #+#              #
-#    Updated: 2024/10/31 11:23:08 by nrauh            ###   ########.fr        #
+#    Updated: 2024/11/06 09:02:36 by nrauh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ NAME = minishell
 LIBFT = libft/libft.a
 
 SRC = $(addprefix $(SRC_DIR), main.c lexer.c parse.c expand.c \
-	$(addprefix helper/, debugging.c free_helper.c token_list.c)) \
+	$(addprefix helper/, debugging.c free_helper.c token_list.c helper.c)) \
 
 OBJ = $(SRC:.c=.o)
 

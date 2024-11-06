@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_tokens.c                                      :+:      :+:    :+:   */
+/*   free_helper.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:10:05 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/01 13:41:43 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/06 09:48:36 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,21 +52,21 @@ void	free_key_val(char ***envp_key_val) // [["HOME", "path"], ["USER", "username
 	j = 0;
 	while (envp_key_val[i])
 		i++;
-	printf("there ARE i %d elements\n", i);
+	//printf("there ARE i %d elements\n", i);
 	i = 0;
 	while (envp_key_val[i]) // 0 ["HOME", "path"] AND 1 ["USER", "username"]
 	{
 		while (envp_key_val[i][j]) // 0 "HOME" 1 "path"
 		{
-			printf("freeing %s | %p\n", envp_key_val[i][j], envp_key_val[i][j]);
+			//printf("freeing %s | %p\n", envp_key_val[i][j], envp_key_val[i][j]);
 			free(envp_key_val[i][j]);
 			j++;
 		}
 		j = 0;
-		printf("freeing pointer i %d %p\n", i, envp_key_val[i]);
+		//printf("freeing pointer i %d %p\n", i, envp_key_val[i]);
 		free(envp_key_val[i]);
 		i++;
 	}
-	printf("freeing pointer %p\n", envp_key_val);
+	//printf("freeing pointer %p\n", envp_key_val);
 	free(envp_key_val);
 }

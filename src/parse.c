@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/01 13:51:08 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/06 09:14:03 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,9 @@ t_token	**parse(t_token **head, char *input)
 				end_token(&buffer, head, &last_state);
 			}
 		}
-		else if ((curr_state == STATE_DQUOTE && *input != '"')
-			|| (curr_state == STATE_QUOTE && *input != '\''))
+		// took out ((curr_state == STATE_DQUOTE && *input != '"'))
+		// cause i need the dquotes later on when expanding...
+		else if (curr_state == STATE_DQUOTE || (curr_state == STATE_QUOTE && *input != '\''))
 			buffer = add_to_buffer(&buffer, *input);
 		input++;
 	}

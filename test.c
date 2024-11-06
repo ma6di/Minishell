@@ -37,3 +37,18 @@ int	main(void)
 	free(buffer);
 	return (0);
 }
+
+// dquote
+// hello"$USER"hello -> valid END is ", ' ', $
+// echo "$USERlala"hello -> hello
+// echo "$USER$HOME" -> natalierauh/Users/natalierauh
+// echo "$USER lala"hello -> natalierauh lalahello
+
+// no dquote
+// hello$USER -> valid END is ", ' ', $, '
+// hello$USERhello -> hello
+// hello$USER"hallo" -> hellonatalierauhhallo
+
+// count when ANY char is read
+// count till $ is reached
+// read till end ' ' $ " ' is reached
