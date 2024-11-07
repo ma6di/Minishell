@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/06 15:42:21 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/07 02:22:07 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,6 @@ t_token	**expand(t_token **head, char **envp)
 		if (curr->state == STATE_DQUOTE)
 		{
 			key_count = count_words(curr->value);
-			printf("key count%d\n", key_count);
 			split = malloc((key_count + 1) * sizeof(char *));
 			split[key_count] = NULL;
 			split = split_keys(key_count, split, curr->value);

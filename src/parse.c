@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/06 09:14:03 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/07 02:51:14 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,16 @@
 int	is_operator(char c)
 {
 	if (c == OP_PIPE[0] || c == OP_REDIRECT[0] || c == OP_INPUT_REDIRECT[0])
-		return (0);
-	return (-1);
+		return (1);
+	return (0);
 }
 
 int	is_delimiter(char c)
 {
 	if (c == OP_PIPE[0] || c == OP_REDIRECT[0]
 		|| c == OP_INPUT_REDIRECT[0] || c == WHITESPACE[0])
-		return (0);
-	return (-1);
+		return (1);
+	return (0);
 }
 
 void	end_token(char **buffer,
@@ -60,13 +60,11 @@ void	change_state(t_token_state *curr_state,
 char	*add_to_buffer(char **buffer, char c)
 {
 	size_t	len;
-	//int		i;
 	char	*new_buffer;
 	char	*tmp;
 
 	if (!(*buffer))
 		*buffer = strdup("");
-	//i = 0;
 	len = strlen(*buffer);
 	new_buffer = malloc((len + 2) * sizeof(char));
 	if (!new_buffer)
@@ -93,19 +91,19 @@ t_token	**parse(t_token **head, char *input)
 	buffer = NULL;
 	while (*input)
 	{
-		//printf("1: state %d, char %c\n", curr_state, *input);
+		printf("1: state %d, char %c\n", curr_state, *input);
 		change_state(&curr_state, &last_state, input);
-		//printf("2: state %d, char %c\n", curr_state, *input);
+		printf("2: state %d, char %c\n", curr_state, *input);
 		if (curr_state == STATE_GENERAL && *input != '\'' && *input != '"')
 		{
-			if (is_delimiter(*input) == -1)
+			if (!is_delimiter(*input))
 			{
-				//printf("add %c in GENERAL\n", *input);
+				printf("add %c in GENERAL\n", *input);
 				buffer = add_to_buffer(&buffer, *input);
 			}
-			if (buffer && is_delimiter(*input) == 0)
+			if ((buffer && is_delimiter(*input)))
 				end_token(&buffer, head, &last_state);
-			if (is_operator(*input) == 0)
+			if (is_operator(*input))
 			{
 				buffer = add_to_buffer(&buffer, *input);
 				if (*(input + 1) == *input)
@@ -113,8 +111,9 @@ t_token	**parse(t_token **head, char *input)
 				end_token(&buffer, head, &last_state);
 			}
 		}
-		// took out ((curr_state == STATE_DQUOTE && *input != '"'))
-		// cause i need the dquotes later on when expanding...
+		// took out (curr_state == STATE_DQUOTE && *input != '"')
+		// took out (curr_state == STATE_QUOTE && *input != '\'')
+		// cause i need the dquotes later on when expanding to separate $ENV'string'
 		else if (curr_state == STATE_DQUOTE || (curr_state == STATE_QUOTE && *input != '\''))
 			buffer = add_to_buffer(&buffer, *input);
 		input++;

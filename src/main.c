@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/06 15:41:40 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/07 02:43:54 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	char		*input = "\"he'll'o $USER$HOME hello\"";
+	char		*input = "he'll'o $USER$HOME'hello''hi'";
 
 	(void )		argc;
 	(void )		argv;
