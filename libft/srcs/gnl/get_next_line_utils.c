@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 18:51:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/07/26 15:11:23 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/07 05:24:31 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/get_next_line.h"
+//#include "../../includes/get_next_line.h"
+//#include "../../includes/libft.h"
 
-char	*ft_strchr(const char *s, int c)
+/*char	*ft_strchr(const char *s, int c)
 {
 	char	*p;
 
@@ -50,4 +51,4 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		sub[i++] = *s++;
 	sub[i] = '\0';
 	return (sub);
-}
+}*/

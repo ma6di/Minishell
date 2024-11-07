@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:22:47 by nrauh             #+#    #+#             */
-/*   Updated: 2024/07/26 12:51:10 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/07 05:22:35 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/get_next_line.h"
+#include "../../includes/libft.h"
 
 static char	*function_name(int fd, char *buf, char *backup)
 {

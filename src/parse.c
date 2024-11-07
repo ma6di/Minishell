@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/07 02:51:14 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/07 05:13:05 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,31 +30,11 @@ int	is_delimiter(char c)
 	return (0);
 }
 
-void	end_token(char **buffer,
-					t_token **head, t_token_state *last_state)
+void	end_token(char **buffer, t_token **head)
 {
-	create_token(head, ft_strdup(*buffer), *last_state);
+	create_token(head, ft_strdup(*buffer));
 	free(*buffer);
 	*buffer = NULL;
-	*last_state = STATE_GENERAL;
-}
-
-void	change_state(t_token_state *curr_state,
-						t_token_state *last_state, char *str)
-{
-	if (*curr_state == STATE_GENERAL && *str == '\'')
-	{
-		*curr_state = STATE_QUOTE;
-		*last_state = STATE_QUOTE;
-	}
-	else if (*curr_state == STATE_GENERAL && *str == '"')
-	{
-		*curr_state = STATE_DQUOTE;
-		*last_state = STATE_DQUOTE;
-	}
-	else if ((*curr_state == STATE_QUOTE && *str == '\'')
-		|| (*curr_state == STATE_DQUOTE && *str == '"'))
-		*curr_state = STATE_GENERAL;
 }
 
 char	*add_to_buffer(char **buffer, char c)
@@ -79,47 +59,44 @@ char	*add_to_buffer(char **buffer, char c)
 	return (new_buffer);
 }
 
-// try with operator as a state.....
+// parsing, seperates the args by spaces or operators
+// reads everything inside quote including spaces and operators
 t_token	**parse(t_token **head, char *input)
 {
 	t_token_state	curr_state;
-	t_token_state	last_state;
 	char			*buffer;
 
 	curr_state = STATE_GENERAL;
-	last_state = STATE_GENERAL;
 	buffer = NULL;
 	while (*input)
 	{
-		printf("1: state %d, char %c\n", curr_state, *input);
-		change_state(&curr_state, &last_state, input);
-		printf("2: state %d, char %c\n", curr_state, *input);
-		if (curr_state == STATE_GENERAL && *input != '\'' && *input != '"')
+		//printf("1: state %d, char %c\n", curr_state, *input);
+		change_state(&curr_state, *input);
+		//printf("2: state %d, char %c\n", curr_state, *input);
+		// add ' and " ONLY if $ is in buffer
+		if (curr_state == STATE_GENERAL)
 		{
 			if (!is_delimiter(*input))
-			{
-				printf("add %c in GENERAL\n", *input);
 				buffer = add_to_buffer(&buffer, *input);
-			}
-			if ((buffer && is_delimiter(*input)))
-				end_token(&buffer, head, &last_state);
+			if (buffer && is_delimiter(*input))
+				end_token(&buffer, head);
 			if (is_operator(*input))
 			{
 				buffer = add_to_buffer(&buffer, *input);
 				if (*(input + 1) == *input)
 					buffer = add_to_buffer(&buffer, *input++);
-				end_token(&buffer, head, &last_state);
+				end_token(&buffer, head);
 			}
 		}
 		// took out (curr_state == STATE_DQUOTE && *input != '"')
 		// took out (curr_state == STATE_QUOTE && *input != '\'')
 		// cause i need the dquotes later on when expanding to separate $ENV'string'
-		else if (curr_state == STATE_DQUOTE || (curr_state == STATE_QUOTE && *input != '\''))
+		else if (curr_state == STATE_DQUOTE || (curr_state == STATE_QUOTE))
 			buffer = add_to_buffer(&buffer, *input);
 		input++;
 	}
 	if (buffer)
-		end_token(&buffer, head, &last_state);
+		end_token(&buffer, head);
 	if (curr_state != STATE_GENERAL)
 	{
 		perror("Unclosed quote");

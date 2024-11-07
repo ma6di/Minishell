@@ -6,27 +6,14 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/07 02:22:07 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/07 05:35:47 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	count_vars(char *str)
-{
-	int	count;
 
-	count = 0;
-	while (*str)
-	{
-		if (*str == '$')
-			count++;
-		str++;
-	}
-	return (count);
-}
-
-char	**get_keys(char **env_keys, int key_count, char *str)
+/*char	**get_keys(char **env_keys, int key_count, char *str)
 {
 	int		i;
 	char	*start;
@@ -43,6 +30,43 @@ char	**get_keys(char **env_keys, int key_count, char *str)
 		i++;
 	}
 	return (env_keys);
+}*/
+
+/*char	*expand_keys(int key_count, char **split_keys, char *str)
+{
+	// goal is to split a string to pieces
+	// "first" "$KEY" "second" "$key"
+	// or "first" "$KEY" "$KEY"
+	int		i;
+	char	*start;
+	size_t	len;
+	char	**split;
+
+	i = 0;
+	len = 0;
+	while(i < key_count)
+	{
+		start = ft_strchr(str + len, '$') + 1;
+		while (start[len] >= 65 && start[len] <= 90)
+			len++;
+		split_keys[i] = ft_substr(str, start - str, len);
+		i++;
+	}
+	return (split_keys);
+}*/
+
+int	count_vars(char *str)
+{
+	int	count;
+
+	count = 0;
+	while (*str)
+	{
+		if (*str == '$')
+			count++;
+		str++;
+	}
+	return (count);
 }
 
 char	*get_value(char *env_key, char ***envp_key_val)
@@ -59,7 +83,7 @@ char	*get_value(char *env_key, char ***envp_key_val)
 	return (ft_strdup(""));
 }
 
-char	***split_key_value(char **envp)
+char	***split_envp(char **envp)
 {
 	char 	***envp_key_val;
 	size_t	count;
@@ -115,29 +139,6 @@ int	count_words(char *str)
 	return (count);
 }
 
-/*char	*expand_keys(int key_count, char **split_keys, char *str)
-{
-	// goal is to split a string to pieces
-	// "first" "$KEY" "second" "$key"
-	// or "first" "$KEY" "$KEY"
-	int		i;
-	char	*start;
-	size_t	len;
-	char	**split;
-
-	i = 0;
-	len = 0;
-	while(i < key_count)
-	{
-		start = ft_strchr(str + len, '$') + 1;
-		while (start[len] >= 65 && start[len] <= 90)
-			len++;
-		split_keys[i] = ft_substr(str, start - str, len);
-		i++;
-	}
-	return (split_keys);
-}*/
-
 char	**expand_keys(char **split, char ***envp_key_val)
 {
 	// search through split
@@ -145,15 +146,37 @@ char	**expand_keys(char **split, char ***envp_key_val)
 	// get_value store in tmp
 	// free the previous value (key)
 	// set tmp to current
-	int		i;
-	char	*tmp;
+	int				i;
+	int				j;
+	char			*tmp;
+	t_token_state 	curr_state;
 
 	i = 0;
+	curr_state = STATE_GENERAL;
 	while (split[i])
 	{
-		if (split[i][0] == '$')
+		j = 0;
+		while (split[i][j])
 		{
-			tmp = get_value(split[i], envp_key_val);
+			change_state(&curr_state, split[i][j]);
+			if (split[i][j] == '$' && curr_state != STATE_QUOTE)
+			{
+				tmp = get_value(split[i], envp_key_val);
+				free(split[i]);
+				split[i] = tmp;
+			}
+			j++;
+			printf("state %d - %c\n", curr_state, split[i][j]);
+		}
+		if (curr_state == STATE_DQUOTE)
+		{
+			tmp = ft_strtrim(split[i], "\"");
+			free(split[i]);
+			split[i] = tmp;
+		}
+		else if (curr_state == STATE_QUOTE)
+		{
+			tmp = ft_strtrim(split[i], "\'");
 			free(split[i]);
 			split[i] = tmp;
 		}
@@ -162,7 +185,7 @@ char	**expand_keys(char **split, char ***envp_key_val)
 	return (split);
 }
 
-char	**split_keys(int key_count, char **split, char *str)
+char	**split_arg(int key_count, char **split, char *str)
 {
 	int		end;
 	int		i;
@@ -206,25 +229,21 @@ t_token	**expand(t_token **head, char **envp)
 	char	**split;
 	int		key_count;
 
-	envp_key_val = split_key_value(envp);
+	envp_key_val = split_envp(envp);
 	if (!envp_key_val)
 		return (free_key_val(envp_key_val), NULL);
 	curr = *head;
 	while (curr)
 	{
-		if (curr->state == STATE_DQUOTE)
-		{
-			key_count = count_words(curr->value);
-			split = malloc((key_count + 1) * sizeof(char *));
-			split[key_count] = NULL;
-			split = split_keys(key_count, split, curr->value);
-			split = expand_keys(split, envp_key_val);
-			// expansion could happen in the get_keys function (cause we work with start/end of key)
-			// then we save the extra **array for the keys
-			//curr->value = expand_values(env_keys, envp, key_count, curr);
-			print_keys(split);
-			free_keys(split);
-		}
+		key_count = count_words(curr->value);
+		split = malloc((key_count + 1) * sizeof(char *));
+		split[key_count] = NULL;
+		split = split_arg(key_count, split, curr->value);
+		print_keys(split);
+		split = expand_keys(split, envp_key_val);
+		print_keys(split);
+		//curr->value = join_keys(split);
+		free_keys(split);
 		curr = curr->next;
 	}
 	//print_key_val(envp_key_val);
