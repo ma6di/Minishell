@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/07 05:13:05 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/07 14:46:53 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ int	is_delimiter(char c)
 	return (0);
 }
 
-void	end_token(char **buffer, t_token **head)
+void	end_token(char **buffer, t_token **head, t_token_state state)
 {
-	create_token(head, ft_strdup(*buffer));
+	create_token(head, ft_strdup(*buffer), state);
 	free(*buffer);
 	*buffer = NULL;
 }
@@ -59,48 +59,71 @@ char	*add_to_buffer(char **buffer, char c)
 	return (new_buffer);
 }
 
+void	change_state(t_token_state *state, char *input, char **buffer, t_token **head)
+{
+	if (*state == GENERAL && *input == '\'')
+	{
+		if (*buffer)
+			end_token(buffer, head, *state);
+		*state = QUOTE;
+	}
+	else if (*state == GENERAL && *input == '"')
+	{
+		if (*buffer)
+			end_token(buffer, head, *state);
+		*state = DQUOTE;
+	}
+	else if ((*state == QUOTE && *input == '\'')
+		|| (*state == DQUOTE && *input == '"'))
+	{
+		if (*buffer)
+			end_token(buffer, head, *state);
+		*state = GENERAL;
+	}
+}
+
+char	*handle_general(char **buffer, t_token **head, t_token_state state, char *input)
+{
+	if (!is_delimiter(*input))
+		*buffer = add_to_buffer(buffer, *input);
+	if (*buffer && is_delimiter(*input))
+		end_token(buffer, head, state);
+	if (!(*buffer) && *input == ' ')
+	{
+		*buffer = add_to_buffer(buffer, *input);
+		end_token(buffer, head, state);
+	}
+	if (is_operator(*input))
+	{
+		*buffer = add_to_buffer(buffer, *input);
+		if (*(input + 1) == *input)
+			*buffer = add_to_buffer(buffer, *input++);
+		end_token(buffer, head, state);
+	}
+	return (input);
+}
+
 // parsing, seperates the args by spaces or operators
 // reads everything inside quote including spaces and operators
-t_token	**parse(t_token **head, char *input)
+t_token	**parse(t_token **head, char *s)
 {
-	t_token_state	curr_state;
+	t_token_state	state;
 	char			*buffer;
 
-	curr_state = STATE_GENERAL;
+	state = GENERAL;
 	buffer = NULL;
-	while (*input)
+	while (*s)
 	{
-		//printf("1: state %d, char %c\n", curr_state, *input);
-		change_state(&curr_state, *input);
-		//printf("2: state %d, char %c\n", curr_state, *input);
-		// add ' and " ONLY if $ is in buffer
-		if (curr_state == STATE_GENERAL)
-		{
-			if (!is_delimiter(*input))
-				buffer = add_to_buffer(&buffer, *input);
-			if (buffer && is_delimiter(*input))
-				end_token(&buffer, head);
-			if (is_operator(*input))
-			{
-				buffer = add_to_buffer(&buffer, *input);
-				if (*(input + 1) == *input)
-					buffer = add_to_buffer(&buffer, *input++);
-				end_token(&buffer, head);
-			}
-		}
-		// took out (curr_state == STATE_DQUOTE && *input != '"')
-		// took out (curr_state == STATE_QUOTE && *input != '\'')
-		// cause i need the dquotes later on when expanding to separate $ENV'string'
-		else if (curr_state == STATE_DQUOTE || (curr_state == STATE_QUOTE))
-			buffer = add_to_buffer(&buffer, *input);
-		input++;
+		change_state(&state, s, &buffer, head);
+		if (state == GENERAL && (*s != '\'' && *s != '"'))
+			s = handle_general(&buffer, head, state, s);
+		else if ((state == DQUOTE && *s != '"') || (state == QUOTE && *s != '\''))
+			buffer = add_to_buffer(&buffer, *s);
+		s++;
 	}
 	if (buffer)
-		end_token(&buffer, head);
-	if (curr_state != STATE_GENERAL)
-	{
-		perror("Unclosed quote");
-		free_tokens(head);
-	}
+		end_token(&buffer, head, state);
+	if (state != GENERAL)
+		display_error("Unclosed quote", head);
 	return (head);
 }

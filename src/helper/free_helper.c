@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:10:05 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/06 09:48:36 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/07 14:08:33 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,20 +30,21 @@ void	free_tokens(t_token **head)
 	*head = NULL;
 }
 
-void	free_keys(char **env_keys)
+void	free_two_dim(char **env_keys)
 {
 	int	i;
 
 	i = 0;
 	while (env_keys[i])
 	{
+		//printf("freeing array %s at %p\n", env_keys[i], env_keys[i]);
 		free(env_keys[i]);
 		i++;
 	}
 	free(env_keys);
 }
 
-void	free_key_val(char ***envp_key_val) // [["HOME", "path"], ["USER", "username"]]
+void	free_three_dim(char ***envp_key_val) // [["HOME", "path"], ["USER", "username"]]
 {
 	int	i;
 	int j;

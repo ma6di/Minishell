@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/07 05:32:03 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/07 14:48:56 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	char		*input = "\"hello$USER'hi'\"'$USER'hi";
+	char		*input = "e'ch'o \"hey $USER dear you should go to bed :(\"$HOME 'its late'";
 
 	(void )		argc;
 	(void )		argv;

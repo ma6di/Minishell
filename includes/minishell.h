@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/07 05:13:11 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/07 14:40:28 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ typedef enum e_token_type {
 }	t_token_type;
 
 typedef enum e_token_state {
-	STATE_GENERAL,
-	STATE_QUOTE,
-	STATE_DQUOTE
+	GENERAL,
+	QUOTE,
+	DQUOTE
 }	t_token_state;
 
 typedef struct s_fds
@@ -79,6 +79,7 @@ typedef struct s_command
 
 typedef struct s_token {
 	t_token_type	type;
+	t_token_state	state;
 	char			*value;
 	struct s_token	*prev;
 	struct s_token	*next;
@@ -98,16 +99,17 @@ t_token			**parse(t_token **head, char *input);
 t_token			**expand(t_token **head, char **envp);
 void			free_tokens(t_token **head);
 void			add_token(t_token **head, t_token *new_token);
-void			create_token(t_token **head, char *value);
+void			create_token(t_token **head, char *value, t_token_state state);
 t_token_type	get_token_type(char *value);
 void			print_token_list(t_token **head);
 void			print_keys(char **env_keys);
 void			print_key_val(char ***filtered_envp);
-void			free_keys(char **env_keys);
-void			free_key_val(char ***filtered_envp);
+void			free_two_dim(char **env_keys);
+void			free_three_dim(char ***filtered_envp);
 int				is_whitespace(char c);
 int				is_lower(char c);
 int				is_upper(char c);
-void			change_state(t_token_state *curr_state, char str);
+void			display_error(char *message, t_token **head);
+t_token			**join_token(t_token **head);
 
 #endif

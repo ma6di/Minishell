@@ -1,40 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper.c                                           :+:      :+:    :+:   */
+/*   join_token.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/07 12:52:04 by nrauh            ###   ########.fr       */
+/*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
+/*   Updated: 2024/11/07 14:42:23 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../includes/minishell.h"
 
-int	is_whitespace(char c)
+t_token	**join_token(t_token **head)
 {
-	if (c == ' ' || (c >= 9 && c >= 13))
-		return (1);
-	return (0);
-}
+	t_token	*curr;
+	char	*joined;
 
-int	is_lower(char c)
-{
-	if ((c >= 'a' && c <= 'z'))
-		return (1);
-	return (0);
-}
-
-int	is_upper(char c)
-{
-	if ((c >= 'A' && c <= 'Z'))
-		return (1);
-	return (0);
-}
-
-void	display_error(char *message, t_token **head)
-{
-	perror(message);
-	free_tokens(head);
+	curr = *head;
+	while (curr && ft_strncmp(curr->value, " ", ft_strlen(curr->value) == 1))
+	{
+		joined = ft_strjoin(curr->value, curr->next->value);
+		free(curr->next->value);
+		curr->next->value = joined;
+		curr = curr->next;
+	}
+	return (head);
 }
