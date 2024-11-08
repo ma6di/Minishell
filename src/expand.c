@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 09:49:59 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/08 11:36:47 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ char	***split_envp(char **envp)
 
 int is_end(char c)
 {
-	// removed c == '"'
 	if (c == '\'' || c == ' ' || c == '$')
 		return (1);
 	return (0);
@@ -91,8 +90,6 @@ int	count_words(char *str)
 			while (*str && !is_end(*str))
 				str++;
 		}
-		//if (*str == '"')
-		//	str++;
 	}
 	return (count);
 }
@@ -113,8 +110,10 @@ char	**expand_keys(char **split, char ***envp_key_val)
 			{
 				tmp = get_value(split[i] + 1, envp_key_val);
 				free(split[i]);
-				split[i] = tmp;
-				printf("found value %s\n", split[i]);
+				if (tmp)
+					split[i] = tmp;
+				else
+					split[i] = ft_strdup("");
 			}
 			j++;
 		}
@@ -153,8 +152,6 @@ char	**split_arg(int key_count, char **split, char *str)
 				str = str + end;
 				end = 0;
 			}
-			//if (*str == '"')
-			//	end++;
 		}
 	}
 	return (split);

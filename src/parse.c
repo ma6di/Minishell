@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 09:39:21 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/08 10:11:53 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	add_delimiter(t_token **head)
 	t_token_state	state;
 
 	state = GENERAL;
-	create_token(head, ft_strdup("SPACE"), state);
+	create_token(head, ft_strdup(" "), state);
 }
 
 char	*skip_whitespace(char *str)
@@ -100,32 +100,6 @@ char	*change_state(t_token_state *state, char *str, char **buffer, t_token **hea
 	return (str);
 }
 
-/*char	*handle_state_general(char **buffer, t_token **head, t_token_state state, char *input)
-{
-	if (!is_delimiter(*(input + 1)))
-		*buffer = add_to_buffer(buffer, *(input + 1));
-	if (*buffer && is_delimiter(*(input + 1)))
-		end_token(buffer, head, state);
-	if (*(input + 1) == ' ')
-	{
-		input = skip_whitespace(input);
-		if (!is_operator(*(input + 2)))
-			add_delimiter(head);
-	}
-	if (is_operator(*(input + 1)))
-	{
-		*buffer = add_to_buffer(buffer, *(input + 1));
-		if (*(input + 2) == *(input + 1))
-		{
-			*buffer = add_to_buffer(buffer, *(input + 1));
-			input++;
-		}
-		end_token(buffer, head, state);
-		input = skip_whitespace(input);
-	}
-	return (input + 1);
-}*/
-
 char	*handle_general(char **buffer, t_token **head, t_token_state state, char *str)
 {
 	if (!is_delimiter(*str))
@@ -174,15 +148,3 @@ t_token	**parse(t_token **head, char *str)
 		display_error("Unclosed quote", head);
 	return (head);
 }
-
-// 1
-// 'echo'
-// ADD
-// ' ' oder || -> STATE CHANGE works for operators but not spaces cause spaces are not added!!!!
-// INCREMENT
-// 2
-// ADD
-// "hello" -> STATE CHANGE
-// ADD
-
-// need to check BEFORE STATE change if prev was a SPACE, if yes, increase the count!

@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 09:41:37 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/08 10:22:38 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	lexer(char *input, char **envp)
 	head = &first;
 	head = parse(head, input);
 	head = expand(head, envp);
-	//head = join_token(head);
+	head = join_token(head);
 	if (*head)
 	{
 		print_token_list(head);

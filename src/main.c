@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 09:49:57 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/08 11:40:06 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	char		*input = "'e''ch''o'> Hello||>$USER' $SHELL is late' >|\"hol dir den guten 'Landkaffee' $HOME\"";
+	char		*input = "combine > all'of'these\" \"$USER'$HOME'$LALA fertig";
 
 	(void )		argc;
 	(void )		argv;
