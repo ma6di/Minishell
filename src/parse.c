@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 02:56:40 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/08 03:22:43 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ char	*handle_state_general(char **buffer, t_token **head, t_token_state state, c
 		*buffer = add_to_buffer(buffer, *input);
 	if (*buffer && is_delimiter(*input))
 		end_token(buffer, head, state, *token_count);
-	if (*input == ' ')
+	if (*input == ' ' && !is_operator(*(input + 1)) && *(input + 1) != ' ')
 		(*token_count)++;
 	if (is_operator(*input))
 	{
