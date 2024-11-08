@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 06:34:30 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/08 09:05:18 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,20 @@ int	is_delimiter(char c)
 	return (0);
 }
 
-void	end_token(char **buffer, t_token **head, t_token_state state, int token_count)
+void	end_token(char **buffer, t_token **head, t_token_state state)
 {
-	//printf("END TOKEN %s TOKEN COUNT %d\n", *buffer, token_count);
-	create_token(head, ft_strdup(*buffer), state, token_count);
+	printf("END TOKEN %s\n", *buffer);
+	create_token(head, ft_strdup(*buffer), state);
 	free(*buffer);
 	*buffer = NULL;
+}
+
+void	add_delimiter(t_token **head)
+{
+	t_token_state	state;
+
+	state = GENERAL;
+	create_token(head, ft_strdup("SPACE"), state);
 }
 
 char	*add_to_buffer(char **buffer, char c)
@@ -60,7 +68,7 @@ char	*add_to_buffer(char **buffer, char c)
 	return (new_buffer);
 }
 
-int	last_token_count(t_token **head)
+/*int	last_token_count(t_token **head)
 {
 	t_token	*curr;
 
@@ -70,63 +78,64 @@ int	last_token_count(t_token **head)
 	while (curr->next)
 		curr = curr->next;
 	return (curr->token_count);
-}
+}*/
 
 // we str + 1 is current, we need to access the previous (*str) char
-char	*change_state(t_token_state *state, char *str, char **buffer, t_token **head)
+char	*change_state(t_token_state *state, char *prev, char **buffer, t_token **head)
 {
-	int	token_count;
-
-	token_count = last_token_count(head);
-	if (*state == GENERAL && *(str + 1) == '\'')
+	if (*state == GENERAL && *(prev + 1) == '\'')
 	{
 		if (*buffer)
-			end_token(buffer, head, *state, token_count);
+			end_token(buffer, head, *state);
 		*state = QUOTE;
 	}
-	else if (*state == GENERAL && *(str + 1) == '"')
+	else if (*state == GENERAL && *(prev + 1) == '"')
 	{
 		if (*buffer)
-			end_token(buffer, head, *state, token_count);
+			end_token(buffer, head, *state);
 		*state = DQUOTE;
 	}
-	else if ((*state == QUOTE && *(str + 1) == '\'' && *str != '\'' && *(str + 2) != '\'')
-			|| (*state == DQUOTE && *(str + 1) == '"' && *str != '"' && *(str + 2) != '"'))
+	else if ((*state == QUOTE && *(prev + 1) == '\'' && *prev != '\'' && *(prev + 2) != '\'')
+			|| (*state == DQUOTE && *(prev + 1) == '"' && *prev != '"' && *(prev + 2) != '"'))
 	{
-		if (is_delimiter(*(str + 2)))
-			token_count++;
-		printf("curr char %c next char %c\n", *(str + 1), *(str + 2));
-		printf("read buffer %s, now token increased to %d\n", *buffer, token_count);
 		if (*buffer)
-			end_token(buffer, head, *state, token_count);
+			end_token(buffer, head, *state);
 		*state = GENERAL;
 	}
-	return (str + 1);
+	return (prev + 1);
 }
 
-char	*handle_state_general(char **buffer, t_token **head, t_token_state state, char *input)
+char	*skip_whitespace(char *str)
 {
-	int	token_count;
+	while(*(str + 1) && *(str + 2) == ' ')
+		str++;
+	return (str);
+}
 
-	token_count = last_token_count(head);
-	if (is_delimiter(*input) && !is_delimiter(*(input + 1)))
-		token_count++;
-	if (!is_delimiter(*input))
-		*buffer = add_to_buffer(buffer, *input);
-	if (*buffer && is_delimiter(*input))
-		end_token(buffer, head, state, token_count);
-	if (is_operator(*input))
+char	*handle_state_general(char **buffer, t_token **head, t_token_state state, char *prev)
+{
+	if (!is_delimiter(*(prev + 1)))
+		*buffer = add_to_buffer(buffer, *(prev + 1));
+	if (*buffer && is_delimiter(*(prev + 1)))
+		end_token(buffer, head, state);
+	if (*(prev + 1) == ' ')
 	{
-		*buffer = add_to_buffer(buffer, *input);
-		if (*(input + 1) == *input)
-			*buffer = add_to_buffer(buffer, *input++);
-		token_count++;
-		printf("curr char %c next char %c\n", *input, *(input + 1));
-		printf("read buffer %s, now token increased to %d\n", *buffer, token_count);
-		end_token(buffer, head, state, token_count);
+		prev = skip_whitespace(prev);
+		if (!is_operator(*(prev + 2)))
+			add_delimiter(head);
 	}
-
-	return (input);
+	if (is_operator(*(prev + 1)))
+	{
+		*buffer = add_to_buffer(buffer, *(prev + 1));
+		if (*(prev + 2) == *(prev + 1))
+		{
+			*buffer = add_to_buffer(buffer, *(prev + 1));
+			prev++;
+		}
+		end_token(buffer, head, state);
+		prev = skip_whitespace(prev);
+	}
+	return (prev + 1);
 }
 
 // parsing, seperates the args by spaces or operators
@@ -142,13 +151,13 @@ t_token	**parse(t_token **head, char *str)
 	{
 		str = change_state(&state, str - 1, &buffer, head);
 		if (state == GENERAL && (*str != '\'' && *str != '"'))
-			str = handle_state_general(&buffer, head, state, str);
+			str = handle_state_general(&buffer, head, state, str - 1);
 		else if ((state == DQUOTE && *str != '"') || (state == QUOTE && *str != '\''))
 			buffer = add_to_buffer(&buffer, *str);
 		str++;
 	}
 	if (buffer)
-		end_token(&buffer, head, state, last_token_count(head) + 1);
+		end_token(&buffer, head, state);
 	if (state != GENERAL)
 		display_error("Unclosed quote", head);
 	return (head);

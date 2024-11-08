@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:07:56 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 02:23:58 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/08 07:00:38 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,13 @@ void	add_token(t_token **head, t_token *new_token)
 	new_token->next = NULL;
 }
 
-void	create_token(t_token **head, char *value, t_token_state state, int token_count)
+void	create_token(t_token **head, char *value, t_token_state state)
 {
 	t_token			*new_token;
 
 	new_token = malloc(sizeof(t_token));
 	new_token->value = value;
 	new_token->state = state;
-	new_token->token_count = token_count;
 	//new_token->type = NULL;
 	//new_token->type = get_token_type(value);
 	add_token(head, new_token);
