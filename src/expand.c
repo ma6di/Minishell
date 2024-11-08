@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 11:36:47 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/08 13:27:58 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,6 @@ int	count_vars(char *str)
 		str++;
 	}
 	return (count);
-}
-
-char	*get_value(char *env_key, char ***envp_key_val)
-{
-	int	i;
-
-	i = 0;
-	while (envp_key_val[i])
-	{
-		if (ft_strncmp(env_key, envp_key_val[i][0], ft_strlen(env_key)) == 0)
-			return (ft_strdup(envp_key_val[i][1]));
-		i++;
-	}
-	return (ft_strdup(""));
 }
 
 char	***split_envp(char **envp)
@@ -94,6 +80,20 @@ int	count_words(char *str)
 	return (count);
 }
 
+char	*get_value(char *env_key, char ***envp_key_val)
+{
+	int	i;
+
+	i = 0;
+	while (envp_key_val[i])
+	{
+		if (ft_strncmp(env_key, envp_key_val[i][0], ft_strlen(env_key)) == 0)
+			return (ft_strdup(envp_key_val[i][1]));
+		i++;
+	}
+	return (ft_strdup(""));
+}
+
 char	**expand_keys(char **split, char ***envp_key_val)
 {
 	int				i;
@@ -110,10 +110,8 @@ char	**expand_keys(char **split, char ***envp_key_val)
 			{
 				tmp = get_value(split[i] + 1, envp_key_val);
 				free(split[i]);
-				if (tmp)
-					split[i] = tmp;
-				else
-					split[i] = ft_strdup("");
+				split[i] = tmp;
+				break ;
 			}
 			j++;
 		}

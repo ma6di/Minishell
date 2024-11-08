@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 11:39:28 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/08 12:44:31 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ t_token	**join_token(t_token **head)
 			curr->next->value = joined;
 			curr = remove_node(curr, head);
 		}
+		else if (ft_strncmp(curr->value, " ", ft_strlen(curr->value)) == 0 && curr->state == GENERAL)
+			curr = remove_node(curr, head);
 		else
 			curr = curr->next;
 	}
