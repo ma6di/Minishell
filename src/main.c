@@ -6,12 +6,13 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 11:40:06 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/08 11:41:16 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
+// need to delete spaces when delimiter
+// need to check what happens with env variables that are not found...
 int	main(int argc, char **argv, char **envp)
 {
 	char		*input = "combine > all'of'these\" \"$USER'$HOME'$LALA fertig";
