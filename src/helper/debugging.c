@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:09:29 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/07 12:24:54 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/08 02:27:01 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	print_token_list(t_token **head)
 		printf("----------\n");
 		printf("#%d\n%s\n", i, curr->value);
 		printf("state %d\n", curr->state);
+		printf("token: %d\n", curr->token_count);
 		/*if (curr->type == STRING)
 			printf("String\n");
 		else if (curr->type == COMMAND)

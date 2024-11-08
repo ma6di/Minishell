@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/07 14:46:53 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/08 02:56:40 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,10 @@ int	is_delimiter(char c)
 	return (0);
 }
 
-void	end_token(char **buffer, t_token **head, t_token_state state)
+void	end_token(char **buffer, t_token **head, t_token_state state, int token_count)
 {
-	create_token(head, ft_strdup(*buffer), state);
+	printf("END TOKEN count %d\n", token_count);
+	create_token(head, ft_strdup(*buffer), state, token_count);
 	free(*buffer);
 	*buffer = NULL;
 }
@@ -56,73 +57,77 @@ char	*add_to_buffer(char **buffer, char c)
 	new_buffer[len] = c;
 	new_buffer[len + 1] = '\0';
 	free(*buffer);
+	printf("BUFFER %s\n", new_buffer);
 	return (new_buffer);
 }
 
-void	change_state(t_token_state *state, char *input, char **buffer, t_token **head)
+// we input + 1 is curr, we need to access the previous char
+char	*change_state(t_token_state *state, char *str, char **buffer, t_token **head, int token_count)
 {
-	if (*state == GENERAL && *input == '\'')
+	if (*state == GENERAL && *(str + 1) == '\'')
 	{
 		if (*buffer)
-			end_token(buffer, head, *state);
+			end_token(buffer, head, *state, token_count);
 		*state = QUOTE;
 	}
-	else if (*state == GENERAL && *input == '"')
+	else if (*state == GENERAL && *(str + 1) == '"')
 	{
 		if (*buffer)
-			end_token(buffer, head, *state);
+			end_token(buffer, head, *state, token_count);
 		*state = DQUOTE;
 	}
-	else if ((*state == QUOTE && *input == '\'')
-		|| (*state == DQUOTE && *input == '"'))
+	else if ((*state == QUOTE && *(str + 1) == '\'' && *str != '\'' && *(str + 2) != '\'')
+			|| (*state == DQUOTE && *(str + 1) == '"' && *str != '"' && *(str + 2) != '"'))
 	{
 		if (*buffer)
-			end_token(buffer, head, *state);
+			end_token(buffer, head, *state, token_count);
 		*state = GENERAL;
 	}
+	return (str + 1);
 }
 
-char	*handle_general(char **buffer, t_token **head, t_token_state state, char *input)
+char	*handle_state_general(char **buffer, t_token **head, t_token_state state, char *input, int *token_count)
 {
 	if (!is_delimiter(*input))
 		*buffer = add_to_buffer(buffer, *input);
 	if (*buffer && is_delimiter(*input))
-		end_token(buffer, head, state);
-	if (!(*buffer) && *input == ' ')
-	{
-		*buffer = add_to_buffer(buffer, *input);
-		end_token(buffer, head, state);
-	}
+		end_token(buffer, head, state, *token_count);
+	if (*input == ' ')
+		(*token_count)++;
 	if (is_operator(*input))
 	{
 		*buffer = add_to_buffer(buffer, *input);
 		if (*(input + 1) == *input)
 			*buffer = add_to_buffer(buffer, *input++);
-		end_token(buffer, head, state);
+		end_token(buffer, head, state, ++(*token_count));
+		if (*(input + 1) != ' ')
+			(*token_count)++;
 	}
 	return (input);
 }
 
 // parsing, seperates the args by spaces or operators
 // reads everything inside quote including spaces and operators
-t_token	**parse(t_token **head, char *s)
+t_token	**parse(t_token **head, char *str)
 {
 	t_token_state	state;
 	char			*buffer;
+	int	token_count;
 
 	state = GENERAL;
 	buffer = NULL;
-	while (*s)
+	token_count = 1;
+	while (*str)
 	{
-		change_state(&state, s, &buffer, head);
-		if (state == GENERAL && (*s != '\'' && *s != '"'))
-			s = handle_general(&buffer, head, state, s);
-		else if ((state == DQUOTE && *s != '"') || (state == QUOTE && *s != '\''))
-			buffer = add_to_buffer(&buffer, *s);
-		s++;
+		str = change_state(&state, str - 1, &buffer, head, token_count);
+		if (state == GENERAL && (*str != '\'' && *str != '"'))
+			str = handle_state_general(&buffer, head, state, str, &token_count);
+		else if ((state == DQUOTE && *str != '"') || (state == QUOTE && *str != '\''))
+			buffer = add_to_buffer(&buffer, *str);
+		str++;
 	}
 	if (buffer)
-		end_token(&buffer, head, state);
+		end_token(&buffer, head, state, token_count);
 	if (state != GENERAL)
 		display_error("Unclosed quote", head);
 	return (head);

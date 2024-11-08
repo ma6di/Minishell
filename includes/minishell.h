@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/07 14:40:28 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/08 02:23:38 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ typedef struct s_command
 typedef struct s_token {
 	t_token_type	type;
 	t_token_state	state;
+	int				token_count;
 	char			*value;
 	struct s_token	*prev;
 	struct s_token	*next;
@@ -99,7 +100,7 @@ t_token			**parse(t_token **head, char *input);
 t_token			**expand(t_token **head, char **envp);
 void			free_tokens(t_token **head);
 void			add_token(t_token **head, t_token *new_token);
-void			create_token(t_token **head, char *value, t_token_state state);
+void			create_token(t_token **head, char *value, t_token_state state, int token_count);
 t_token_type	get_token_type(char *value);
 void			print_token_list(t_token **head);
 void			print_keys(char **env_keys);
