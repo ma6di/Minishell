@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 03:22:43 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/08 06:34:30 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	is_delimiter(char c)
 
 void	end_token(char **buffer, t_token **head, t_token_state state, int token_count)
 {
-	printf("END TOKEN count %d\n", token_count);
+	//printf("END TOKEN %s TOKEN COUNT %d\n", *buffer, token_count);
 	create_token(head, ft_strdup(*buffer), state, token_count);
 	free(*buffer);
 	*buffer = NULL;
@@ -57,13 +57,27 @@ char	*add_to_buffer(char **buffer, char c)
 	new_buffer[len] = c;
 	new_buffer[len + 1] = '\0';
 	free(*buffer);
-	printf("BUFFER %s\n", new_buffer);
 	return (new_buffer);
 }
 
-// we input + 1 is curr, we need to access the previous char
-char	*change_state(t_token_state *state, char *str, char **buffer, t_token **head, int token_count)
+int	last_token_count(t_token **head)
 {
+	t_token	*curr;
+
+	curr = *head;
+	if (!curr)
+		return (0);
+	while (curr->next)
+		curr = curr->next;
+	return (curr->token_count);
+}
+
+// we str + 1 is current, we need to access the previous (*str) char
+char	*change_state(t_token_state *state, char *str, char **buffer, t_token **head)
+{
+	int	token_count;
+
+	token_count = last_token_count(head);
 	if (*state == GENERAL && *(str + 1) == '\'')
 	{
 		if (*buffer)
@@ -79,6 +93,10 @@ char	*change_state(t_token_state *state, char *str, char **buffer, t_token **hea
 	else if ((*state == QUOTE && *(str + 1) == '\'' && *str != '\'' && *(str + 2) != '\'')
 			|| (*state == DQUOTE && *(str + 1) == '"' && *str != '"' && *(str + 2) != '"'))
 	{
+		if (is_delimiter(*(str + 2)))
+			token_count++;
+		printf("curr char %c next char %c\n", *(str + 1), *(str + 2));
+		printf("read buffer %s, now token increased to %d\n", *buffer, token_count);
 		if (*buffer)
 			end_token(buffer, head, *state, token_count);
 		*state = GENERAL;
@@ -86,23 +104,28 @@ char	*change_state(t_token_state *state, char *str, char **buffer, t_token **hea
 	return (str + 1);
 }
 
-char	*handle_state_general(char **buffer, t_token **head, t_token_state state, char *input, int *token_count)
+char	*handle_state_general(char **buffer, t_token **head, t_token_state state, char *input)
 {
+	int	token_count;
+
+	token_count = last_token_count(head);
+	if (is_delimiter(*input) && !is_delimiter(*(input + 1)))
+		token_count++;
 	if (!is_delimiter(*input))
 		*buffer = add_to_buffer(buffer, *input);
 	if (*buffer && is_delimiter(*input))
-		end_token(buffer, head, state, *token_count);
-	if (*input == ' ' && !is_operator(*(input + 1)) && *(input + 1) != ' ')
-		(*token_count)++;
+		end_token(buffer, head, state, token_count);
 	if (is_operator(*input))
 	{
 		*buffer = add_to_buffer(buffer, *input);
 		if (*(input + 1) == *input)
 			*buffer = add_to_buffer(buffer, *input++);
-		end_token(buffer, head, state, ++(*token_count));
-		if (*(input + 1) != ' ')
-			(*token_count)++;
+		token_count++;
+		printf("curr char %c next char %c\n", *input, *(input + 1));
+		printf("read buffer %s, now token increased to %d\n", *buffer, token_count);
+		end_token(buffer, head, state, token_count);
 	}
+
 	return (input);
 }
 
@@ -112,23 +135,33 @@ t_token	**parse(t_token **head, char *str)
 {
 	t_token_state	state;
 	char			*buffer;
-	int	token_count;
 
 	state = GENERAL;
 	buffer = NULL;
-	token_count = 1;
 	while (*str)
 	{
-		str = change_state(&state, str - 1, &buffer, head, token_count);
+		str = change_state(&state, str - 1, &buffer, head);
 		if (state == GENERAL && (*str != '\'' && *str != '"'))
-			str = handle_state_general(&buffer, head, state, str, &token_count);
+			str = handle_state_general(&buffer, head, state, str);
 		else if ((state == DQUOTE && *str != '"') || (state == QUOTE && *str != '\''))
 			buffer = add_to_buffer(&buffer, *str);
 		str++;
 	}
 	if (buffer)
-		end_token(&buffer, head, state, token_count);
+		end_token(&buffer, head, state, last_token_count(head) + 1);
 	if (state != GENERAL)
 		display_error("Unclosed quote", head);
 	return (head);
 }
+
+// 1
+// 'echo'
+// ADD
+// ' ' oder || -> STATE CHANGE works for operators but not spaces cause spaces are not added!!!!
+// INCREMENT
+// 2
+// ADD
+// "hello" -> STATE CHANGE
+// ADD
+
+// need to check BEFORE STATE change if prev was a SPACE, if yes, increase the count!

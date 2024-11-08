@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 03:21:45 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/08 05:55:57 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	char		*input = "'e''c\"h''o'  || \"hey $USER go \"$HOME 'i'ts late";
+	char		*input = "'echo'||\"hey $USER go \"$HOME 'i'ts late";
 
 	(void )		argc;
 	(void )		argv;
