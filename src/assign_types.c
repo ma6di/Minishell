@@ -6,12 +6,13 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/09 03:52:46 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/09 09:52:37 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+// this should not work like that, echo pwd -> pwd ...
 int	is_inbuilt_cmd(char *value)
 {
 	if (ft_strncmp(value, "echo", ft_strlen(value)) == 0
