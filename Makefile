@@ -6,7 +6,7 @@
 #    By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/18 16:55:20 by nrauh             #+#    #+#              #
-#    Updated: 2024/11/07 14:40:37 by nrauh            ###   ########.fr        #
+#    Updated: 2024/11/09 03:56:32 by nrauh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,8 @@ SRC_DIR = src/
 NAME = minishell
 LIBFT = libft/libft.a
 
-SRC = $(addprefix $(SRC_DIR), main.c lexer.c parse.c expand.c join_token.c\
+SRC = $(addprefix $(SRC_DIR), main.c lexer.c parse.c expand.c join_token.c \
+		assign_types.c check_validity.c \
 	$(addprefix helper/, debugging.c free_helper.c token_list.c helper.c)) \
 
 OBJ = $(SRC:.c=.o)

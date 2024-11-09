@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 12:44:31 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/09 03:05:14 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	is_delim(t_token *token)
 		|| ft_strncmp(token->value, ">>", ft_strlen(token->value)) == 0
 		|| ft_strncmp(token->value, "<", ft_strlen(token->value)) == 0
 		|| ft_strncmp(token->value, "<<", ft_strlen(token->value)) == 0
-		|| ft_strncmp(token->value, "<", ft_strlen(token->value)) == 0)
+		|| ft_strncmp(token->value, ">", ft_strlen(token->value)) == 0)
 		&& token->state == GENERAL)
 		return (1);
 	return (0);
@@ -31,7 +31,8 @@ t_token	*remove_node(t_token *node, t_token **head)
 	t_token	*next_node;
 
 	next_node = node->next;
-	if (node->prev == *head)
+	// need to check here, node == *head or node->prev == *head?????
+	if (node == *head)
 	{
 		*head = node->next;
 		node->next->prev = *head;

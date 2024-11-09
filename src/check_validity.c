@@ -1,40 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper.c                                           :+:      :+:    :+:   */
+/*   check_validity.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/09 04:02:28 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/09 04:03:44 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../includes/minishell.h"
 
-int	is_whitespace(char c)
+static int	is_operator(t_token_type type)
 {
-	if (c == ' ' || (c >= 9 && c >= 13))
+	if (type == PIPE || type == APPEND || type == INPUT_REDIRECT
+		|| type == LOGICAL_OR || type == HEREDOC || type == REDIRECT)
 		return (1);
 	return (0);
 }
 
-int	is_lower(char c)
+t_token	**check_validity(t_token **head)
 {
-	if ((c >= 'a' && c <= 'z'))
-		return (1);
-	return (0);
-}
+	t_token	*curr;
 
-int	is_upper(char c)
-{
-	if ((c >= 'A' && c <= 'Z'))
-		return (1);
-	return (0);
-}
-
-void	display_error(char *message, t_token **head)
-{
-	perror(message);
-	free_tokens(head);
+	curr = *head;
+	while (curr)
+	{
+		if (curr != *head
+			&& is_operator(curr->type)
+			&& is_operator(curr->prev->type))
+			break ;
+		curr = curr->next;
+	}
+	if (curr == NULL)
+		return (head);
+	display_error("parse error", head);
+	return (head);
 }

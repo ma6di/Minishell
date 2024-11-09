@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 06:58:59 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/09 03:56:14 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,9 @@ typedef enum e_token_type {
 	APPEND,
 	HEREDOC,
 	INPUT_REDIRECT,
-	ARGUMENT,
 	PIPE,
+	LOGICAL_OR,
+	ARGUMENT,
 	STRING,
 	FILENAME,
 	ENV_VAR,
@@ -111,5 +112,7 @@ int				is_lower(char c);
 int				is_upper(char c);
 void			display_error(char *message, t_token **head);
 t_token			**join_token(t_token **head);
+t_token			**assign_types(t_token **head);
+t_token			**check_validity(t_token **head);
 
 #endif

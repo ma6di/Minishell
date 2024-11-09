@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 13:17:35 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/09 03:48:33 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 // need to check what happens with env variables that are not found...
 int	main(int argc, char **argv, char **envp)
 {
-	char		*input = "combine > all' of'these\" \"$USER$LALA'$HOME''what' fertig";
+	char		*input = "echo '$USER'file -l || >grep word";
 
 	(void )		argc;
 	(void )		argv;
