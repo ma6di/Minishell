@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/09 04:04:07 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/09 04:45:38 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ void	lexer(char *input, char **envp)
 {
 	t_token			*first;
 	t_token			**head;
-	(void)			envp;
 
 	// why do i need *first???
 	first = NULL;
@@ -37,7 +36,7 @@ void	lexer(char *input, char **envp)
 	head = expand(head, envp);
 	head = join_token(head);
 	head = assign_types(head);
-	head = check_validity(head);
+	//head = check_validity(head);
 	if (*head)
 	{
 		print_token_list(head);
