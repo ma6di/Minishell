@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/09 07:17:06 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/09 09:48:22 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,6 @@ void	add_delimiter(t_token **head)
 	create_token(head, ft_strdup(" "), state);
 }
 
-/*char	*skip_whitespace(char *str)
-{
-	while(*(str) && *(str + 1) == ' ')
-		str++;
-	return (str);
-}*/
-
 char	*add_to_buffer(char **buffer, char c)
 {
 	size_t	len;
@@ -74,32 +67,6 @@ char	*add_to_buffer(char **buffer, char c)
 	return (new_buffer);
 }
 
-char	*change_state(t_token_state *state, char *str, char **buffer, t_token **head)
-{
-	if (*state == GENERAL && *str == '\'')
-	{
-		if (*buffer)
-			end_token(buffer, head, *state);
-		*state = QUOTE;
-	}
-	else if (*state == GENERAL && *str == '"')
-	{
-		if (*buffer)
-			end_token(buffer, head, *state);
-		*state = DQUOTE;
-	}
-	else if ((*state == QUOTE && *str == '\'' && *(str + 1) == '\'')
-			|| (*state == DQUOTE && *str == '"' && *(str + 1) == '"'))
-		str++;
-	else if ((*state == QUOTE && *str == '\'') || (*state == DQUOTE && *str == '"'))
-	{
-		if (*buffer)
-			end_token(buffer, head, *state);
-		*state = GENERAL;
-	}
-	return (str);
-}
-
 char	*handle_operator(char **buffer, t_token **head, t_token_state state, char *str)
 {
 	if (is_operator(*str))
@@ -114,6 +81,22 @@ char	*handle_operator(char **buffer, t_token **head, t_token_state state, char *
 	return (str);
 }
 
+void	handle_quotes(t_token **head, char *str, t_token_state *state, char **buffer)
+{
+	if (*str == '\'')
+	{
+		if (*buffer)
+			end_token(buffer, head, *state);
+		*state = QUOTE;
+	}
+	else if (*str == '"')
+	{
+		if (*buffer)
+			end_token(buffer, head, *state);
+		*state = DQUOTE;
+	}
+}
+
 char	*handle_space(t_token **head, char *str)
 {
 	if (*str == ' ')
@@ -126,19 +109,57 @@ char	*handle_space(t_token **head, char *str)
 	return (str);
 }
 
-char	*handle_general(char **buffer, t_token **head, t_token_state state, char *str)
+char	*handle_state_general(char **buffer, t_token **head, t_token_state *state, char *str)
 {
-	if (!is_delimiter(*str))
-		*buffer = add_to_buffer(buffer, *str);
-	if (*buffer && (is_delimiter(*str) || *(str + 1) == '$'))
-		end_token(buffer, head, state);
-	str = handle_space(head, str);
-	str = handle_operator(buffer, head, state, str);
+	handle_quotes(head, str, state, buffer);
+	if (*str != '\'' && *str != '"')
+	{
+		if (!is_delimiter(*str))
+			*buffer = add_to_buffer(buffer, *str);
+		if (*buffer && (is_delimiter(*str) || *(str + 1) == '$'))
+			end_token(buffer, head, *state);
+		str = handle_space(head, str);
+		str = handle_operator(buffer, head, *state, str);
+	}
 	return (str);
 }
 
-// parsing, seperates the args by spaces or operators
-// reads everything inside quote including spaces and operators
+char	*handle_state_dquote(char **buffer, t_token **head, t_token_state *state, char *str)
+{
+	if (*str == '"' && *(str + 1) == '"')
+		str++;
+	else if (*str == '"')
+	{
+		if (*buffer)
+			end_token(buffer, head, *state);
+		*state = GENERAL;
+	}
+	if (*str != '"')
+	{
+		*buffer = add_to_buffer(buffer, *str);
+		if (*(str + 1) == '$' || *(str + 1) == ' ' || *(str + 1) == '\'')
+			end_token(buffer, head, *state);
+	}
+	return (str);
+}
+
+char	*handle_state_quote(char **buffer, t_token **head, t_token_state *state, char *str)
+{
+	if (*str == '\'' && *(str + 1) == '\'')
+		str++;
+	else if (*str == '\'')
+	{
+		if (*(str + 1) == '\'')
+			str++;
+		if (*buffer)
+			end_token(buffer, head, *state);
+		*state = GENERAL;
+	}
+	if (*str != '\'')
+		*buffer = add_to_buffer(buffer, *str);
+	return (str);
+}
+
 t_token	**parse(t_token **head, char *str)
 {
 	t_token_state	state;
@@ -148,16 +169,12 @@ t_token	**parse(t_token **head, char *str)
 	buffer = NULL;
 	while (*str)
 	{
-		str = change_state(&state, str, &buffer, head);
-		if (state == GENERAL && (*str != '\'' && *str != '"'))
-			str = handle_general(&buffer, head, state, str);
-		else if ((state == DQUOTE && *str != '"')
-			|| (state == QUOTE && *str != '\''))
-		{
-			buffer = add_to_buffer(&buffer, *str);
-			if (state == DQUOTE && (*(str + 1) == '$' || *(str + 1) == ' ' || *(str + 1) == '\''))
-				end_token(&buffer, head, state);
-		}
+		if (state == GENERAL)
+			str = handle_state_general(&buffer, head, &state, str);
+		else if (state == DQUOTE)
+			str = handle_state_dquote(&buffer, head, &state, str);
+		else if (state == QUOTE)
+			str = handle_state_quote(&buffer, head, &state, str);
 		str++;
 	}
 	if (buffer)
