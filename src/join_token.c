@@ -6,13 +6,13 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/09 03:05:14 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/09 06:44:14 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	is_delim(t_token *token)
+static int	is_delimiter(t_token *token)
 {
 	if ((ft_strncmp(token->value, " ", ft_strlen(token->value)) == 0
 		|| ft_strncmp(token->value, "||", ft_strlen(token->value)) == 0
@@ -55,7 +55,7 @@ t_token	**join_token(t_token **head)
 	curr = *head;
 	while (curr && curr->next)
 	{
-		if (!is_delim(curr->next) && !is_delim(curr))
+		if (!is_delimiter(curr->next) && !is_delimiter(curr))
 		{
 			joined = ft_strjoin(curr->value, curr->next->value);
 			free(curr->next->value);

@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/09 04:03:38 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/09 06:59:53 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,12 @@ void	add_delimiter(t_token **head)
 	create_token(head, ft_strdup(" "), state);
 }
 
-char	*skip_whitespace(char *str)
+/*char	*skip_whitespace(char *str)
 {
 	while(*(str) && *(str + 1) == ' ')
 		str++;
 	return (str);
-}
+}*/
 
 char	*add_to_buffer(char **buffer, char c)
 {
@@ -100,26 +100,40 @@ char	*change_state(t_token_state *state, char *str, char **buffer, t_token **hea
 	return (str);
 }
 
-char	*handle_general(char **buffer, t_token **head, t_token_state state, char *str)
+char	*handle_operator(char **buffer, t_token **head, t_token_state state, char *str)
 {
-	if (!is_delimiter(*str))
-		*buffer = add_to_buffer(buffer, *str);
-	if (*buffer && is_delimiter(*str))
-		end_token(buffer, head, state);
-	if (*str == ' ')
-	{
-		str = skip_whitespace(str);
-		if (!is_operator(*(str + 1)))
-			add_delimiter(head);
-	}
 	if (is_operator(*str))
 	{
 		*buffer = add_to_buffer(buffer, *str);
 		if (*(str + 1) == *str)
 			*buffer = add_to_buffer(buffer, *str++);
 		end_token(buffer, head, state);
-		str = skip_whitespace(str);
+		while(*(str) && *(str + 1) == ' ')
+			str++;
 	}
+	return (str);
+}
+
+char	*handle_space(t_token **head, char *str)
+{
+	if (*str == ' ')
+	{
+		while(*(str) && *(str + 1) == ' ')
+			str++;
+		if (!is_operator(*(str + 1)))
+			add_delimiter(head);
+	}
+	return (str);
+}
+
+char	*handle_general(char **buffer, t_token **head, t_token_state state, char *str)
+{
+	if (!is_delimiter(*str))
+		*buffer = add_to_buffer(buffer, *str);
+	if (*buffer && (is_delimiter(*str) || *(str + 1) == '$'))
+		end_token(buffer, head, state);
+	str = handle_space(head, str);
+	str = handle_operator(buffer, head, state, str);
 	return (str);
 }
 
@@ -139,7 +153,11 @@ t_token	**parse(t_token **head, char *str)
 			str = handle_general(&buffer, head, state, str);
 		else if ((state == DQUOTE && *str != '"')
 			|| (state == QUOTE && *str != '\''))
+		{
 			buffer = add_to_buffer(&buffer, *str);
+			if (state == DQUOTE && (*(str + 1) == '$' || *(str + 1) == ' ' || *(str + 1) == '\''))
+				end_token(&buffer, head, state);
+		}
 		str++;
 	}
 	if (buffer)
