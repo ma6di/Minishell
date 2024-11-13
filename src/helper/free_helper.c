@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_helper.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:10:05 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 13:07:12 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/13 17:01:48 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	free_two_dim(char **env_keys)
 void	free_three_dim(char ***envp_key_val) // [["HOME", "path"], ["USER", "username"]]
 {
 	int	i;
-	int j;
+	int	j;
 
 	i = 0;
 	j = 0;

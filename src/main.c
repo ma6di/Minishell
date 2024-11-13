@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/09 09:43:40 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/13 17:00:15 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,11 @@
 // need to check what happens with env variables that are not found...
 int	main(int argc, char **argv, char **envp)
 {
-	char		*input = "echo 'p''w''d' |$ >$FIRST$SECOND \"$USER$HELLO $HOME'$USER\"'$NOT_EXPAND' -l >>|| grep \"wo'rd\"";
+	char		*input;
 
 	(void )		argc;
 	(void )		argv;
-	//char *test[3] = {"HOME=path", "USER=username", NULL};
-
-	/*while (1)
+	while (1)
 	{
 		input = readline("PROMPT% ");
 		if (!input)
@@ -35,8 +33,7 @@ int	main(int argc, char **argv, char **envp)
 			lexer(input, envp);
 		}
 		free(input);
-	}*/
-	printf("%s\n", input);
+	}
 	lexer(input, envp);
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/09 03:56:14 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/13 17:10:09 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,5 +114,6 @@ void			display_error(char *message, t_token **head);
 t_token			**join_token(t_token **head);
 t_token			**assign_types(t_token **head);
 t_token			**check_validity(t_token **head);
+char			*add_to_buffer(char **buffer, char c);
 
 #endif

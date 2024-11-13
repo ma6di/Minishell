@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join_token.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/09 09:49:48 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/13 16:59:02 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 static int	is_delimiter(t_token *token)
 {
 	if ((ft_strncmp(token->value, " ", ft_strlen(token->value)) == 0
-		|| ft_strncmp(token->value, "||", ft_strlen(token->value)) == 0
-		|| ft_strncmp(token->value, "|", ft_strlen(token->value)) == 0
-		|| ft_strncmp(token->value, ">>", ft_strlen(token->value)) == 0
-		|| ft_strncmp(token->value, "<", ft_strlen(token->value)) == 0
-		|| ft_strncmp(token->value, "<<", ft_strlen(token->value)) == 0
-		|| ft_strncmp(token->value, ">", ft_strlen(token->value)) == 0)
+			|| ft_strncmp(token->value, "||", ft_strlen(token->value)) == 0
+			|| ft_strncmp(token->value, "|", ft_strlen(token->value)) == 0
+			|| ft_strncmp(token->value, ">>", ft_strlen(token->value)) == 0
+			|| ft_strncmp(token->value, "<", ft_strlen(token->value)) == 0
+			|| ft_strncmp(token->value, "<<", ft_strlen(token->value)) == 0
+			|| ft_strncmp(token->value, ">", ft_strlen(token->value)) == 0)
 		&& token->state == GENERAL)
 		return (1);
 	return (0);

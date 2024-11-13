@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   assign_types.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/09 09:52:37 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/13 16:57:26 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ int	is_inbuilt_cmd(char *value)
 
 int	assign_redirect(t_token *token)
 {
-	if (ft_strncmp(token->value , ">", ft_strlen(token->value)) == 0)
+	if (ft_strncmp(token->value, ">", ft_strlen(token->value)) == 0)
 		return (token->type = REDIRECT, 0);
-	else if (ft_strncmp(token->value , ">>", ft_strlen(token->value)) == 0)
+	else if (ft_strncmp(token->value, ">>", ft_strlen(token->value)) == 0)
 		return (token->type = APPEND, 0);
-	else if (ft_strncmp(token->value , "<", ft_strlen(token->value)) == 0)
+	else if (ft_strncmp(token->value, "<", ft_strlen(token->value)) == 0)
 		return (token->type = INPUT_REDIRECT, 0);
-	else if (ft_strncmp(token->value , "<<", ft_strlen(token->value)) == 0)
+	else if (ft_strncmp(token->value, "<<", ft_strlen(token->value)) == 0)
 		return (token->type = HEREDOC, 0);
 	else
 		return (-1);
@@ -42,9 +42,9 @@ int	assign_redirect(t_token *token)
 
 int	assign_other_operator(t_token *token)
 {
-	if (ft_strncmp(token->value , "|", ft_strlen(token->value)) == 0)
+	if (ft_strncmp(token->value, "|", ft_strlen(token->value)) == 0)
 		return (token->type = PIPE, 0);
-	else if (ft_strncmp(token->value , "||", ft_strlen(token->value)) == 0)
+	else if (ft_strncmp(token->value, "||", ft_strlen(token->value)) == 0)
 		return (token->type = LOGICAL_OR, 0);
 	return (-1);
 }
@@ -55,7 +55,8 @@ int	assign_by_prev(t_token *token)
 		|| token->prev->type == PIPE
 		|| token->prev->type == LOGICAL_OR)
 		return (token->type = COMMAND, 0);
-	else if (ft_strncmp(token->prev->value , "export", ft_strlen(token->prev->value)) == 0)
+	else if (ft_strncmp(token->prev->value, "export", 
+			ft_strlen(token->prev->value)) == 0)
 		return (token->type = ENV_VAR, 0);
 	else if (token->prev->type == REDIRECT
 		|| token->prev->type == APPEND
@@ -72,11 +73,11 @@ t_token	**assign_types(t_token **head)
 	while (curr)
 	{
 		if (curr == *head && assign_redirect(curr) == -1)
-				curr->type = COMMAND;
+			curr->type = COMMAND;
 		else if (assign_redirect(curr) == -1
-				&& assign_other_operator(curr) == -1
-				&& assign_by_prev(curr) == -1)
-				curr->type = ARGUMENT;
+			&& assign_other_operator(curr) == -1
+			&& assign_by_prev(curr) == -1)
+			curr->type = ARGUMENT;
 		curr = curr->next;
 	}
 	return (head);
