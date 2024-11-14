@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/09 09:49:55 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/14 12:28:23 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	lexer(char *input, char **envp)
 	head = expand(head, envp);
 	head = join_token(head);
 	head = assign_types(head);
-	//head = check_validity(head);
+	head = check_validity(head);
 	if (*head)
 	{
 		print_token_list(head);

@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/13 17:00:15 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/14 12:42:29 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 // need to check what happens with env variables that are not found...
 int	main(int argc, char **argv, char **envp)
 {
-	char		*input;
+	char		*input = "$PATH '$HOME' $NOTHING something \"$HOME\" $";
 
 	(void )		argc;
 	(void )		argv;
-	while (1)
+	/*while (1)
 	{
 		input = readline("PROMPT% ");
 		if (!input)
@@ -33,7 +33,7 @@ int	main(int argc, char **argv, char **envp)
 			lexer(input, envp);
 		}
 		free(input);
-	}
+	}*/
 	lexer(input, envp);
 	return (0);
 }

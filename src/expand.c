@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/13 17:40:56 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/14 13:44:13 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,29 +63,32 @@ char	***split_envp(char **envp)
 	return (ft_strdup(""));
 }*/
 
-char	*get_value_two_dim(char *env_key, char **envp)
+char	*get_value(char *env_key, char **envp)
 {
 	int		i;
 	int		j;
-	char	*key;
 	char	*value;
 
 	i = 0;
+	if (!envp || !env_key)
+		return (ft_strdup(""));
+	value = NULL;
 	while (envp[i])
 	{
-		while (envp[i][j] != '=')
-			add_to_buffer(&key, envp[i][j++]);
-		j++;
-		while (envp[i][j])
-			add_to_buffer(&value, envp[i][j++]);
-		if (ft_strncmp(env_key, key, ft_strlen(env_key)) == 0)
-			return (value);
+		j = 0;
+		while (envp[i][j] && envp[i][j] != '=' 
+			&& envp[i][j] == env_key[j])
+			j++;
+		if (envp[i][j++] == '=')
+			value = ft_substr(envp[i], j, ft_strlen(envp[i]) - j);
 		i++;
 	}
+	if (value)
+		return (value);
 	return (ft_strdup(""));
 }
 
-t_token	**expand_keys_two_dim(t_token **head, char **envp)
+t_token	**expand_keys(t_token **head, char **envp)
 {
 	t_token	*curr;
 	char	*tmp;
@@ -96,7 +99,7 @@ t_token	**expand_keys_two_dim(t_token **head, char **envp)
 		if (curr->state != QUOTE && curr->value[0] == '$'
 			&& ft_strlen(curr->value) > 1)
 		{
-			tmp = get_value_two_dim(curr->value + 1, envp);
+			tmp = get_value(curr->value + 1, envp);
 			free(curr->value);
 			curr->value = tmp;
 		}
@@ -137,7 +140,7 @@ t_token	**expand(t_token **head, char **envp)
 	while (curr)
 	{
 		if (curr->state != QUOTE)
-			head = expand_keys_two_dim(head, envp);
+			head = expand_keys(head, envp);
 		curr = curr->next;
 	}
 	//print_key_val(envp_key_val);
