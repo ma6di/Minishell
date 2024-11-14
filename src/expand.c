@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/14 13:44:13 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/14 14:33:46 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,8 +97,10 @@ t_token	**expand_keys(t_token **head, char **envp)
 	while (curr)
 	{
 		if (curr->state != QUOTE && curr->value[0] == '$'
-			&& ft_strlen(curr->value) > 1)
+			&& ft_strlen(curr->value) > 1
+			&& !(curr != *head && ft_strncmp(curr->prev->value, "<<", 2) == 0))
 		{
+
 			tmp = get_value(curr->value + 1, envp);
 			free(curr->value);
 			curr->value = tmp;

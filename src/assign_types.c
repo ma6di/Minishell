@@ -6,14 +6,14 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/13 16:57:26 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/14 14:37:53 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 // this should not work like that, echo pwd -> pwd ...
-int	is_inbuilt_cmd(char *value)
+/*int	is_inbuilt_cmd(char *value)
 {
 	if (ft_strncmp(value, "echo", ft_strlen(value)) == 0
 		|| ft_strncmp(value, "cd", ft_strlen(value)) == 0
@@ -24,7 +24,7 @@ int	is_inbuilt_cmd(char *value)
 		|| ft_strncmp(value, "exit", ft_strlen(value)) == 0)
 		return (1);
 	return (0);
-}
+}*/
 
 int	assign_redirect(t_token *token)
 {
@@ -51,8 +51,7 @@ int	assign_other_operator(t_token *token)
 
 int	assign_by_prev(t_token *token)
 {
-	if (is_inbuilt_cmd(token->value)
-		|| token->prev->type == PIPE
+	if (token->prev->type == PIPE
 		|| token->prev->type == LOGICAL_OR)
 		return (token->type = COMMAND, 0);
 	else if (ft_strncmp(token->prev->value, "export", 
@@ -62,6 +61,8 @@ int	assign_by_prev(t_token *token)
 		|| token->prev->type == APPEND
 		|| token->prev->type == INPUT_REDIRECT)
 		return (token->type = FILENAME, 0);
+	else if (token->prev->type == HEREDOC)
+		return (token->type = HEREDOC_DELIMITER);
 	return (-1);
 }
 

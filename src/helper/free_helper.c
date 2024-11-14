@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:10:05 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/13 17:01:48 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/14 15:31:26 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,25 @@ void	free_tokens(t_token **head)
 		next = curr->next;
 		free(curr->value);
 		curr->value = NULL;
+		free(curr);
+		curr = next;
+	}
+	*head = NULL;
+}
+
+void	free_commands(t_command **head)
+{
+	t_command	*curr;
+	t_command	*next;
+
+	curr = *head;
+	while (curr)
+	{
+		next = curr->next;
+		free(curr->command);
+		free(curr->args);
+		free(curr->heredoc_delimiter);
+		free(curr->io_fds);
 		free(curr);
 		curr = next;
 	}

@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/14 12:42:29 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/14 17:58:13 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 // need to check what happens with env variables that are not found...
 int	main(int argc, char **argv, char **envp)
 {
-	char		*input = "$PATH '$HOME' $NOTHING something \"$HOME\" $";
+	char		*input = "echo hello | echo $PATH";
 
 	(void )		argc;
 	(void )		argv;

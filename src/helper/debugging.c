@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:09:29 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/14 12:24:58 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/14 15:14:42 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	print_token_list(t_token **head)
 		printf("----------\n");
 		printf("#%d\n%s\n", i, curr->value);
 		printf("state %d\n", curr->state);
-		/*if (curr->type == APPEND)
+		if (curr->type == APPEND)
 			printf("APPEND\n");
 		else if (curr->type == COMMAND)
 			printf("COMMAND\n");
@@ -42,8 +42,30 @@ void	print_token_list(t_token **head)
 		else if (curr->type == FILENAME)
 			printf("FILENAME\n");
 		else if (curr->type == ARGUMENT)
-			printf("ARGUMENT\n");*/
+			printf("ARGUMENT\n");
+		else if (curr->type == HEREDOC)
+			printf("HEREDOC\n");
+		else if (curr->type == HEREDOC_DELIMITER)
+			printf("HEREDOC_DELIMITER\n");
 		printf("value length: %zu\n", ft_strlen(curr->value));
+		printf("----------\n");
+		printf(" <-    -> \n");
+		curr = curr->next;
+	}
+}
+
+void	print_cmd_list(t_command **head)
+{
+	t_command	*curr;
+	int			i;
+
+	i = 0;
+	curr = *head;
+	while (curr)
+	{
+		i++;
+		printf("----------\n");
+		printf("#%d\n%s\n", i, curr->command);
 		printf("----------\n");
 		printf(" <-    -> \n");
 		curr = curr->next;
