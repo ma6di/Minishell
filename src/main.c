@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/09 09:43:40 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/14 02:55:07 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 // need to check what happens with env variables that are not found...
 int	main(int argc, char **argv, char **envp)
 {
-	char		*input = "echo 'p''w''d' |$ >$FIRST$SECOND \"$USER$HELLO $HOME'$USER\"'$NOT_EXPAND' -l >>|| grep \"wo'rd\"";
+	char		*input = "echo $";
 
 	(void )		argc;
 	(void )		argv;
