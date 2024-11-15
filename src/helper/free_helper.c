@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:10:05 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/14 15:31:26 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/15 14:58:45 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,21 @@ void	free_commands(t_command **head)
 {
 	t_command	*curr;
 	t_command	*next;
+	int			i;
 
 	curr = *head;
 	while (curr)
 	{
+		i = 0;
 		next = curr->next;
 		free(curr->command);
+		while (curr->args && curr->args[i])
+			free(curr->args[i++]);
 		free(curr->args);
 		free(curr->heredoc_delimiter);
+		free(curr->io_fds->infile);
+		free(curr->io_fds->outfile);
+		free(curr->io_fds->append_outfile);
 		free(curr->io_fds);
 		free(curr);
 		curr = next;

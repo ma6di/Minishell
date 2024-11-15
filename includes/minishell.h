@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/14 15:31:03 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/15 14:41:31 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ typedef struct s_command
 	char				**args; // ["cmd", "arg1", ...]
 	char				*heredoc_delimiter;
 	char				*heredoc_content;
+	int					expand_heredoc_content;
 	int					nr_of_pipes; // do we still need this?
 	int					*pipe_fd;
 	int					has_pipe;
@@ -130,7 +131,7 @@ typedef struct s_fds
 	int		out_duped;
 }			t_fds;
 
-void			lexer(char *input, char **envp);
+t_command		*lexer(char *input, char **envp);
 t_token			**parse(t_token **head, char *input);
 t_token			**expand(t_token **head, char **envp);
 void			free_tokens(t_token **head);
@@ -152,6 +153,6 @@ t_token			**join_token(t_token **head);
 t_token			**assign_types(t_token **head);
 t_token			**check_validity(t_token **head);
 char			*add_to_buffer(char **buffer, char c);
-t_command		**create_commands(t_token **head_t);
+t_command		**create_commands(t_command **head_c, t_token **head_t);
 
 #endif

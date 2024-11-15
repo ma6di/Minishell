@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:09:29 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/14 15:14:42 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/15 14:49:53 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,15 +58,37 @@ void	print_cmd_list(t_command **head)
 {
 	t_command	*curr;
 	int			i;
+	int			j;
 
 	i = 0;
 	curr = *head;
 	while (curr)
 	{
 		i++;
-		printf("----------\n");
-		printf("#%d\n%s\n", i, curr->command);
-		printf("----------\n");
+		printf("------------------------------\n");
+		printf("#%d\nCommand: %s\n", i, curr->command);
+		if (curr->args)
+		{
+			j = 0;
+			printf("Arguments: [");
+			while (curr->args[j])
+			{
+				if (j != 0)
+					printf(", ");
+				printf("\"%s\"", curr->args[j++]);
+			}
+			printf("]\n");
+		}
+		printf("Heredoc delimiter: %s\n", curr->heredoc_delimiter);
+		printf("Expand Heredoc: %d\n", curr->expand_heredoc_content);
+		printf("Has Pipe: %d\n", curr->has_pipe);
+		printf("PID: %d\n", curr->pid);
+		printf("FDS -----\n");
+		printf("Infile: %s\n", curr->io_fds->infile);
+		printf("Outfile: %s\n", curr->io_fds->outfile);
+		printf("Append outfile: %s\n", curr->io_fds->append_outfile);
+		printf("Has Heredoc: %d\n", curr->io_fds->has_heredoc);
+		printf("------------------------------\n");
 		printf(" <-    -> \n");
 		curr = curr->next;
 	}
