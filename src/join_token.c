@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/13 16:59:02 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/15 17:56:21 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ t_token	**join_token(t_token **head)
 		if (!is_delimiter(curr->next) && !is_delimiter(curr))
 		{
 			joined = ft_strjoin(curr->value, curr->next->value);
+			if (curr->state != GENERAL)
+				curr->next->state = curr->state;
 			free(curr->next->value);
 			curr->next->value = joined;
 			curr = remove_node(curr, head);

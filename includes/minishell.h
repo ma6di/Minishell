@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/15 14:41:31 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/15 16:40:14 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,22 +99,22 @@ typedef struct s_token {
 typedef struct s_command
 {
 	char				*command;
-	char				**args; // ["cmd", "arg1", ...]
+	char				**args;
 	char				*heredoc_delimiter;
 	char				*heredoc_content;
 	int					expand_heredoc_content;
-	int					nr_of_pipes; // do we still need this?
+	int					nr_of_pipes;
 	int					*pipe_fd;
 	int					has_pipe;
-	t_fds				*io_fds;
 	int					error_code;
 	char				*error_message;
 	char				*result_file;
 	bool				pipe_created;
 	pid_t				pid;
-	t_main				*main;
+	t_fds				*io_fds;
 	struct s_command	*next;
 	struct s_command	*prev;
+	t_main				*main;
 }						t_command;
 
 typedef struct s_fds

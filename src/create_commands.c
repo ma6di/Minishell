@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:45:20 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/15 14:55:17 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/15 17:32:38 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,12 @@ char	**add_to_args(char **old_args, char *new_arg)
 	int		i;
 
 	i = 0;
-	if (old_args)
-	{
-		while (old_args)
-			i++;
-	}
+	while (old_args && old_args[i])
+		i++;
 	new_args = malloc((i + 2) * sizeof(char *));
 	if (!new_args)
 		return (NULL); // potentially do more here freeing or so ???
+	i = 0;
 	while (old_args && old_args[i])
 	{
 		new_args[i] = old_args[i];
@@ -69,12 +67,12 @@ t_command	*init_empty_cmd(void)
 	new_cmd->nr_of_pipes = 0;
 	new_cmd->pipe_fd = NULL;
 	new_cmd->has_pipe = 0;
-	init_empty_fds(&new_cmd);
 	new_cmd->error_code = 0;
 	new_cmd->error_message = NULL;
 	new_cmd->result_file = NULL;
 	new_cmd->pipe_created = NULL;
 	new_cmd->pid = getpid();
+	init_empty_fds(&new_cmd);
 	new_cmd->next = NULL;
 	new_cmd->prev = NULL;
 	new_cmd->main = NULL;
@@ -125,12 +123,14 @@ t_command	**create_commands(t_command **head_c, t_token **head_t)
 			cmd->heredoc_delimiter = ft_strdup(curr->next->value);
 			cmd->expand_heredoc_content = curr->next->state == GENERAL;
 			cmd->io_fds->has_heredoc = 1;
-			cmd->io_fds->infile = ft_strdup("heredoc_tmp.txt");
+			cmd->io_fds->infile = ft_strdup("heredoc.txt");
 		}
 		else if (curr->type == REDIRECT)
 			cmd->io_fds->outfile = ft_strdup(curr->next->value);
 		else if (curr->type == APPEND)
 			cmd->io_fds->append_outfile = ft_strdup(curr->next->value);
+		else if (curr->type == INPUT_REDIRECT)
+			cmd->io_fds->infile = ft_strdup(curr->next->value);
 		else if (curr->type == PIPE)
 		{
 			cmd->has_pipe = 1;

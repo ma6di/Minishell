@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:09:29 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/15 14:49:53 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/15 18:00:04 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	print_cmd_list(t_command **head)
 			{
 				if (j != 0)
 					printf(", ");
-				printf("\"%s\"", curr->args[j++]);
+				printf("%s", curr->args[j++]);
 			}
 			printf("]\n");
 		}
