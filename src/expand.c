@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/14 02:45:20 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/16 04:58:22 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	count_vars(char *str)
 
 char	***split_envp(char **envp)
 {
-	char 	***envp_key_val;
+	char	***envp_key_val;
 	size_t	count;
 
 	count = 0;
@@ -49,7 +49,7 @@ char	***split_envp(char **envp)
 	return (envp_key_val);
 }
 
-char	*get_value(char *env_key, char ***envp_key_val)
+/*char	*get_value(char *env_key, char ***envp_key_val)
 {
 	int	i;
 
@@ -61,9 +61,34 @@ char	*get_value(char *env_key, char ***envp_key_val)
 		i++;
 	}
 	return (ft_strdup(""));
+}*/
+
+char	*get_value(char *env_key, char **envp)
+{
+	int		i;
+	int		j;
+	char	*value;
+
+	i = 0;
+	if (!envp || !env_key)
+		return (ft_strdup(""));
+	value = NULL;
+	while (envp[i])
+	{
+		j = 0;
+		while (envp[i][j] && envp[i][j] != '='
+			&& envp[i][j] == env_key[j])
+			j++;
+		if (envp[i][j++] == '=')
+			value = ft_substr(envp[i], j, ft_strlen(envp[i]) - j);
+		i++;
+	}
+	if (value)
+		return (value);
+	return (ft_strdup(""));
 }
 
-t_token **expand_keys(t_token **head, char ***envp_key_val)
+t_token	**expand_keys(t_token **head, char **envp)
 {
 	t_token	*curr;
 	char	*tmp;
@@ -75,7 +100,8 @@ t_token **expand_keys(t_token **head, char ***envp_key_val)
 			&& ft_strlen(curr->value) > 1
 			&& !(curr != *head && ft_strncmp(curr->prev->value, "<<", 2) == 0))
 		{
-			tmp = get_value(curr->value + 1, envp_key_val);
+
+			tmp = get_value(curr->value + 1, envp);
 			free(curr->value);
 			curr->value = tmp;
 		}
@@ -84,22 +110,42 @@ t_token **expand_keys(t_token **head, char ***envp_key_val)
 	return (head);
 }
 
+/*t_token	**expand_keys(t_token **head, char ***envp_key_val)
+{
+	t_token	*curr;
+	char	*tmp;
+
+	curr = *head;
+	while (curr)
+	{
+		if (curr->state != QUOTE && curr->value[0] == '$'
+			&& ft_strlen(curr->value) > 1)
+		{
+			tmp = get_value(curr->value + 1, envp_key_val);
+			free(curr->value);
+			curr->value = tmp;
+		}
+		curr = curr->next;
+	}
+	return (head);
+}*/
+
 t_token	**expand(t_token **head, char **envp)
 {
 	t_token	*curr;
-	char	***envp_key_val;
+	//char	***envp_key_val;
 
-	envp_key_val = split_envp(envp);
-	if (!envp_key_val)
-		return (free_three_dim(envp_key_val), NULL);
+	//envp_key_val = split_envp(envp);
+	//if (!envp_key_val)
+	//	return (free_three_dim(envp_key_val), NULL);
 	curr = *head;
 	while (curr)
 	{
 		if (curr->state != QUOTE)
-			head = expand_keys(head, envp_key_val);
+			head = expand_keys(head, envp);
 		curr = curr->next;
 	}
 	//print_key_val(envp_key_val);
-	free_three_dim(envp_key_val);
+	//free_three_dim(envp_key_val);
 	return (head);
 }

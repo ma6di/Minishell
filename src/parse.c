@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/09 09:48:59 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/13 17:10:22 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	add_delimiter(t_token **head)
 	create_token(head, ft_strdup(" "), state);
 }
 
-char	*add_to_buffer(char **buffer, char c)
+/*char	*add_to_buffer(char **buffer, char c)
 {
 	size_t	len;
 	char	*new_buffer;
@@ -65,7 +65,7 @@ char	*add_to_buffer(char **buffer, char c)
 	new_buffer[len + 1] = '\0';
 	free(*buffer);
 	return (new_buffer);
-}
+}*/
 
 char	*handle_operator(char **buffer, t_token **head, t_token_state state, char *str)
 {
@@ -75,7 +75,7 @@ char	*handle_operator(char **buffer, t_token **head, t_token_state state, char *
 		if (*(str + 1) == *str)
 			*buffer = add_to_buffer(buffer, *str++);
 		end_token(buffer, head, state);
-		while(*(str) && *(str + 1) == ' ')
+		while (*(str) && *(str + 1) == ' ')
 			str++;
 	}
 	return (str);
@@ -101,7 +101,7 @@ char	*handle_space(t_token **head, char *str)
 {
 	if (*str == ' ')
 	{
-		while(*(str) && *(str + 1) == ' ')
+		while (*(str) && *(str + 1) == ' ')
 			str++;
 		if (!is_operator(*(str + 1)))
 			add_delimiter(head);

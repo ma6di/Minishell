@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_helper.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:10:05 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/08 13:07:12 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/15 17:35:40 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,32 @@ void	free_tokens(t_token **head)
 	*head = NULL;
 }
 
+void	free_commands(t_command **head)
+{
+	t_command	*curr;
+	t_command	*next;
+	int			i;
+
+	curr = *head;
+	while (curr)
+	{
+		i = 0;
+		next = curr->next;
+		free(curr->command);
+		while (curr->args && curr->args[i])
+			free(curr->args[i++]);
+		free(curr->args);
+		free(curr->heredoc_delimiter);
+		free(curr->io_fds->infile);
+		free(curr->io_fds->outfile);
+		free(curr->io_fds->append_outfile);
+		free(curr->io_fds);
+		free(curr);
+		curr = next;
+	}
+	*head = NULL;
+}
+
 void	free_two_dim(char **env_keys)
 {
 	int	i;
@@ -47,7 +73,7 @@ void	free_two_dim(char **env_keys)
 void	free_three_dim(char ***envp_key_val) // [["HOME", "path"], ["USER", "username"]]
 {
 	int	i;
-	int j;
+	int	j;
 
 	i = 0;
 	j = 0;

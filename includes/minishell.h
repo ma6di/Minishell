@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/14 02:45:56 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/16 05:02:01 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,21 @@
 # define OP_HEREDOC "<<"
 # define OP_PIPE "|"
 
-typedef struct s_fds t_fds;   // Forward declaration
-typedef struct s_token t_token; // Forward declaration
-typedef struct s_command t_command; // Forward declaration
+# define MAX_PATH_LENGTH PATH_MAX
+
+# define BUFF_SIZE 1024
+
+typedef struct s_fds		t_fds;	// Forward declaration
+typedef struct s_token		t_token;	// Forward declaration
+typedef struct s_command	t_command;	// Forward declaration
+
+typedef enum e_return_codes
+{
+	ERROR = -1,
+	SUCCESS = 0,
+	CD_SUCCESS = 0,
+	CD_ERROR = 1
+}			t_return_codes;
 
 typedef enum e_token_type {
 	COMMAND,
@@ -64,32 +76,42 @@ typedef enum e_token_state {
 	DQUOTE
 }	t_token_state;
 
+
 typedef struct s_main
 {
-	t_command	*command_list;
+	t_command	**command_list;
 	t_token		**token_list;
 	char		**env_vars;
-	char		**shell_vars; //not using at the moment
+	char		**shell_vars;
 	int			exit_code;
-	int 		should_exit;
+	int			should_exit;
+	bool		is_sleeping;
 }				t_main;
+
+typedef struct s_token {
+	t_token_type	type;
+	t_token_state	state;
+	char			*value;
+	struct s_token	*prev;
+	struct s_token	*next;
+}					t_token;
 
 typedef struct s_command
 {
 	char				*command;
 	char				**args;
 	char				*heredoc_delimiter;
-	char				*heredoc_content;//
-	int					nr_of_pipes; // Possible future removal if unused
+	char				*heredoc_content;
+	int					expand_heredoc_content;
+	int					nr_of_pipes;
 	int					*pipe_fd;
-	int					index; //not using at the moment
 	int					has_pipe;
-	t_fds				*io_fds;
-	int					error_code; //not using at the moment
-	char				*error_message; //not using at the moment
-	char				*result_file; //not using at the moment
+	int					error_code;
+	char				*error_message;
+	char				*result_file;
 	bool				pipe_created;
 	pid_t				pid;
+	t_fds				*io_fds;
 	struct s_command	*next;
 	struct s_command	*prev;
 	t_main				*main;
@@ -103,28 +125,22 @@ typedef struct s_fds
 	int		fd_in;
 	int		fd_out;
 	int		has_heredoc;
-	int		fd_err; //not using at the moment
+	int		fd_err;
 	int		is_stderr_redirected;
-	int		in_duped; //not using at the moment
-	int		out_duped; //not using at the moment
+	int		in_duped;
+	int		out_duped;
 }			t_fds;
 
-typedef struct s_token {
-	t_token_type	type;
-	t_token_state	state;
-	char			*value;
-	struct s_token	*prev;
-	struct s_token	*next;
-}					t_token;
-
-void			lexer(char *input, char **envp);
+t_command		*lexer(char *input, char **envp);
 t_token			**parse(t_token **head, char *input);
 t_token			**expand(t_token **head, char **envp);
 void			free_tokens(t_token **head);
+void			free_commands(t_command **head);
 void			add_token(t_token **head, t_token *new_token);
 void			create_token(t_token **head, char *value, t_token_state state);
 t_token_type	get_token_type(char *value);
 void			print_token_list(t_token **head);
+void			print_cmd_list(t_command **head);
 void			print_keys(char **env_keys);
 void			print_key_val(char ***filtered_envp);
 void			free_two_dim(char **env_keys);
@@ -136,5 +152,7 @@ void			display_error(char *message, t_token **head);
 t_token			**join_token(t_token **head);
 t_token			**assign_types(t_token **head);
 t_token			**check_validity(t_token **head);
+char			*add_to_buffer(char **buffer, char c);
+t_command		**create_commands(t_command **head_c, t_token **head_t);
 
 #endif
