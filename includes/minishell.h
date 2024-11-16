@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 05:02:01 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/16 06:05:07 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ typedef enum e_return_codes
 	CD_ERROR = 1
 }			t_return_codes;
 
-typedef enum e_token_type {
+typedef enum e_token_type
+{
 	COMMAND,
 	REDIRECT,
 	APPEND,
@@ -70,11 +71,12 @@ typedef enum e_token_type {
 	SHELL_VAR
 }	t_token_type;
 
-typedef enum e_token_state {
+typedef enum e_token_state
+{
 	GENERAL,
 	QUOTE,
 	DQUOTE
-}	t_token_state;
+}	t_state;
 
 
 typedef struct s_main
@@ -88,9 +90,10 @@ typedef struct s_main
 	bool		is_sleeping;
 }				t_main;
 
-typedef struct s_token {
+typedef struct s_token
+{
 	t_token_type	type;
-	t_token_state	state;
+	t_state	state;
 	char			*value;
 	struct s_token	*prev;
 	struct s_token	*next;
@@ -101,7 +104,6 @@ typedef struct s_command
 	char				*command;
 	char				**args;
 	char				*heredoc_delimiter;
-	char				*heredoc_content;
 	int					expand_heredoc_content;
 	int					nr_of_pipes;
 	int					*pipe_fd;
@@ -137,7 +139,7 @@ t_token			**expand(t_token **head, char **envp);
 void			free_tokens(t_token **head);
 void			free_commands(t_command **head);
 void			add_token(t_token **head, t_token *new_token);
-void			create_token(t_token **head, char *value, t_token_state state);
+void			create_token(t_token **head, char *value, t_state state);
 t_token_type	get_token_type(char *value);
 void			print_token_list(t_token **head);
 void			print_cmd_list(t_command **head);
@@ -146,13 +148,19 @@ void			print_key_val(char ***filtered_envp);
 void			free_two_dim(char **env_keys);
 void			free_three_dim(char ***filtered_envp);
 int				is_whitespace(char c);
-int				is_lower(char c);
-int				is_upper(char c);
+// int				is_lower(char c);
+// int				is_upper(char c);
 void			display_error(char *message, t_token **head);
 t_token			**join_token(t_token **head);
 t_token			**assign_types(t_token **head);
 t_token			**check_validity(t_token **head);
 char			*add_to_buffer(char **buffer, char c);
+void			end_token(char **buffer, t_token **head, t_state state);
+int				is_operator_char(char c);
+int				is_delimiter(char c);
 t_command		**create_commands(t_command **head_c, t_token **head_t);
+void			init_empty_fds(t_command **new_cmd);
+t_command		*init_empty_cmd(void);
+void			add_command(t_command **head, t_command *new_cmd);
 
 #endif

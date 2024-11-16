@@ -6,13 +6,13 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 04:58:22 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/16 05:09:04 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	count_vars(char *str)
+/*int	count_vars(char *str)
 {
 	int	count;
 
@@ -24,9 +24,9 @@ int	count_vars(char *str)
 		str++;
 	}
 	return (count);
-}
+}*/
 
-char	***split_envp(char **envp)
+/*char	***split_envp(char **envp)
 {
 	char	***envp_key_val;
 	size_t	count;
@@ -47,7 +47,7 @@ char	***split_envp(char **envp)
 		count++;
 	}
 	return (envp_key_val);
-}
+}*/
 
 /*char	*get_value(char *env_key, char ***envp_key_val)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_list.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:07:56 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/13 17:02:10 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/16 05:58:37 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	add_token(t_token **head, t_token *new_token)
 	new_token->next = NULL;
 }
 
-void	create_token(t_token **head, char *value, t_token_state state)
+void	create_token(t_token **head, char *value, t_state state)
 {
 	t_token			*new_token;
 

@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/09 04:02:28 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/16 05:47:30 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,19 @@ int	is_whitespace(char c)
 	return (0);
 }
 
-int	is_lower(char c)
-{
-	if ((c >= 'a' && c <= 'z'))
-		return (1);
-	return (0);
-}
+// int	is_lower(char c)
+// {
+// 	if ((c >= 'a' && c <= 'z'))
+// 		return (1);
+// 	return (0);
+// }
 
-int	is_upper(char c)
-{
-	if ((c >= 'A' && c <= 'Z'))
-		return (1);
-	return (0);
-}
+// int	is_upper(char c)
+// {
+// 	if ((c >= 'A' && c <= 'Z'))
+// 		return (1);
+// 	return (0);
+// }
 
 void	display_error(char *message, t_token **head)
 {
