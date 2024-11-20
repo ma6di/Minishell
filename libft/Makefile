@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+         #
+#    By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/22 13:09:14 by nrauh             #+#    #+#              #
-#    Updated: 2024/07/12 17:43:52 by nrauh            ###   ########.fr        #
+#    Updated: 2024/11/07 05:24:53 by nrauh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,8 +50,7 @@ FT_PRINTF_FLS = \
 	ft_putchar.c ft_putnbr.c ft_putstr.c ft_putnbr_ui.c ft_count_digits.c) \
 
 GNL_FLS = \
-	$(addprefix $(GNL_DIR)/, \
-	get_next_line_utils.c get_next_line.c) \
+	$(addprefix $(GNL_DIR)/, get_next_line.c) \
 
 #FILE_PATHS
 SRCS = $(addprefix $(SRCS_DIR)/, $(SRCS_FLS))
@@ -74,7 +73,7 @@ $(NAME): $(OBJS)
 	ar rcs $@ $^
 	ranlib $@
 
-clean: 
+clean:
 	$(RM) $(OBJS_DIR)
 
 fclean: clean

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/10/25 16:46:28 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/16 06:05:07 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,16 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
+# include <sys/wait.h>
+# include <errno.h>
+# include <string.h>
+# include <limits.h>
+# include <stdbool.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <signal.h>
+# include <unistd.h>
+# include <dirent.h>
 # include "../libft/includes/libft.h"
 
 # define WHITESPACE " "
@@ -28,38 +38,64 @@
 # define OP_HEREDOC "<<"
 # define OP_PIPE "|"
 
-typedef enum e_TokenType {
+# define MAX_PATH_LENGTH PATH_MAX
+
+# define BUFF_SIZE 1024
+
+extern int	g_sigint_received;
+
+typedef struct s_fds		t_fds;	// Forward declaration
+typedef struct s_token		t_token;	// Forward declaration
+typedef struct s_command	t_command;	// Forward declaration
+
+typedef enum e_return_codes
+{
+	ERROR = -1,
+	SUCCESS = 0,
+	CD_SUCCESS = 0,
+	CD_ERROR = 1
+}			t_return_codes;
+
+typedef enum e_token_type
+{
 	COMMAND,
 	REDIRECT,
 	APPEND,
 	HEREDOC,
+	HEREDOC_DELIMITER,
 	INPUT_REDIRECT,
-	ARGUMENT,
 	PIPE,
+	LOGICAL_OR,
+	ARGUMENT,
 	STRING,
 	FILENAME,
 	ENV_VAR,
 	SHELL_VAR
-}	t_TokenType;
+}	t_token_type;
 
-typedef enum e_TokenState{
-	STATE_GENERAL, 
-	STATE_IN_QUOTE, 
-	STATE_IN_DQUOTE,
-	STATE_OPERATOR
-}	t_TokenState;
+typedef enum e_token_state
+{
+	GENERAL,
+	QUOTE,
+	DQUOTE
+}	t_state;
 
 typedef struct s_main
 {
-	t_command	**command_list;
+	t_command	*command_list;
 	t_token		**token_list;
 	char		**env_vars;
 	char		**shell_vars;
 	int			exit_code;
+	int			should_exit;
+	bool		is_sleeping;
+	int			heredoc_fork_permit;
 }				t_main;
 
-typedef struct s_token {
-	t_TokenType		type;
+typedef struct s_token
+{
+	t_token_type	type;
+	t_state	state;
 	char			*value;
 	struct s_token	*prev;
 	struct s_token	*next;
@@ -70,17 +106,19 @@ typedef struct s_command
 	char				*command;
 	char				**args;
 	char				*heredoc_delimiter;
-	char				*heredoc_content;
-	int					nr_of_pipes; // do we still need this?
+	int					expand_heredoc_content;
+	int					nr_of_pipes;
 	int					*pipe_fd;
 	int					has_pipe;
-	t_fds				*io_fds;
 	int					error_code;
 	char				*error_message;
 	char				*result_file;
+	bool				pipe_created;
 	pid_t				pid;
+	t_fds				*io_fds;
 	struct s_command	*next;
 	struct s_command	*prev;
+	t_main				*main;
 }						t_command;
 
 typedef struct s_fds
@@ -90,10 +128,95 @@ typedef struct s_fds
 	char	*append_outfile;
 	int		fd_in;
 	int		fd_out;
+	int		has_heredoc;
 	int		fd_err;
 	int		is_stderr_redirected;
+	int		in_duped;
+	int		out_duped;
 }			t_fds;
 
-void	lexer(char *input);
+typedef struct s_heredoc
+{
+	pid_t	pid;
+	char	*line;
+	char	*filename;
+	char	*expanded_line;
+	int		heredoc_fd;
+}				t_heredoc;
+
+t_command		*lexer(char *input, char **envp, t_main *main);
+t_token			**parse(t_token **head, char *input);
+t_token			**expand(t_token **head, char **envp);
+void			free_tokens(t_token **head);
+void			free_commands(t_command **head);
+void			add_token(t_token **head, t_token *new_token);
+void			create_token(t_token **head, char *value, t_state state);
+t_token_type	get_token_type(char *value);
+void			print_token_list(t_token **head);
+void			print_cmd_list(t_command **head);
+void			print_keys(char **env_keys);
+void			print_key_val(char ***filtered_envp);
+void			free_two_dim(char **env_keys);
+void			free_three_dim(char ***filtered_envp);
+int				is_whitespace(char c);
+// int				is_lower(char c);
+// int				is_upper(char c);
+void			display_error(char *message, t_token **head);
+t_token			**join_token(t_token **head);
+t_token			**assign_types(t_token **head);
+t_token			**check_validity(t_token **head);
+char			*add_to_buffer(char **buffer, char c);
+void			end_token(char **buffer, t_token **head, t_state state);
+int				is_operator_char(char c);
+int				is_delimiter(char c);
+t_command		**create_commands(t_command **head_c, t_token **head_t, t_main *main);
+void			init_empty_fds(t_command **new_cmd);
+t_command		*init_empty_cmd(void);
+void			add_command(t_command **head, t_command *new_cmd);
+char	*get_command_path(const char *command, char **env_vars);
+int		execute_external(t_command *cmd, char **env_vars);
+void	execute_commands(t_main *main);
+void	exec_child(t_command *cmd, char **env);
+int		is_builtin(char *command);
+int		setup_file_redirections(t_command *cmd);
+void	pipe_handler(t_command *cmd);
+int		exec_builtin(t_command *cmd, t_main *main);
+int		exec_external(t_command *cmd, char **env_vars);
+void	setup_test_data(t_main *main, char **argv);
+void	cleanup_commands(t_main *mian);
+int		ft_unset(char **args, t_main *main);
+int		ft_pwd(void);
+int		is_in_env(char **env_vars, const char *args);
+int		ft_export(char **args, t_main *main);
+int		env_add(char ***env_vars, const char *value);
+void	ft_exit(t_main *main);
+int		ft_env(t_main *main, t_command *cmd);
+int		ft_echo(t_command *cmd);
+int		ft_cd(t_command *cmd, char **env);
+void	safe_close(int *fd);
+void	fork_handler(t_command *cmd);
+void	ft_wait(t_command *cmd);
+void	dup2_out( int *pipe_fd);
+void	dup2_in(int *pipe_fd);
+void	parent_pipe_close(t_command *cmd);
+void	ft_fd_reset(t_command *cmd, int original_stdin, int original_stdout);
+void	handle_special_builtin(t_command **cmd);
+int		is_special_builtin(char *command);
+void	setup_pipe_redirections_parent(t_command *cmd);
+void	setup_pipe_redirections_child(t_command *cmd);
+void	exec_heredoc(t_command *cmds);
+void	remove_heredoc_file(t_main *main);
+void	set_signals_interactive(void);
+void	set_signals_heredoc(void);
+void	set_signals_child(void);
+void	signal_quit_message(int signo);
+void	set_signals_sleep_mode(void);
+void	signal_reset_prompt_sleep(int signo);
+void	set_signals_noniteractive(void);
+char	*expand_variables_in_line(char *line, char **envp);
+char	*get_env_name(const char *src);
+void	cd_print_error(const char *arg);
+int		command_exists_in_dir(const char *dir, const char *command);
+char	*join_path_and_command(const char *dir, const char *command);
 
 #endif
