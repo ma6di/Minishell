@@ -96,7 +96,9 @@ t_token	**expand_keys(t_token **head, char **envp)
 	curr = *head;
 	while (curr)
 	{
-		if (curr->state != QUOTE && curr->value[0] == '$'
+		if (ft_strncmp(curr->value, "$?", ft_strlen(curr->value) + 2) == 0)
+			printf("EXIT CODE\n");
+		else if (curr->state != QUOTE && curr->value[0] == '$'
 			&& ft_strlen(curr->value) > 1
 			&& !(curr != *head && ft_strncmp(curr->prev->value, "<<", 2) == 0))
 		{

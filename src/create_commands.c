@@ -38,10 +38,13 @@ void	handle_argument(t_command **cmd, t_token *curr)
 {
 	char		**tmp;
 
-	tmp = add_to_args((*cmd)->args, ft_strdup(curr->value));
-	if ((*cmd)->args)
-		free((*cmd)->args);
-	(*cmd)->args = tmp;
+	if (ft_strlen(curr->value) != 0)
+	{
+		tmp = add_to_args((*cmd)->args, ft_strdup(curr->value));
+		if ((*cmd)->args)
+			free((*cmd)->args);
+		(*cmd)->args = tmp;
+	}
 }
 
 void	handle_heredoc(t_command **cmd, t_token *curr)
@@ -50,12 +53,16 @@ void	handle_heredoc(t_command **cmd, t_token *curr)
 	(*cmd)->expand_heredoc_content = curr->next->state == GENERAL;
 	(*cmd)->io_fds->has_heredoc = 1;
 	(*cmd)->io_fds->infile = ft_strdup("heredoc.txt");
+	(*cmd)->main->heredoc_fork_permit++;
 }
 
-void	handle_types(t_command **cmd, t_command **head_c, t_token *curr)
+static void	handle_types(t_command **cmd, t_command **head_c, t_token *curr, t_main *main)
 {
 	if (curr->type == COMMAND)
+	{
 		(*cmd)->command = ft_strdup(curr->value);
+		handle_argument(cmd, curr);
+	}
 	else if (curr->type == ARGUMENT)
 		handle_argument(cmd, curr);
 	else if (curr->type == HEREDOC)
@@ -72,9 +79,10 @@ void	handle_types(t_command **cmd, t_command **head_c, t_token *curr)
 		add_command(head_c, (*cmd));
 		(*cmd) = init_empty_cmd();
 	}
+	(*cmd)->main = main;
 }
 
-t_command	**create_commands(t_command **head_c, t_token **head_t)
+t_command	**create_commands(t_command **head_c, t_token **head_t, t_main *main)
 {
 	t_token		*curr;
 	t_command	*cmd;
@@ -83,7 +91,7 @@ t_command	**create_commands(t_command **head_c, t_token **head_t)
 	cmd = init_empty_cmd();
 	while (curr)
 	{
-		handle_types(&cmd, head_c, curr);
+		handle_types(&cmd, head_c, curr, main);
 		curr = curr->next;
 	}
 	if (cmd)

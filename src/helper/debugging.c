@@ -88,6 +88,7 @@ void	print_cmd_list(t_command **head)
 		printf("Outfile: %s\n", curr->io_fds->outfile);
 		printf("Append outfile: %s\n", curr->io_fds->append_outfile);
 		printf("Has Heredoc: %d\n", curr->io_fds->has_heredoc);
+		printf("Main %p\n", curr->main);
 		printf("------------------------------\n");
 		printf(" <-    -> \n");
 		curr = curr->next;

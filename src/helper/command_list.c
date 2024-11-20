@@ -41,7 +41,8 @@ t_command	*init_empty_cmd(void)
 	new_cmd->heredoc_delimiter = NULL;
 	new_cmd->expand_heredoc_content = 0;
 	new_cmd->nr_of_pipes = 0;
-	new_cmd->pipe_fd = NULL;
+	// free later on 
+	new_cmd->pipe_fd = malloc(2 * sizeof(int));
 	new_cmd->has_pipe = 0;
 	new_cmd->error_code = 0;
 	new_cmd->error_message = NULL;

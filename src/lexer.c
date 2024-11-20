@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-t_command	*lexer(char *input, char **envp)
+t_command	*lexer(char *input, char **envp, t_main *main)
 {
 	t_token			*first_token;
 	t_token			**head_t;
@@ -28,9 +28,17 @@ t_command	*lexer(char *input, char **envp)
 	head_t = join_token(head_t);
 	head_t = assign_types(head_t);
 	//head = check_validity(head);
-	head_c = create_commands(head_c, head_t);
 	if (*head_t)
+	{
+		print_token_list(head_t);
+		//free_tokens(head_t);
+	}
+	head_c = create_commands(head_c, head_t, main);
+	if (*head_t)
+	{
+		//print_token_list(head_t);
 		free_tokens(head_t);
+	}
 	if (*head_c)
 		print_cmd_list(head_c);
 	return (*head_c);

@@ -16,14 +16,19 @@ RM = rm -rf
 
 INCLUDES = -I includes/.
 SRC_DIR = src/
+SRC_EXEC_DIR = src_exec/
 
 NAME = minishell
 LIBFT = libft/libft.a
 
 SRC = $(addprefix $(SRC_DIR), main.c lexer.c parse.c expand.c join_token.c \
-		assign_types.c check_validity.c create_commands.c \
-	$(addprefix helper/, debugging.c free_helper.c token_list.c helper.c \
-		parse_helper.c command_list.c)) \
+	assign_types.c check_validity.c create_commands.c \
+	helper/debugging.c helper/free_helper.c helper/token_list.c \
+	helper/helper.c helper/parse_helper.c helper/command_list.c) \
+	$(addprefix $(SRC_EXEC_DIR), exec.c exec_tools.c pwd.c export.c env.c echo.c \
+	unset.c cd.c file_redir.c exec_external.c exit.c \
+	signals.c heredoc.c pipe_redir.c expantion.c signals2.c export2.c \
+	utilz.c exec_external2.c parent_reset.c)
 
 OBJ = $(SRC:.c=.o)
 

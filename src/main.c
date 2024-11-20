@@ -11,46 +11,88 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+static t_main	init_main(char **envp)
+{
+	t_main main;
+    int count;
+
+	count = 0;
+    while (envp && envp[count])
+        count++;
+    main.env_vars = malloc(sizeof(char *) * (count + 1)); // Allocate space for env_vars
+    if (!main.env_vars)
+        exit (0); // Handle malloc failure
+    for (int i = 0; i < count; i++)
+        main.env_vars[i] = ft_strdup(envp[i]); // Duplicate each envp value
+    main.env_vars[count] = NULL; // NULL terminate
+    //main.is_sleeping = false;
+    main.command_list = NULL;
+    // Continue with your program logic...
+    main.should_exit = 0;
+    main.exit_code = 0;
+    main.heredoc_fork_permit = 0;
+	return (main);
+}
+
+#include "../includes/minishell.h"
 // need to delete spaces when delimiter
 // need to check what happens with env variables that are not found...
 int	main(int argc, char **argv, char **envp)
 {
-	char		*input = "echo      $HOME<<'$PATH'    |       cat -flag     catfile.txt|'p''w''d'    |cat<<delimiter|echo '$NOEXPAND'";
+	char		*input;
 	t_command	*commands;
+	t_main		main;
+
+	main = init_main(envp);
 
 	(void )		argc;
 	(void )		argv;
-	// while (1)
-	// {
-	// 	input = readline("Minishell% ");
-	// 	if (!input)
-	// 	{
-	// 		printf("\n");
-	// 		break ;
-	// 	}
-	// 	if (ft_strlen(input) > 0)
-	// 	{
-	// 		add_history(input);
-	// 		if (ft_strncmp(input, "exit", ft_strlen(input)) == 0)
-	// 		{
-	// 			rl_clear_history();
-	// 			free(input);
-	// 			break ;
-	// 		}
-	// 		commands = lexer(input, envp);
-	// 	}
-	// 	if (commands)
-	// 	{
-	// 		printf("----- FREEING COMMANDS -----\n");
-	// 		free_commands(&commands);
-	// 	}
-	// 	free(input);
-	// }
-	commands = lexer(input, envp);
-	if (commands)
+	while (1)
 	{
-		printf("----- FREEING COMMANDS -----\n");
-		free_commands(&commands);
+		g_sigint_received = 0;
+		set_signals_interactive();
+		input = readline("Minishell% ");
+		if (!input)
+		{
+			printf("exit\n");
+			break ;
+		}
+		if (ft_strlen(input) > 0)
+		{
+			add_history(input);
+			if (ft_strncmp(input, "exit", ft_strlen(input)) == 0)
+			{
+				printf("exit\n");
+				rl_clear_history();
+				free(input);
+				break ;
+			}
+			if(g_sigint_received == 130)
+				main.exit_code = 130;
+			commands = lexer(input, main.env_vars, &main);
+			printf("--------------- COMMANDS SET ---------------\n");
+			main.command_list = commands;
+		}
+		g_sigint_received = 1;
+        exec_heredoc(main.command_list);
+        set_signals_noniteractive();
+        if(g_sigint_received)
+            execute_commands(&main);
+        main.is_sleeping = false;
+        main.heredoc_fork_permit = 0;		
+		if (commands)
+		{
+			printf("--------------- FREEING COMMANDS ---------------\n");
+			free_commands(&commands);
+		}
+		free(input);
 	}
+	// commands = lexer(input, envp);
+	// if (commands)
+	// {
+	// 	printf("----- FREEING COMMANDS -----\n");
+	// 	free_commands(&commands);
+	// }
 	return (0);
 }

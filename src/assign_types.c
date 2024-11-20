@@ -54,9 +54,9 @@ int	assign_by_prev(t_token *token)
 	if (token->prev->type == PIPE
 		|| token->prev->type == LOGICAL_OR)
 		return (token->type = COMMAND, 0);
-	else if (ft_strncmp(token->prev->value, "export",
-			ft_strlen(token->prev->value)) == 0)
-		return (token->type = ENV_VAR, 0);
+	// else if (ft_strncmp(token->prev->value, "export",
+	// 		ft_strlen(token->prev->value)) == 0)
+	//	return (token->type = ENV_VAR, 0);
 	else if (token->prev->type == HEREDOC)
 		return (token->type = HEREDOC_DELIMITER);
 	else if (token->prev->type == REDIRECT
@@ -75,7 +75,9 @@ t_token	**assign_types(t_token **head)
 	curr = *head;
 	while (curr)
 	{
-		if (curr == *head && assign_redirect(curr) == -1)
+		if (ft_strlen(curr->value) == 0)
+			curr->type = ARGUMENT;
+		else if (curr == *head && assign_redirect(curr) == -1)
 			curr->type = COMMAND;
 		else if (assign_redirect(curr) == -1
 			&& assign_other_operator(curr) == -1
