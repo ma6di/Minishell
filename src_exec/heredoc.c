@@ -5,13 +5,13 @@ static int	ft_check_delimiter(char *line, char *delimiter)
 {
 	if (!line)
 	{
-		write(2, "bash: warning: here-document \
-		delimited by end-of-file (wanted `", 63);
+		write(2, "bash: warning: here-document", 28);
+		write(2," delimited by end-of-file (wanted `", 35);
 		write(2, delimiter, ft_strlen(delimiter));
 		write(2, "')\n", 3);
 		return (1);
 	}
-	if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0)
+	if (ft_strncmp(line, delimiter, ft_strlen(delimiter) + ft_strlen(line)) == 0)
 	{
 		free(line);
 		return (1);
@@ -22,29 +22,26 @@ static int	ft_check_delimiter(char *line, char *delimiter)
 static void	ft_heredoc_wait(t_command *cmd, pid_t pid)
 {
 	int			status;
-	t_command	*cmd_tmp;
 
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
+	if (waitpid(pid, &status, 0) == -1)
 	{
-		cmd->main->exit_code = WEXITSTATUS(status);
-		if (cmd->main->exit_code == 130)
+		perror("waitpid failed");
+		cmd->main->exit_code = 1;
+		return ;
+	}
+	if (WIFSIGNALED(status))
+	{
+		int signal_number = WTERMSIG(status);
+		if (signal_number == SIGKILL)
 		{
-			cmd_tmp = cmd;
-			while (cmd_tmp)
-			{
-				if (cmd_tmp->io_fds->infile)
-				{
-					unlink(cmd_tmp->io_fds->infile);
-					free(cmd_tmp->io_fds->infile);
-					cmd_tmp->io_fds->infile = NULL;
-				}
-				cmd_tmp = cmd_tmp->next;
-			}
-			cmd->main->heredoc_fork_permit = 0;
+			write(1,"\n",1);
+			cmd->main->exit_code = 130;
+			g_pid = 1;
 		}
+		cmd->main->heredoc_fork_permit = 0;
 	}
 }
+
 
 static void	ft_heredoc_write_to_file(t_command *cmd, t_heredoc *heredoc)
 {
@@ -72,7 +69,7 @@ static void	ft_heredoc_readline(t_command *cmd, t_heredoc *heredoc)
 		perror("Failed to open heredoc file");
 		exit(1);
 	}
-	while (g_sigint_received)
+	while (1)
 	{
 		rl_clear_history();
 		heredoc->line = readline("> ");
@@ -81,8 +78,6 @@ static void	ft_heredoc_readline(t_command *cmd, t_heredoc *heredoc)
 		ft_heredoc_write_to_file(cmd, heredoc);
 	}
 	close(heredoc->heredoc_fd);
-	if (!g_sigint_received)
-		exit(130);
 }
 
 void	exec_heredoc(t_command *cmds)
@@ -97,7 +92,9 @@ void	exec_heredoc(t_command *cmds)
 		heredoc->pid = fork();
 		if (heredoc->pid == 0)
 		{
-			while (cmd && g_sigint_received)
+			set_signals_heredoc();
+			g_pid = getpid();
+			while (cmd)
 			{
 				if (cmd->io_fds->has_heredoc)
 					ft_heredoc_readline(cmd, heredoc);

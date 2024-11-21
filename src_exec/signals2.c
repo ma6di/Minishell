@@ -6,12 +6,7 @@
 static void	signal_interrupt_heredoc(int signo)
 {
 	(void)signo;
-	g_sigint_received = 0;
-	write(1, "\n", 1);
-    rl_replace_line("", 0);
-    rl_done = 1;
-    rl_on_new_line();
-	rl_redisplay();
+	kill(g_pid, SIGKILL);
 }
 
 void	set_signals_heredoc(void)

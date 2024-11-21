@@ -43,6 +43,8 @@
 # define BUFF_SIZE 1024
 
 extern int	g_sigint_received;
+extern int	g_pid;
+
 
 typedef struct s_fds		t_fds;	// Forward declaration
 typedef struct s_token		t_token;	// Forward declaration
