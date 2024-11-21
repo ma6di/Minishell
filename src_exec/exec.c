@@ -48,9 +48,8 @@ void	exec_child(t_command *cmd, char **env)
 		set_signals_child();
 	if (cmd->pid == 0)
 	{
-		pid_t x;
-		x = getpid();
-		printf("pid is: %d\n", x);
+		if (ft_strncmp(cmd->command, "", ft_strlen(cmd->command)) == 0)
+			exit (0);
 		setup_file_redirections(cmd);
 		setup_pipe_redirections_child(cmd);
 		if (is_builtin(cmd->command))

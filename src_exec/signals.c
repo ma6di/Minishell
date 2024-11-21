@@ -16,6 +16,7 @@ void	signal_reset_prompt(int signo)
 	(void)signo;
 	g_sigint_received = 130;
 	write(1, "\n", 1);
+	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
 }

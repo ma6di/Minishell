@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_commands.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:45:20 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 05:51:38 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/21 14:02:54 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	handle_heredoc(t_command **cmd, t_token *curr)
 	(*cmd)->main->heredoc_fork_permit++;
 }
 
-static void	handle_types(t_command **cmd, t_command **head_c, t_token *curr, t_main *main)
+static void	handle_types(t_command **cmd, t_command **head_c, t_token *curr)
 {
 	if (curr->type == COMMAND)
 	{
@@ -79,7 +79,6 @@ static void	handle_types(t_command **cmd, t_command **head_c, t_token *curr, t_m
 		add_command(head_c, (*cmd));
 		(*cmd) = init_empty_cmd();
 	}
-	(*cmd)->main = main;
 }
 
 t_command	**create_commands(t_command **head_c, t_token **head_t, t_main *main)
@@ -91,7 +90,8 @@ t_command	**create_commands(t_command **head_c, t_token **head_t, t_main *main)
 	cmd = init_empty_cmd();
 	while (curr)
 	{
-		handle_types(&cmd, head_c, curr, main);
+		cmd->main = main;
+		handle_types(&cmd, head_c, curr);
 		curr = curr->next;
 	}
 	if (cmd)

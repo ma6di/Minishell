@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join_token.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 06:04:55 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/21 15:52:42 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ t_token	*remove_node(t_token *node, t_token **head)
 		*head = node->next;
 		node->next->prev = *head;
 	}
+	else if (!node->next)
+		node->prev->next = NULL;
 	else
 	{
 		node->prev->next = node->next;
@@ -69,5 +71,8 @@ t_token	**join_token(t_token **head)
 		else
 			curr = curr->next;
 	}
+	if (curr && ft_strncmp(curr->value, " ", 
+			ft_strlen(curr->value)) == 0 && curr->state == GENERAL)
+		curr = remove_node(curr, head);
 	return (head);
 }

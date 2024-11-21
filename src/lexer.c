@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 05:43:31 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/21 14:43:52 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,12 @@ t_command	*lexer(char *input, char **envp, t_main *main)
 	head_t = join_token(head_t);
 	head_t = assign_types(head_t);
 	//head = check_validity(head);
+	head_c = create_commands(head_c, head_t, main);
 	if (*head_t)
 	{
 		print_token_list(head_t);
 		//free_tokens(head_t);
 	}
-	head_c = create_commands(head_c, head_t, main);
 	if (*head_t)
 	{
 		//print_token_list(head_t);
