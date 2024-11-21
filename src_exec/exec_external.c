@@ -79,7 +79,7 @@ int	exec_external(t_command *cmd, char **env_vars)
 	}
 	exec_result = execve(path, cmd->args, env_vars);
 	free(path);
-	if (exec_result == -1)
+	if (exec_result == -1 && cmd->io_fds->has_heredoc && cmd->command)
 		return (error_code(errno));
 	return (0);
 }

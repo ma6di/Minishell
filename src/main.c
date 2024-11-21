@@ -50,7 +50,6 @@ int	main(int argc, char **argv, char **envp)
 	(void )		argv;
 	while (1)
 	{
-		g_sigint_received = 0;
 		set_signals_interactive();
 		input = readline("Minishell% ");
 		if (!input)
@@ -68,16 +67,17 @@ int	main(int argc, char **argv, char **envp)
 				free(input);
 				break ;
 			}
-			if(g_sigint_received == 130)
+			if(g_pid == 130)
 				main.exit_code = 130;
+			set_signals_noniteractive();
 			commands = lexer(input, main.env_vars, &main);
 			printf("--------------- COMMANDS SET ---------------\n");
 			main.command_list = commands;
 		}
-		g_sigint_received = 1;
+		g_pid = 0;
         exec_heredoc(main.command_list);
-        set_signals_noniteractive();
-        if(g_sigint_received)
+		set_signals_noniteractive();
+        if(g_pid == 0)
             execute_commands(&main);
         main.is_sleeping = false;
         main.heredoc_fork_permit = 0;		
