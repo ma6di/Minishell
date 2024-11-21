@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/21 15:52:42 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/21 16:33:03 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,20 @@ t_token	*remove_node(t_token *node, t_token **head)
 	t_token	*next_node;
 
 	next_node = node->next;
-	if (node == *head)
+	if (node == *head && node->next)
 	{
 		*head = node->next;
 		node->next->prev = *head;
 	}
-	else if (!node->next)
+	else if (node != *head && !node->next)
 		node->prev->next = NULL;
-	else
+	else if (node->prev && node->next)
 	{
 		node->prev->next = node->next;
 		node->next->prev = node->prev;
 	}
+	else if (node == *head && !node->next)
+		*head = NULL;
 	free(node->value);
 	free(node);
 	return (next_node);

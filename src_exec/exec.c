@@ -62,7 +62,7 @@ void	exec_child(t_command *cmd, char **env)
 		ft_wait(cmd);
 }
 
-void	execute_commands(t_main *main)
+void	execute_commands(t_main **main)
 {
 	t_command	*cmd;
 	int			original_stdout;

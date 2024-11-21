@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_helper.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:10:05 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 05:09:37 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/21 17:31:24 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	free_commands(t_command **head)
 		free(curr->command);
 		while (curr->args && curr->args[i])
 			free(curr->args[i++]);
+		free(curr->pipe_fd);
 		free(curr->args);
 		free(curr->heredoc_delimiter);
 		free(curr->io_fds->infile);
@@ -54,6 +55,20 @@ void	free_commands(t_command **head)
 		curr = next;
 	}
 	*head = NULL;
+}
+
+void	free_main(t_main *main)
+{
+	int	i;
+
+	i = 0;
+	while (main->env_vars[i])
+	{
+		free(main->env_vars[i]);
+		i++;
+	}
+	free(main->env_vars);
+	free(main);
 }
 
 void	free_two_dim(char **env_keys)

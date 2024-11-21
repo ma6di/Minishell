@@ -3,35 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 05:54:27 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/21 18:03:41 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static t_main	init_main(char **envp)
+static t_main	*init_main(char **envp)
 {
-	t_main main;
-    int count;
+	t_main	*main;
+	int		count;
 
 	count = 0;
-    while (envp && envp[count])
-        count++;
-    main.env_vars = malloc(sizeof(char *) * (count + 1)); // Allocate space for env_vars
-    if (!main.env_vars)
-        exit (0); // Handle malloc failure
-    for (int i = 0; i < count; i++)
-        main.env_vars[i] = ft_strdup(envp[i]); // Duplicate each envp value
-    main.env_vars[count] = NULL; // NULL terminate
-    //main.is_sleeping = false;
-    main.command_list = NULL;
-    // Continue with your program logic...
-    main.should_exit = 0;
-    main.exit_code = 0;
-    main.heredoc_fork_permit = 0;
+	main = malloc(sizeof(t_main));
+	while (envp && envp[count])
+		count++;
+	main->env_vars = malloc(sizeof(char *) * (count + 1));
+	if (!main->env_vars)
+		exit (0);
+	for (int i = 0; i < count; i++)
+		main->env_vars[i] = ft_strdup(envp[i]);
+	main->env_vars[count] = NULL;
+	//main->is_sleeping = false;
+	main->command_list = NULL;
+	main->exit_code = 0;
+	main->heredoc_fork_permit = 0;
 	return (main);
 }
 
@@ -42,7 +41,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	char		*input;
 	t_command	*commands;
-	t_main		main;
+	t_main		*main;
 
 	main = init_main(envp);
 
@@ -56,6 +55,7 @@ int	main(int argc, char **argv, char **envp)
 		if (!input)
 		{
 			printf("exit\n");
+			free_main(main);
 			break ;
 		}
 		if (ft_strlen(input) > 0)
@@ -65,24 +65,25 @@ int	main(int argc, char **argv, char **envp)
 			{
 				printf("exit\n");
 				rl_clear_history();
+				free_main(main);
 				free(input);
 				break ;
 			}
 			if(g_sigint_received == 130)
-				main.exit_code = 130;
-			commands = lexer(input, main.env_vars, &main);
-			printf("--------------- COMMANDS SET ---------------\n");
-			main.command_list = commands;
+				main->exit_code = 130;
+			commands = lexer(input, main->env_vars, &main);
+			//printf("--------------- COMMANDS SET ---------------\n");
+			main->command_list = commands;
 		}
-		g_sigint_received = 1;
-        exec_heredoc(main.command_list);
-        set_signals_noniteractive();
-        if(g_sigint_received)
-            execute_commands(&main);
-        main.is_sleeping = false;
-        main.heredoc_fork_permit = 0;		
-		if (commands)
+		if (main->command_list)
 		{
+			g_sigint_received = 1;
+			exec_heredoc(main->command_list);
+			set_signals_noniteractive();
+			if (g_sigint_received)
+				execute_commands(main);
+			main->is_sleeping = false;
+			main->heredoc_fork_permit = 0;
 			printf("--------------- FREEING COMMANDS ---------------\n");
 			free_commands(&commands);
 		}

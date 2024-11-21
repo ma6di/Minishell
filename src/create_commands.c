@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:45:20 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/21 14:02:54 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/21 17:56:30 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,16 +81,18 @@ static void	handle_types(t_command **cmd, t_command **head_c, t_token *curr)
 	}
 }
 
-t_command	**create_commands(t_command **head_c, t_token **head_t, t_main *main)
+t_command	**create_commands(t_command **head_c, t_token **head_t, t_main **main)
 {
 	t_token		*curr;
 	t_command	*cmd;
 
+	if (!head_t || !(*head_t))
+		return (NULL);
 	curr = *head_t;
 	cmd = init_empty_cmd();
 	while (curr)
 	{
-		cmd->main = main;
+		cmd->main = *main;
 		handle_types(&cmd, head_c, curr);
 		curr = curr->next;
 	}
