@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/21 17:57:15 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/21 18:04:44 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,7 @@ t_command		*init_empty_cmd(void);
 void			add_command(t_command **head, t_command *new_cmd);
 char	*get_command_path(const char *command, char **env_vars);
 int		execute_external(t_command *cmd, char **env_vars);
-void	execute_commands(t_main *main);
+void	execute_commands(t_main **main);
 void	exec_child(t_command *cmd, char **env);
 int		is_builtin(char *command);
 int		setup_file_redirections(t_command *cmd);

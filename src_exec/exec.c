@@ -68,7 +68,7 @@ void	execute_commands(t_main **main)
 	int			original_stdout;
 	int			original_stdin;
 
-	cmd = main->command_list;
+	cmd = (*main)->command_list;
 	original_stdout = dup(STDOUT_FILENO);
 	original_stdin = dup(STDIN_FILENO);
 	while (cmd)
@@ -77,9 +77,9 @@ void	execute_commands(t_main **main)
 		pipe_handler(cmd);
 		fork_handler(cmd);
 		if (is_special_builtin(cmd->command))
-			cmd->main->exit_code = exec_special_builtin(cmd, main);
+			(*main)->exit_code = exec_special_builtin(cmd, *main);
 		else
-			exec_child(cmd, main->env_vars);
+			exec_child(cmd, (*main)->env_vars);
 		parent_pipe_close(cmd);
 		ft_fd_reset(cmd, original_stdin, original_stdout);
 		cmd = cmd->next;
