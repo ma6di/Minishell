@@ -60,7 +60,9 @@ void	exec_child(t_command *cmd, t_main **main)
 		printf("command %s\n", cmd->command);
 		free_command_child(&cmd);
 		free(cmd);
-		exit((*main)->exit_code);
+		int	exit_code = (*main)->exit_code;
+		free_main((*main));
+		exit(exit_code);
 	}
 	else
 		ft_wait(cmd);
