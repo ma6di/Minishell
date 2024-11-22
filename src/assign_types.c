@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   assign_types.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 04:57:37 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/21 16:37:36 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,20 +51,18 @@ int	assign_other_operator(t_token *token)
 
 int	assign_by_prev(t_token *token)
 {
-	if (token->prev->type == PIPE
+	if ((token->prev->type == HEREDOC_DELIMITER || token->prev->type == FILENAME)
+		&& (!token->prev->prev->prev || token->prev->prev->prev->type != COMMAND))
+		return (token->type = COMMAND, 0);
+	else if (token->prev->type == PIPE
 		|| token->prev->type == LOGICAL_OR)
 		return (token->type = COMMAND, 0);
-	// else if (ft_strncmp(token->prev->value, "export",
-	// 		ft_strlen(token->prev->value)) == 0)
-	//	return (token->type = ENV_VAR, 0);
 	else if (token->prev->type == HEREDOC)
-		return (token->type = HEREDOC_DELIMITER);
+		return (token->type = HEREDOC_DELIMITER, 0);
 	else if (token->prev->type == REDIRECT
 		|| token->prev->type == APPEND
 		|| token->prev->type == INPUT_REDIRECT)
 		return (token->type = FILENAME, 0);
-	else if (token->prev->type == HEREDOC)
-		return (token->type = HEREDOC_DELIMITER);
 	return (-1);
 }
 
@@ -73,6 +71,8 @@ t_token	**assign_types(t_token **head)
 	t_token	*curr;
 
 	curr = *head;
+	if (!head || !(*head))
+		return (NULL);
 	while (curr)
 	{
 		if (ft_strlen(curr->value) == 0)

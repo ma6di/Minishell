@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_list.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:07:56 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 05:16:27 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/22 11:07:08 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ t_command	*init_empty_cmd(void)
 	new_cmd->next = NULL;
 	new_cmd->prev = NULL;
 	new_cmd->main = NULL;
+	printf("created command %p\n", new_cmd);
 	return (new_cmd);
 }
 
@@ -60,6 +61,8 @@ void	add_command(t_command **head, t_command *new_cmd)
 {
 	t_command	*curr;
 
+	if (new_cmd->command == NULL && new_cmd->heredoc_delimiter != NULL)
+		new_cmd->command = ft_strdup("");
 	if (!head || !(*head))
 	{
 		*head = new_cmd;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 06:05:07 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/21 18:04:44 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,11 +85,9 @@ typedef enum e_token_state
 typedef struct s_main
 {
 	t_command	*command_list;
-	t_token		**token_list;
 	char		**env_vars;
 	char		**shell_vars;
 	int			exit_code;
-	int			should_exit;
 	bool		is_sleeping;
 	int			heredoc_fork_permit;
 }				t_main;
@@ -97,7 +95,7 @@ typedef struct s_main
 typedef struct s_token
 {
 	t_token_type	type;
-	t_state	state;
+	t_state			state;
 	char			*value;
 	struct s_token	*prev;
 	struct s_token	*next;
@@ -146,11 +144,12 @@ typedef struct s_heredoc
 	int		heredoc_fd;
 }				t_heredoc;
 
-t_command		*lexer(char *input, char **envp, t_main *main);
+t_command		*lexer(char *input, char **envp, t_main **main);
 t_token			**parse(t_token **head, char *input);
 t_token			**expand(t_token **head, char **envp);
 void			free_tokens(t_token **head);
 void			free_commands(t_command **head);
+void			free_main(t_main *main);
 void			add_token(t_token **head, t_token *new_token);
 void			create_token(t_token **head, char *value, t_state state);
 t_token_type	get_token_type(char *value);
@@ -171,13 +170,13 @@ char			*add_to_buffer(char **buffer, char c);
 void			end_token(char **buffer, t_token **head, t_state state);
 int				is_operator_char(char c);
 int				is_delimiter(char c);
-t_command		**create_commands(t_command **head_c, t_token **head_t, t_main *main);
+t_command		**create_commands(t_command **head_c, t_token **head_t, t_main **main);
 void			init_empty_fds(t_command **new_cmd);
 t_command		*init_empty_cmd(void);
 void			add_command(t_command **head, t_command *new_cmd);
 char	*get_command_path(const char *command, char **env_vars);
 int		execute_external(t_command *cmd, char **env_vars);
-void	execute_commands(t_main *main);
+void	execute_commands(t_main **main);
 void	exec_child(t_command *cmd, char **env);
 int		is_builtin(char *command);
 int		setup_file_redirections(t_command *cmd);

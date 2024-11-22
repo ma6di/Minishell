@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_validity.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/09 04:03:44 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/21 18:12:05 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,15 @@ t_token	**check_validity(t_token **head)
 {
 	t_token	*curr;
 
+	if (!head || !(*head))
+		return (NULL);
 	curr = *head;
-	while (curr)
-	{
-		if (curr != *head
-			&& is_operator(curr->type)
-			&& is_operator(curr->prev->type))
-			break ;
+	while (curr && curr->next)
 		curr = curr->next;
+	if (is_operator(curr->type) && curr->next == NULL)
+	{
+		display_error("syntax error near unexpected token `newline'", head);
+		return (NULL);
 	}
-	if (curr == NULL)
-		return (head);
-	display_error("parse error", head);
 	return (head);
 }

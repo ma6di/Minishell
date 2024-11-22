@@ -48,6 +48,8 @@ void	exec_child(t_command *cmd, char **env)
 		set_signals_child();
 	if (cmd->pid == 0)
 	{
+		if (ft_strncmp(cmd->command, "", ft_strlen(cmd->command)) == 0)
+			exit (0);
 		setup_file_redirections(cmd);
 		setup_pipe_redirections_child(cmd);
 		if (is_builtin(cmd->command))
@@ -60,13 +62,13 @@ void	exec_child(t_command *cmd, char **env)
 		ft_wait(cmd);
 }
 
-void	execute_commands(t_main *main)
+void	execute_commands(t_main **main)
 {
 	t_command	*cmd;
 	int			original_stdout;
 	int			original_stdin;
 
-	cmd = main->command_list;
+	cmd = (*main)->command_list;
 	original_stdout = dup(STDOUT_FILENO);
 	original_stdin = dup(STDIN_FILENO);
 	while (cmd)
@@ -75,9 +77,9 @@ void	execute_commands(t_main *main)
 		pipe_handler(cmd);
 		fork_handler(cmd);
 		if (is_special_builtin(cmd->command))
-			cmd->main->exit_code = exec_special_builtin(cmd, main);
+			(*main)->exit_code = exec_special_builtin(cmd, *main);
 		else
-			exec_child(cmd, main->env_vars);
+			exec_child(cmd, (*main)->env_vars);
 		parent_pipe_close(cmd);
 		ft_fd_reset(cmd, original_stdin, original_stdout);
 		cmd = cmd->next;
