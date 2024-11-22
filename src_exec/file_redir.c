@@ -8,7 +8,7 @@ static int	setup_input_redirection(t_fds *io_fds, t_command *cmd)
 		io_fds->fd_in = open(io_fds->infile, O_RDONLY);
 		if (io_fds->fd_in == -1)
 		{
-			perror("minishell: failed to open input file");
+			perror("minishell");
 			return (-1);
 		}
 		if (dup2(io_fds->fd_in, STDIN_FILENO) == -1)
@@ -30,7 +30,7 @@ static int	setup_output_redirection(t_fds *io_fds)
 			O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (io_fds->fd_out == -1)
 		{
-			perror("minishell: failed to open output file");
+			perror("minishell");
 			return (-1);
 		}
 		if (dup2(io_fds->fd_out, STDOUT_FILENO) == -1)
@@ -52,7 +52,7 @@ static int	setup_append_redirection(t_fds *io_fds)
 			O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (io_fds->fd_out == -1)
 		{
-			perror("minishell: failed to open append output file");
+			perror("minishell");
 			return (-1);
 		}
 		if (dup2(io_fds->fd_out, STDOUT_FILENO) == -1)
@@ -73,7 +73,7 @@ static int	setup_error_redirection(t_fds *io_fds)
 		io_fds->fd_err = open("error.log", O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (io_fds->fd_err == -1)
 		{
-			perror("minishell: failed to open error log file");
+			perror("minishell");
 			return (-1);
 		}
 		if (dup2(io_fds->fd_err, STDERR_FILENO) == -1)

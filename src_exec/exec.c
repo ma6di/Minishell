@@ -50,7 +50,8 @@ void	exec_child(t_command *cmd, t_main **main)
 	{
 		if (ft_strncmp(cmd->command, "", ft_strlen(cmd->command)) == 0)
 			exit (0);
-		setup_file_redirections(cmd);
+		if (setup_file_redirections(cmd) == -1)
+			exit (1);
 		setup_pipe_redirections_child(cmd);
 		if (is_builtin(cmd->command))
 			cmd->main->exit_code = exec_builtin(cmd, cmd->main);
