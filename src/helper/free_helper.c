@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:10:05 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/21 17:31:24 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/22 11:06:57 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void	free_commands(t_command **head)
 		free(curr->io_fds->outfile);
 		free(curr->io_fds->append_outfile);
 		free(curr->io_fds);
+		printf("created command %p\n", curr);
 		free(curr);
 		curr = next;
 	}
