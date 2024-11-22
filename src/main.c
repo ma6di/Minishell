@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/21 18:04:24 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/22 11:24:33 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ int	main(int argc, char **argv, char **envp)
 	(void )		argv;
 	while (1)
 	{
-		g_sigint_received = 0;
 		set_signals_interactive();
 		input = readline("Minishell% ");
 		if (!input)
@@ -69,18 +68,19 @@ int	main(int argc, char **argv, char **envp)
 				free(input);
 				break ;
 			}
-			if(g_sigint_received == 130)
+			if (g_pid == 130)
 				main->exit_code = 130;
+			set_signals_noniteractive();
 			commands = lexer(input, main->env_vars, &main);
-			//printf("--------------- COMMANDS SET ---------------\n");
+			printf("--------------- COMMANDS SET ---------------\n");
 			main->command_list = commands;
 		}
-		if (main->command_list)
+		if (commands)
 		{
-			g_sigint_received = 1;
+			g_pid = 0;
 			exec_heredoc(main->command_list);
 			set_signals_noniteractive();
-			if (g_sigint_received)
+			if (g_pid == 0)
 				execute_commands(&main);
 			main->is_sleeping = false;
 			main->heredoc_fork_permit = 0;
