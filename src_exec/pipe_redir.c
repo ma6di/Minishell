@@ -34,10 +34,16 @@ void	setup_pipe_redirections_child(t_command *cmd)
 	if (cmd->prev)
 	{
 		if (cmd->prev->pipe_created && !cmd->io_fds->infile)
+		{
 			dup2_in(cmd->prev->pipe_fd);
+			close(cmd->pipe_fd[1]);
+		}
 	}
 	if (cmd->pipe_created && cmd->next && !cmd->io_fds->outfile)
+	{
 		dup2_out(cmd->pipe_fd);
+		close(cmd->pipe_fd[0]);
+	}
 }
 
 void	dup2_out(int *pipe_fd)

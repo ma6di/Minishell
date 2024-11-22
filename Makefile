@@ -6,11 +6,11 @@
 #    By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/18 16:55:20 by nrauh             #+#    #+#              #
-#    Updated: 2024/11/21 17:27:55 by nrauh            ###   ########.fr        #
+#    Updated: 2024/11/22 12:53:04 by nrauh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC = cc
+CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g
 RM = rm -rf
 

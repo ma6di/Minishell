@@ -15,7 +15,6 @@ void	ft_exit(t_main *main)
 	else
 	{
 		ft_putstr_fd("exit ", 2);
-		main->should_exit = 1;
 		main->exit_code = 0;
 	}
 }

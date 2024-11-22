@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debugging.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:09:29 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 05:09:28 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/22 17:25:09 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	print_cmd_list(t_command **head)
 	t_command	*curr;
 	int			i;
 	int			j;
+	int			k;
 
 	i = 0;
 	curr = *head;
@@ -79,8 +80,22 @@ void	print_cmd_list(t_command **head)
 			}
 			printf("]\n");
 		}
-		printf("Heredoc delimiter: %s\n", curr->heredoc_delimiter);
-		printf("Expand Heredoc: %d\n", curr->expand_heredoc_content);
+		printf("HEREDOC -----\n");
+		if (curr->heredocs)
+		{
+			k = 0;
+			printf("Heredocs:\n");
+			while (curr->heredocs[k])
+			{
+				if (k != 0)
+					printf(",\n");
+				printf("\t{ Delimiter: %s, ", curr->heredocs[k]->delimiter);
+				printf("Should expand: %d }", curr->heredocs[k]->should_expand);
+				k++;
+			}
+			printf("\n");
+		}
+		printf("END HEREDOC\n");
 		printf("Has Pipe: %d\n", curr->has_pipe);
 		printf("PID: %d\n", curr->pid);
 		printf("FDS -----\n");
@@ -88,6 +103,7 @@ void	print_cmd_list(t_command **head)
 		printf("Outfile: %s\n", curr->io_fds->outfile);
 		printf("Append outfile: %s\n", curr->io_fds->append_outfile);
 		printf("Has Heredoc: %d\n", curr->io_fds->has_heredoc);
+		printf("Heredoc fork permit: %d\n", curr->main->heredoc_fork_permit);
 		printf("Main %p\n", curr->main);
 		printf("------------------------------\n");
 		printf(" <-    -> \n");

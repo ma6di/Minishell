@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:10:05 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/22 11:06:57 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/22 16:42:04 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	free_commands(t_command **head)
 	t_command	*curr;
 	t_command	*next;
 	int			i;
+	int			j;
 
 	curr = *head;
 	while (curr)
@@ -43,19 +44,70 @@ void	free_commands(t_command **head)
 		next = curr->next;
 		free(curr->command);
 		while (curr->args && curr->args[i])
-			free(curr->args[i++]);
+		{
+			printf("freeing arg %p - %s\n", curr->args[i], curr->args[i]);
+			free(curr->args[i]);
+			i++;
+		}
+		j = 0;
+		while (curr->heredocs && curr->heredocs[j])
+		{
+			printf("freeing heredoc %p - %s\n", curr->heredocs[j]->delimiter, curr->heredocs[j]->delimiter);
+			free(curr->heredocs[j]->delimiter);
+			free(curr->heredocs[j]);
+			j++;
+		}
 		free(curr->pipe_fd);
+		curr->pipe_fd = NULL;
+		printf("freeing args %p\n", curr->args);
 		free(curr->args);
-		free(curr->heredoc_delimiter);
+		free(curr->heredocs);
+		curr->heredocs = NULL;
 		free(curr->io_fds->infile);
 		free(curr->io_fds->outfile);
 		free(curr->io_fds->append_outfile);
 		free(curr->io_fds);
-		printf("created command %p\n", curr);
+		curr->main = NULL;
+		printf("freeing command %p\n", curr);
 		free(curr);
 		curr = next;
 	}
 	*head = NULL;
+}
+
+void	free_command_child(t_command **cmd)
+{
+		int			i;
+		int			j;
+
+		i = 0;
+		free((*cmd)->command);
+		while ((*cmd)->args && (*cmd)->args[i])
+		{
+			printf("freeing arg %p - %s\n", (*cmd)->args[i], (*cmd)->args[i]);
+			free((*cmd)->args[i]);
+			i++;
+		}
+		j = 0;
+		while ((*cmd)->heredocs && (*cmd)->heredocs[j])
+		{
+			printf("freeing heredoc %p - %s\n", (*cmd)->heredocs[j]->delimiter, (*cmd)->heredocs[j]->delimiter);
+			free((*cmd)->heredocs[j]->delimiter);
+			free((*cmd)->heredocs[j]);
+			j++;
+		}
+		free((*cmd)->pipe_fd);
+		(*cmd)->pipe_fd = NULL;
+		printf("freeing args %p\n", (*cmd)->args);
+		free((*cmd)->args);
+		free((*cmd)->heredocs);
+		(*cmd)->heredocs = NULL;
+		free((*cmd)->io_fds->infile);
+		free((*cmd)->io_fds->outfile);
+		free((*cmd)->io_fds->append_outfile);
+		free((*cmd)->io_fds);
+		(*cmd)->main = NULL;
+		printf("freeing command %p\n", (*cmd));
 }
 
 void	free_main(t_main *main)
@@ -79,7 +131,7 @@ void	free_two_dim(char **env_keys)
 	i = 0;
 	while (env_keys[i])
 	{
-		//printf("freeing array %s at %p\n", env_keys[i], env_keys[i]);
+		printf("freeing array %s at %p\n", env_keys[i], env_keys[i]);
 		free(env_keys[i]);
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/22 11:24:33 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/22 17:12:45 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,27 @@ static t_main	*init_main(char **envp)
 {
 	t_main	*main;
 	int		count;
+	int		i;
 
 	count = 0;
+	i = 0;
 	main = malloc(sizeof(t_main));
 	while (envp && envp[count])
 		count++;
-	main->env_vars = malloc(sizeof(char *) * (count + 1));
+	main->env_vars = ft_calloc((count + 1), sizeof(char *));
+	main->env_vars[count] = NULL;
 	if (!main->env_vars)
 		exit (0);
-	for (int i = 0; i < count; i++)
+	while (i < count)
+	{
 		main->env_vars[i] = ft_strdup(envp[i]);
-	main->env_vars[count] = NULL;
+		if (!main->env_vars[i])
+		{
+			free_two_dim(main->env_vars);
+			exit (0);
+		}
+		i++;
+	}
 	//main->is_sleeping = false;
 	main->command_list = NULL;
 	main->exit_code = 0;
@@ -43,10 +53,9 @@ int	main(int argc, char **argv, char **envp)
 	t_command	*commands;
 	t_main		*main;
 
-	main = init_main(envp);
-
 	(void )		argc;
 	(void )		argv;
+	main = init_main(envp);
 	while (1)
 	{
 		set_signals_interactive();
@@ -85,7 +94,10 @@ int	main(int argc, char **argv, char **envp)
 			main->is_sleeping = false;
 			main->heredoc_fork_permit = 0;
 			printf("--------------- FREEING COMMANDS ---------------\n");
-			free_commands(&commands);
+			//remove_heredoc_file(main);
+			//free_commands(&commands);
+			free_commands(&(main->command_list));
+			main->command_list = NULL;
 		}
 		free(input);
 	}

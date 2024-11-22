@@ -25,12 +25,17 @@ void	ft_wait(t_command *cmd)
 		}
 	}
 	if (WIFEXITED(status))
+	{
 		cmd->main->exit_code = WEXITSTATUS(status);
+		return ;
+	}
 	else if (WIFSIGNALED(status))
 	{
 		signal = WTERMSIG(status);
 		cmd->main->exit_code = 128 + signal;
+		return ;
 	}
+	return ;
 }
 
 void	safe_close(int *fd)

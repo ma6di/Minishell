@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 05:09:04 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/22 12:01:33 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,8 @@ t_token	**expand(t_token **head, char **envp)
 	//envp_key_val = split_envp(envp);
 	//if (!envp_key_val)
 	//	return (free_three_dim(envp_key_val), NULL);
+	if (!head || !(*head))
+		return (NULL);
 	curr = *head;
 	while (curr)
 	{

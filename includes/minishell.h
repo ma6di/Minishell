@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/21 18:04:44 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/22 17:40:34 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ extern int	g_pid;
 typedef struct s_fds		t_fds;	// Forward declaration
 typedef struct s_token		t_token;	// Forward declaration
 typedef struct s_command	t_command;	// Forward declaration
+typedef struct s_heredoc	t_heredoc;
 
 typedef enum e_return_codes
 {
@@ -103,10 +104,9 @@ typedef struct s_token
 
 typedef struct s_command
 {
-	char				*command;
+	char				*command; //cat
 	char				**args;
-	char				*heredoc_delimiter;
-	int					expand_heredoc_content;
+	t_heredoc			**heredocs; // [t_heredoc, t_heredoc, NULL]
 	int					nr_of_pipes;
 	int					*pipe_fd;
 	int					has_pipe;
@@ -115,6 +115,7 @@ typedef struct s_command
 	char				*result_file;
 	bool				pipe_created;
 	pid_t				pid;
+	pid_t				heredoc_pid;
 	t_fds				*io_fds;
 	struct s_command	*next;
 	struct s_command	*prev;
@@ -123,12 +124,12 @@ typedef struct s_command
 
 typedef struct s_fds
 {
-	char	*infile;
+	char	*infile; //heredoc.txt -> need to free the file before replacing it
 	char	*outfile;
 	char	*append_outfile;
 	int		fd_in;
 	int		fd_out;
-	int		has_heredoc;
+	int		has_heredoc; // 2 nr_of_heredoc
 	int		fd_err;
 	int		is_stderr_redirected;
 	int		in_duped;
@@ -137,7 +138,8 @@ typedef struct s_fds
 
 typedef struct s_heredoc
 {
-	pid_t	pid;
+	char	*delimiter;
+	int		should_expand;
 	char	*line;
 	char	*filename;
 	char	*expanded_line;
@@ -149,6 +151,7 @@ t_token			**parse(t_token **head, char *input);
 t_token			**expand(t_token **head, char **envp);
 void			free_tokens(t_token **head);
 void			free_commands(t_command **head);
+void			free_command_child(t_command **cmd);
 void			free_main(t_main *main);
 void			add_token(t_token **head, t_token *new_token);
 void			create_token(t_token **head, char *value, t_state state);
@@ -172,12 +175,12 @@ int				is_operator_char(char c);
 int				is_delimiter(char c);
 t_command		**create_commands(t_command **head_c, t_token **head_t, t_main **main);
 void			init_empty_fds(t_command **new_cmd);
-t_command		*init_empty_cmd(void);
+t_command		*init_empty_cmd(t_main **main);
 void			add_command(t_command **head, t_command *new_cmd);
 char	*get_command_path(const char *command, char **env_vars);
 int		execute_external(t_command *cmd, char **env_vars);
 void	execute_commands(t_main **main);
-void	exec_child(t_command *cmd, char **env);
+void	exec_child(t_command *cmd, t_main **main);
 int		is_builtin(char *command);
 int		setup_file_redirections(t_command *cmd);
 void	pipe_handler(t_command *cmd);
@@ -219,5 +222,6 @@ char	*get_env_name(const char *src);
 void	cd_print_error(const char *arg);
 int		command_exists_in_dir(const char *dir, const char *command);
 char	*join_path_and_command(const char *dir, const char *command);
+int 	exp_env_update(char **env_vars, int index, const char *value);
 
 #endif

@@ -39,7 +39,7 @@ int	exec_special_builtin(t_command *cmd, t_main *main)
 	return (status);
 }
 
-void	exec_child(t_command *cmd, char **env)
+void	exec_child(t_command *cmd, t_main **main)
 {
 	if (ft_strncmp(cmd->command, "sleep", ft_strlen("sleep") + \
 		ft_strlen(cmd->command)) == 0)
@@ -55,8 +55,11 @@ void	exec_child(t_command *cmd, char **env)
 		if (is_builtin(cmd->command))
 			cmd->main->exit_code = exec_builtin(cmd, cmd->main);
 		else
-			cmd->main->exit_code = exec_external(cmd, env);
-		exit(cmd->main->exit_code);
+			cmd->main->exit_code = exec_external(cmd, (*main)->env_vars);
+		printf("command %s\n", cmd->command);
+		free_command_child(&cmd);
+		free(cmd);
+		exit((*main)->exit_code);
 	}
 	else
 		ft_wait(cmd);
@@ -79,7 +82,7 @@ void	execute_commands(t_main **main)
 		if (is_special_builtin(cmd->command))
 			(*main)->exit_code = exec_special_builtin(cmd, *main);
 		else
-			exec_child(cmd, (*main)->env_vars);
+			exec_child(cmd, main);
 		parent_pipe_close(cmd);
 		ft_fd_reset(cmd, original_stdin, original_stdout);
 		cmd = cmd->next;

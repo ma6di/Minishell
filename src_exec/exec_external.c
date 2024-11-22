@@ -50,7 +50,7 @@ static int	error_code(int err_code)
 	}
 	else if (err_code == ENOENT)
 	{
-		perror("minishell: no such file or directory");
+		perror("minishell");
 		return (127);
 	}
 	else
