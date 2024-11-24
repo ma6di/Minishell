@@ -18,11 +18,11 @@ char	**add_to_args(char **old_args, char *new_arg)
 	int		i;
 
 	i = 0;
-	printf("duped arg %p - %s\n", new_arg, new_arg);
+	//printf("duped arg %p - %s\n", new_arg, new_arg);
 	while (old_args && old_args[i])
 		i++;
 	new_args = malloc((i + 2) * sizeof(char *));
-	printf("created new args array %p\n", new_args);
+	//printf("created new args array %p\n", new_args);
 	if (!new_args)
 		return (NULL);
 	i = 0;
@@ -45,8 +45,9 @@ static void	handle_argument(t_command **cmd, t_token *curr)
 		tmp = add_to_args((*cmd)->args, ft_strdup(curr->value));
 		if ((*cmd)->args)
 		{
-			printf("freed old args array %p\n", (*cmd)->args);
+			//printf("freed old args array %p\n", (*cmd)->args);
 			free((*cmd)->args);
+			
 		}
 		(*cmd)->args = tmp;
 	}

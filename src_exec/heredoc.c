@@ -73,6 +73,7 @@ static void ft_heredoc_readline(t_command *cmd, t_heredoc *heredoc)
 		ft_heredoc_write_to_file(cmd, heredoc);
 	}
 	close(heredoc->heredoc_fd);
+	free(heredoc->delimiter);
 }
 void	exec_heredoc(t_command *cmds)
 {
@@ -100,10 +101,10 @@ void	exec_heredoc(t_command *cmds)
 				cmd = cmd->next;
 			}
 			j = 0;
-			free_commands(&cmds);
 			while (cmd->heredocs[j])
 				free(cmd->heredocs[j++]);
 			free(cmd->heredocs);
+			free_commands(&cmds);
 			exit(0);
 		}
 		else

@@ -44,14 +44,30 @@ static int  print_error(int error, const char *arg)
     int i;
     i = 0;
     if (error == -1)
-        ft_putstr_fd("export: not valid in this context: ", STDERR_FILENO);
+	{
+		ft_putstr_fd("export: ", STDERR_FILENO);
+		ft_putstr_fd("'", STDERR_FILENO);
+		while (arg[i] && (arg[i] != '=' || error == -3))
+		{
+			write(STDERR_FILENO, &arg[i], 1);
+			i++;
+		}
+		ft_putstr_fd("': ", STDERR_FILENO);
+		ft_putstr_fd("not valid in this context", STDERR_FILENO);
+	}
     else if (error == 0 || error == -3)
-        ft_putstr_fd("export: not a valid identifier: ", STDERR_FILENO);
-    while (arg[i] && (arg[i] != '=' || error == -3))
-    {
-        write(STDERR_FILENO, &arg[i], 1);
-        i++;
-    }
+	{
+        ft_putstr_fd("export: ", STDERR_FILENO);
+		ft_putstr_fd("'", STDERR_FILENO);
+		while (arg[i] && (arg[i] != '=' || error == -3))
+		{
+			write(STDERR_FILENO, &arg[i], 1);
+			i++;
+		}
+		ft_putstr_fd("': ", STDERR_FILENO);
+		ft_putstr_fd("not a valid identifier", STDERR_FILENO);
+
+	}
     write(STDERR_FILENO, "\n", 1);
     return (-1);
 }
@@ -62,8 +78,6 @@ static void ft_export_helper(char **args, int error_ret, t_main *main)
     i = 1;
     while (args[i])
     {
-        if (!strchr(args[i], '=')) // Skip if no `=` in the argument
-            break;
         error_ret = is_valid_env(args[i]);
         if (args[i][0] == '=')
             error_ret = -3;
@@ -73,6 +87,8 @@ static void ft_export_helper(char **args, int error_ret, t_main *main)
             i++;
             continue;
         }
+		if (!strchr(args[i], '=') ) // Skip if no `=` in the argument
+            break;
         // Check if the variable already exists
         env_index = is_in_env(main->env_vars, args[i]);
         if (env_index >= 0) // Update existing variable

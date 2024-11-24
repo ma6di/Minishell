@@ -43,6 +43,8 @@ t_command	*init_empty_cmd(t_main **main)
 	new_cmd->pipe_fd = malloc(2 * sizeof(int));
 	if (!new_cmd->pipe_fd)
 		return (NULL);
+	new_cmd->pipe_fd[0] = -1;
+	new_cmd->pipe_fd[1] = -1;
 	new_cmd->has_pipe = 0;
 	new_cmd->error_code = 0;
 	new_cmd->error_message = NULL;
@@ -54,7 +56,7 @@ t_command	*init_empty_cmd(t_main **main)
 	new_cmd->next = NULL;
 	new_cmd->prev = NULL;
 	new_cmd->main = *main;
-	printf("created command %p\n", new_cmd);
+	//printf("created command %p\n", new_cmd);
 	return (new_cmd);
 }
 

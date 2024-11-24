@@ -11,6 +11,7 @@ void	pipe_handler(t_command *cmd)
 			perror("minishell: pipe failed");
 			cmd->error_code = 1;
 		}
+		// printf("pip created\n");
 		cmd->pipe_created = true;
 	}
 }
@@ -20,12 +21,18 @@ void	setup_pipe_redirections_parent(t_command *cmd)
 	if (cmd->prev)
 	{
 		if (!is_special_builtin(cmd->prev->command))
+		{
+			// printf("p dup in pre 0\n");
 			dup2_in(cmd->prev->pipe_fd);
+		}
 	}
 	if (cmd->next && !cmd->io_fds->outfile)
 	{
 		if (!is_special_builtin(cmd->next->command))
+		{
+			// printf("p dup out cur 1\n");
 			dup2_out(cmd->pipe_fd);
+		}
 	}
 }
 
@@ -35,14 +42,14 @@ void	setup_pipe_redirections_child(t_command *cmd)
 	{
 		if (cmd->prev->pipe_created && !cmd->io_fds->infile)
 		{
+			// printf("c dup in pre 0\n");
 			dup2_in(cmd->prev->pipe_fd);
-			close(cmd->pipe_fd[1]);
 		}
 	}
 	if (cmd->pipe_created && cmd->next && !cmd->io_fds->outfile)
 	{
+		// printf("c dup out cur 1\n");
 		dup2_out(cmd->pipe_fd);
-		close(cmd->pipe_fd[0]);
 	}
 }
 

@@ -38,7 +38,7 @@ int	ft_echo(t_command *cmd)
 	args = cmd->args;
 	if (nb_args(args) > 1)
 	{
-		while (args[i] && ft_strncmp(args[i], "-n", (ft_strlen(args[i]))) == 0)
+		while (args[i] && ft_strncmp(args[i], "-n", (ft_strlen(args[i])+ft_strlen("-n"))) == 0)
 		{
 			n_option = 1;
 			i++;

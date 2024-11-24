@@ -39,7 +39,7 @@ int	exec_special_builtin(t_command *cmd, t_main *main)
 	return (status);
 }
 
-void	exec_child(t_command *cmd, t_main **main)
+void	exec_child(t_command *cmd, t_main **main, int original_stdout, int original_stdin)
 {
 	if (ft_strncmp(cmd->command, "sleep", ft_strlen("sleep") + \
 		ft_strlen(cmd->command)) == 0)
@@ -54,10 +54,17 @@ void	exec_child(t_command *cmd, t_main **main)
 			exit (1);
 		setup_pipe_redirections_child(cmd);
 		if (is_builtin(cmd->command))
+		{
 			cmd->main->exit_code = exec_builtin(cmd, cmd->main);
+			safe_close(&original_stdin);
+			safe_close(&original_stdout);
+		}
 		else
+		{
 			cmd->main->exit_code = exec_external(cmd, (*main)->env_vars);
-		printf("command %s\n", cmd->command);
+		}
+		child_pipe_close(cmd);
+		//printf("command %s\n", cmd->command);
 		free_command_child(&cmd);
 		free(cmd);
 		int	exit_code = (*main)->exit_code;
@@ -85,9 +92,13 @@ void	execute_commands(t_main **main)
 		if (is_special_builtin(cmd->command))
 			(*main)->exit_code = exec_special_builtin(cmd, *main);
 		else
-			exec_child(cmd, main);
-		parent_pipe_close(cmd);
+			exec_child(cmd, main, original_stdin, original_stdout);
 		ft_fd_reset(cmd, original_stdin, original_stdout);
+		parent_pipe_close(cmd);
 		cmd = cmd->next;
 	}
+	safe_close(&original_stdin);
+	safe_close(&original_stdout);
+	// safe_close(&cmd->pipe_fd[1]);
+	//list_open_fds();
 }

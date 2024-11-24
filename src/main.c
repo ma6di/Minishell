@@ -62,7 +62,7 @@ int	main(int argc, char **argv, char **envp)
 		input = readline("Minishell% ");
 		if (!input)
 		{
-			printf("exit\n");
+			//printf("exit\n");
 			free_main(main);
 			break ;
 		}
@@ -81,7 +81,7 @@ int	main(int argc, char **argv, char **envp)
 				main->exit_code = 130;
 			set_signals_noniteractive();
 			commands = lexer(input, main->env_vars, &main);
-			printf("--------------- COMMANDS SET ---------------\n");
+			//printf("--------------- COMMANDS SET ---------------\n");
 			main->command_list = commands;
 		}
 		if (commands)
@@ -93,7 +93,7 @@ int	main(int argc, char **argv, char **envp)
 				execute_commands(&main);
 			main->is_sleeping = false;
 			main->heredoc_fork_permit = 0;
-			printf("--------------- FREEING COMMANDS ---------------\n");
+			//printf("--------------- FREEING COMMANDS ---------------\n");
 			//remove_heredoc_file(main);
 			//free_commands(&commands);
 			free_commands(&(main->command_list));

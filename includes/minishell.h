@@ -180,7 +180,7 @@ void			add_command(t_command **head, t_command *new_cmd);
 char	*get_command_path(const char *command, char **env_vars);
 int		execute_external(t_command *cmd, char **env_vars);
 void	execute_commands(t_main **main);
-void	exec_child(t_command *cmd, t_main **main);
+void	exec_child(t_command *cmd, t_main **main, int original_stdout, int original_stdin);
 int		is_builtin(char *command);
 int		setup_file_redirections(t_command *cmd);
 void	pipe_handler(t_command *cmd);
@@ -223,5 +223,9 @@ void	cd_print_error(const char *arg);
 int		command_exists_in_dir(const char *dir, const char *command);
 char	*join_path_and_command(const char *dir, const char *command);
 int 	exp_env_update(char **env_vars, int index, const char *value);
+void	child_pipe_close(t_command *cmd);
+
+
+void list_open_fds();
 
 #endif

@@ -35,7 +35,6 @@ void	ft_wait(t_command *cmd)
 		cmd->main->exit_code = 128 + signal;
 		return ;
 	}
-	return ;
 }
 
 void	safe_close(int *fd)
