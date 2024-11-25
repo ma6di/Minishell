@@ -13,16 +13,12 @@ static int	nb_args(char **args)
 
 static void	ft_echo_print(char **args, t_command *cmd, int i)
 {
+	(void)(cmd);
 	while (args[i])
 	{
-		if (strcmp(args[i], "$?") == 0)
-			ft_putnbr_fd(cmd->main->exit_code, 1);
-		else
-		{
-			ft_putstr_fd(args[i], 1);
-			if (args[i + 1])
-				ft_putstr_fd(" ", 1);
-		}
+		ft_putstr_fd(args[i], 1);
+		if (args[i + 1])
+			ft_putstr_fd(" ", 1);
 		i++;
 	}
 }

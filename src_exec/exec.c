@@ -6,7 +6,7 @@ int	exec_builtin(t_command *cmd, t_main *main)
 	int		status;
 	size_t	cmd_len;
 
-	status = 1;
+	status = 0;
 	cmd_len = ft_strlen(cmd->command);
 	if (ft_strncmp(cmd->command, "echo", ft_strlen("echo") + cmd_len) == 0)
 		status = ft_echo(cmd);
@@ -22,20 +22,26 @@ int	exec_special_builtin(t_command *cmd, t_main *main)
 	int		status;
 	size_t	cmd_len;
 
-	status = 1;
+	status = 0;
 	cmd_len = ft_strlen(cmd->command);
 	setup_file_redirections(cmd);
 	setup_pipe_redirections_parent(cmd);
 	if (ft_strncmp(cmd->command, "cd", ft_strlen("cd") + cmd_len) == 0)
+	{
 		status = ft_cd(cmd, main->env_vars);
+	}
 	else if (ft_strncmp(cmd->command, "export", ft_strlen("export") + \
 		cmd_len) == 0)
-		status = ft_export(cmd->args, main);
+	{
+		status = ft_export(cmd->args, main, cmd);
+	}
 	else if (ft_strncmp(cmd->command, "unset", ft_strlen("unset") + \
 		cmd_len) == 0)
+	{
 		status = ft_unset(cmd->args, main);
+	}
 	else if (ft_strncmp(cmd->command, "exit", ft_strlen("exit") + cmd_len) == 0)
-		ft_exit(main);
+		status = ft_exit(main);
 	return (status);
 }
 
@@ -64,28 +70,29 @@ void	exec_child(t_command *cmd, t_main **main, int original_stdout, int original
 			cmd->main->exit_code = exec_external(cmd, (*main)->env_vars);
 		}
 		child_pipe_close(cmd);
-		//printf("command %s\n", cmd->command);
+		// printf("command %s\n", cmd->command);
 		free_command_child(&cmd);
 		free(cmd);
 		int	exit_code = (*main)->exit_code;
 		free_main((*main));
 		exit(exit_code);
 	}
-	else
-		ft_wait(cmd);
 }
 
 void	execute_commands(t_main **main)
 {
 	t_command	*cmd;
+	t_command	*command;
 	int			original_stdout;
 	int			original_stdin;
 
 	cmd = (*main)->command_list;
+	command = (*main)->command_list;
 	original_stdout = dup(STDOUT_FILENO);
 	original_stdin = dup(STDIN_FILENO);
 	while (cmd)
 	{
+		//is_it_cat(cmd);
 		handle_special_builtin(&cmd);
 		pipe_handler(cmd);
 		fork_handler(cmd);
@@ -97,8 +104,14 @@ void	execute_commands(t_main **main)
 		parent_pipe_close(cmd);
 		cmd = cmd->next;
 	}
+	while(command)
+	{
+		if(command->pid >= 0)
+		{
+			ft_wait(command);
+		}
+		command = command->next;
+	}
 	safe_close(&original_stdin);
 	safe_close(&original_stdout);
-	// safe_close(&cmd->pipe_fd[1]);
-	//list_open_fds();
 }

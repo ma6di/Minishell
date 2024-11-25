@@ -24,7 +24,7 @@ t_command	*lexer(char *input, char **envp, t_main **main)
 	first_cmd = NULL;
 	head_c = &first_cmd;
 	head_t = parse(head_t, input);
-	head_t = expand(head_t, envp);
+	head_t = expand(head_t, envp, (*main));
 	head_t = join_token(head_t);
 	head_t = assign_types(head_t);
 	head_t = check_validity(head_t);
@@ -34,8 +34,8 @@ t_command	*lexer(char *input, char **envp, t_main **main)
 		//print_token_list(head_t);
 		free_tokens(head_t);
 	}
-	// if (head_c && *head_c)
-	// 	print_cmd_list(head_c);
+	if (head_c && *head_c)
+		print_cmd_list(head_c);
 	if (!head_c || !(*head_c))
 		return (NULL);
 	return (*head_c);

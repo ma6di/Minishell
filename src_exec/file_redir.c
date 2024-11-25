@@ -1,6 +1,13 @@
 //NORM OK
 #include "../includes/minishell.h"
 
+static void	no_such_dir(char *io_fds)
+{
+	write(2, "minishell: ", 11);
+	write(2, io_fds, ft_strlen(io_fds));
+	write(2, ": No such file or directory\n", 28);
+}
+
 static int	setup_input_redirection(t_fds *io_fds, t_command *cmd)
 {
 	if (io_fds->infile && !is_special_builtin(cmd->command))
@@ -8,7 +15,7 @@ static int	setup_input_redirection(t_fds *io_fds, t_command *cmd)
 		io_fds->fd_in = open(io_fds->infile, O_RDONLY);
 		if (io_fds->fd_in == -1)
 		{
-			perror("minishell");
+			no_such_dir(io_fds->infile);
 			return (-1);
 		}
 		if (dup2(io_fds->fd_in, STDIN_FILENO) == -1)
@@ -30,7 +37,7 @@ static int	setup_output_redirection(t_fds *io_fds)
 			O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (io_fds->fd_out == -1)
 		{
-			perror("minishell");
+			no_such_dir(io_fds->outfile);
 			return (-1);
 		}
 		if (dup2(io_fds->fd_out, STDOUT_FILENO) == -1)
@@ -52,7 +59,7 @@ static int	setup_append_redirection(t_fds *io_fds)
 			O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (io_fds->fd_out == -1)
 		{
-			perror("minishell");
+			no_such_dir(io_fds->append_outfile);
 			return (-1);
 		}
 		if (dup2(io_fds->fd_out, STDOUT_FILENO) == -1)

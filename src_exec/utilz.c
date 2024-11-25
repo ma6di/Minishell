@@ -55,55 +55,38 @@ int	is_special_builtin(char *command)
 	return (0);
 }
 
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <dirent.h>
-#include <unistd.h>
-#include <errno.h>
-
-#define FD_PATH_MAX 256
-
-void list_open_fds() {
-    const char *fd_dir_path = "/proc/self/fd"; // Path to file descriptors in /proc
-    char fd_target_path[FD_PATH_MAX];
-    DIR *fd_dir;
-    struct dirent *entry;
-
-    fd_dir = opendir(fd_dir_path);
-    if (!fd_dir) {
-        perror("Failed to open /proc/self/fd");
-        return;
+static int file_size(const char *file)
+{
+    struct stat file_stat;
+    if (stat(file, &file_stat) == -1)
+	{
+        perror("stat");
+        return -1;
     }
+    return (int)file_stat.st_size;
+}
 
-    printf("Open file descriptors:\n");
-
-    while ((entry = readdir(fd_dir)) != NULL) {
-        // Skip special entries "." and ".."
-        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
-            continue;
+void is_it_cat(t_command *cmd)
+{
+    if (cmd->args && cmd->args[0] && strncmp(cmd->args[0], "cat", 3) == 0)
+	{
+		if(cmd->next && cmd->has_pipe)
+		{
+			int i = 1;
+			while (cmd->args[i])
+			{
+				int size = file_size(cmd->args[i]);
+				if (size == -1)
+					return;
+				if (size > 64)
+				{
+					cmd->io_fds->outfile = strdup("cat.txt");
+					if (cmd->next && !cmd->next->io_fds->infile)
+						cmd->next->io_fds->infile = strdup("cat.txt");
+					break;
+				}
+				i++;
+			}
         }
-
-        // Construct the full path of the file descriptor
-        if ((size_t)snprintf(fd_target_path, sizeof(fd_target_path), "%s/%s", fd_dir_path, entry->d_name) >= sizeof(fd_target_path)) {
-            fprintf(stderr, "Path truncated for FD: %s\n", entry->d_name);
-            continue;
-        }
-
-        // Resolve the symbolic link to the file descriptor
-        char resolved_path[FD_PATH_MAX];
-        ssize_t len = readlink(fd_target_path, resolved_path, sizeof(resolved_path) - 1);
-        if (len == -1) {
-            perror("Failed to read FD link");
-            continue;
-        }
-
-        resolved_path[len] = '\0'; // Null-terminate the resolved path
-        printf("FD %s -> %s\n", entry->d_name, resolved_path);
-    }
-
-    if (closedir(fd_dir) == -1) {
-        perror("Failed to close /proc/self/fd");
     }
 }

@@ -30,6 +30,8 @@
 # include <unistd.h>
 # include <dirent.h>
 # include "../libft/includes/libft.h"
+# include <sys/stat.h>
+
 
 # define WHITESPACE " "
 # define OP_REDIRECT ">"
@@ -148,7 +150,8 @@ typedef struct s_heredoc
 
 t_command		*lexer(char *input, char **envp, t_main **main);
 t_token			**parse(t_token **head, char *input);
-t_token			**expand(t_token **head, char **envp);
+t_token			**expand(t_token **head, char **envp, t_main *main);
+t_token			**expand_keys(t_token **head, char **envp, t_main *main);
 void			free_tokens(t_token **head);
 void			free_commands(t_command **head);
 void			free_command_child(t_command **cmd);
@@ -177,55 +180,53 @@ t_command		**create_commands(t_command **head_c, t_token **head_t, t_main **main
 void			init_empty_fds(t_command **new_cmd);
 t_command		*init_empty_cmd(t_main **main);
 void			add_command(t_command **head, t_command *new_cmd);
-char	*get_command_path(const char *command, char **env_vars);
-int		execute_external(t_command *cmd, char **env_vars);
-void	execute_commands(t_main **main);
-void	exec_child(t_command *cmd, t_main **main, int original_stdout, int original_stdin);
-int		is_builtin(char *command);
-int		setup_file_redirections(t_command *cmd);
-void	pipe_handler(t_command *cmd);
-int		exec_builtin(t_command *cmd, t_main *main);
-int		exec_external(t_command *cmd, char **env_vars);
-void	setup_test_data(t_main *main, char **argv);
-void	cleanup_commands(t_main *mian);
-int		ft_unset(char **args, t_main *main);
-int		ft_pwd(void);
-int		is_in_env(char **env_vars, const char *args);
-int		ft_export(char **args, t_main *main);
-int		env_add(char ***env_vars, const char *value);
-void	ft_exit(t_main *main);
-int		ft_env(t_main *main, t_command *cmd);
-int		ft_echo(t_command *cmd);
-int		ft_cd(t_command *cmd, char **env);
-void	safe_close(int *fd);
-void	fork_handler(t_command *cmd);
-void	ft_wait(t_command *cmd);
-void	dup2_out( int *pipe_fd);
-void	dup2_in(int *pipe_fd);
-void	parent_pipe_close(t_command *cmd);
-void	ft_fd_reset(t_command *cmd, int original_stdin, int original_stdout);
-void	handle_special_builtin(t_command **cmd);
-int		is_special_builtin(char *command);
-void	setup_pipe_redirections_parent(t_command *cmd);
-void	setup_pipe_redirections_child(t_command *cmd);
-void	exec_heredoc(t_command *cmds);
-void	remove_heredoc_file(t_main *main);
-void	set_signals_interactive(void);
-void	set_signals_heredoc(void);
-void	set_signals_child(void);
-void	signal_quit_message(int signo);
-void	set_signals_sleep_mode(void);
-void	signal_reset_prompt_sleep(int signo);
-void	set_signals_noniteractive(void);
-char	*expand_variables_in_line(char *line, char **envp);
-char	*get_env_name(const char *src);
-void	cd_print_error(const char *arg);
-int		command_exists_in_dir(const char *dir, const char *command);
-char	*join_path_and_command(const char *dir, const char *command);
-int 	exp_env_update(char **env_vars, int index, const char *value);
-void	child_pipe_close(t_command *cmd);
-
-
-void list_open_fds();
+char			*get_command_path(const char *command, char **env_vars);
+int				execute_external(t_command *cmd, char **env_vars);
+void			execute_commands(t_main **main);
+void			exec_child(t_command *cmd, t_main **main, int original_stdout, int original_stdin);
+int				is_builtin(char *command);
+int				setup_file_redirections(t_command *cmd);
+void			pipe_handler(t_command *cmd);
+int				exec_builtin(t_command *cmd, t_main *main);
+int				exec_external(t_command *cmd, char **env_vars);
+void			setup_test_data(t_main *main, char **argv);
+void			cleanup_commands(t_main *mian);
+int				ft_unset(char **args, t_main *main);
+int				ft_pwd(void);
+int				is_in_env(char **env_vars, const char *args);
+int				ft_export(char **args, t_main *main, t_command *cmd);
+int				env_add(char ***env_vars, const char *value);
+int				ft_exit(t_main *main);
+int				ft_env(t_main *main, t_command *cmd);
+int				ft_echo(t_command *cmd);
+int				ft_cd(t_command *cmd, char **env);
+void			safe_close(int *fd);
+void			fork_handler(t_command *cmd);
+void			ft_wait(t_command *cmd);
+void			dup2_out( int *pipe_fd);
+void			dup2_in(int *pipe_fd);
+void			parent_pipe_close(t_command *cmd);
+void			ft_fd_reset(t_command *cmd, int original_stdin, int original_stdout);
+void			handle_special_builtin(t_command **cmd);
+int				is_special_builtin(char *command);
+void			setup_pipe_redirections_parent(t_command *cmd);
+void			setup_pipe_redirections_child(t_command *cmd);
+void			exec_heredoc(t_command *cmds);
+void			remove_heredoc_file(t_main *main);
+void			set_signals_interactive(void);
+void			set_signals_heredoc(void);
+void			set_signals_child(void);
+void			signal_quit_message(int signo);
+void			set_signals_sleep_mode(void);
+void			signal_reset_prompt_sleep(int signo);
+void			set_signals_noniteractive(void);
+char			*expand_variables_in_line(char *line, char **envp);
+char			*get_env_name(const char *src);
+void			cd_print_error(const char *arg);
+int				command_exists_in_dir(const char *dir, const char *command);
+char			*join_path_and_command(const char *dir, const char *command);
+int 			exp_env_update(char **env_vars, int index, const char *value);
+void			child_pipe_close(t_command *cmd);
+void			is_it_cat(t_command *cmd);
 
 #endif

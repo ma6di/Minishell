@@ -51,7 +51,7 @@ t_command	*init_empty_cmd(t_main **main)
 	new_cmd->result_file = NULL;
 	new_cmd->pipe_created = NULL;
 	new_cmd->heredoc_pid = 0;
-	new_cmd->pid = getpid();
+	new_cmd->pid = -1;
 	init_empty_fds(&new_cmd);
 	new_cmd->next = NULL;
 	new_cmd->prev = NULL;

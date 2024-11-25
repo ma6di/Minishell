@@ -56,6 +56,7 @@ int	main(int argc, char **argv, char **envp)
 	(void )		argc;
 	(void )		argv;
 	main = init_main(envp);
+	commands = NULL;
 	while (1)
 	{
 		set_signals_interactive();

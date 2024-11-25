@@ -17,7 +17,7 @@ static int	is_numeric(const char *str)
 	return (1);
 }
 
-void	ft_exit(t_main *main)
+int	ft_exit(t_main *main)
 {
 	t_command	*cmd;
 	int			exit_code;
@@ -38,13 +38,13 @@ void	ft_exit(t_main *main)
 
 	if (cmd->args[2]) // More than one argument
 	{
-		main->exit_code = 1;
 		ft_putendl_fd("minishell: exit: too many arguments", 2);
-		return;
+		return (1);
 	}
 
 	// Single numeric argument
-	exit_code = atoi(cmd->args[1]);
+	exit_code = ft_atoi(cmd->args[1]);
 	exit(exit_code);
+	return (0);
 }
 

@@ -16,6 +16,7 @@ char    *get_env_name(const char *src)
     dest[i] = '\0';
     return (dest);
 }
+
 static int  is_valid_env(const char *arg)
 {
     const char  *equal_pos;
@@ -39,6 +40,7 @@ static int  is_valid_env(const char *arg)
     }
     return (1);
 }
+
 static int  print_error(int error, const char *arg)
 {
     int i;
@@ -71,10 +73,12 @@ static int  print_error(int error, const char *arg)
     write(STDERR_FILENO, "\n", 1);
     return (-1);
 }
-static void ft_export_helper(char **args, int error_ret, t_main *main)
+static int ft_export_helper(char **args, int error_ret, t_main *main)
 {
     int i;
     int env_index;
+	int error_found = 0;
+
     i = 1;
     while (args[i])
     {
@@ -84,8 +88,9 @@ static void ft_export_helper(char **args, int error_ret, t_main *main)
         if (error_ret <= 0) // Handle invalid cases
         {
             print_error(error_ret, args[i]);
+			error_found = 1;
             i++;
-            continue;
+            continue;;
         }
 		if (!strchr(args[i], '=') ) // Skip if no `=` in the argument
             break;
@@ -96,7 +101,7 @@ static void ft_export_helper(char **args, int error_ret, t_main *main)
             if (exp_env_update(main->env_vars, env_index, args[i]) == -1)
             {
                 perror("minishell: failed to update variable");
-                return;
+                break;
             }
         }
         else // Add new variable
@@ -104,19 +109,26 @@ static void ft_export_helper(char **args, int error_ret, t_main *main)
             if (env_add(&main->env_vars, args[i]) == -1)
             {
                 perror("minishell: failed to add variable");
-                return;
+                break;
             }
         }
         i++;
     }
+	return (error_found);
 }
-int ft_export(char **args, t_main *main)
+
+int ft_export(char **args, t_main *main, t_command *cmd)
 {
     int error_ret;
     int i;
+
     i = 0;
     error_ret = 0;
-    if (!args[1])
+	if(cmd->has_pipe && cmd->next && cmd->args[1])
+	{
+		return (0);
+	}
+    else if (!args[1])
     {
         while (main->env_vars && main->env_vars[i])
         {
@@ -124,8 +136,8 @@ int ft_export(char **args, t_main *main)
                 ft_putendl_fd(main->env_vars[i], 1);
             i++;
         }
-        return (SUCCESS);
+        return (0);
     }
-    ft_export_helper(args, error_ret, main);
-    return (SUCCESS);
+    error_ret = ft_export_helper(args, 0, main);
+    return (error_ret);
 }
