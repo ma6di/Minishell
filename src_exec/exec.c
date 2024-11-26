@@ -24,7 +24,8 @@ int	exec_special_builtin(t_command *cmd, t_main *main)
 
 	status = 0;
 	cmd_len = ft_strlen(cmd->command);
-	setup_file_redirections(cmd);
+	if (setup_file_redirections(cmd) == -1)
+		return (1);
 	setup_pipe_redirections_parent(cmd);
 	if (ft_strncmp(cmd->command, "cd", ft_strlen("cd") + cmd_len) == 0)
 	{
@@ -59,6 +60,7 @@ void	exec_child(t_command *cmd, t_main **main, int original_stdout, int original
 		if (setup_file_redirections(cmd) == -1)
 			exit (1);
 		setup_pipe_redirections_child(cmd);
+		//is_it_cat(cmd);
 		if (is_builtin(cmd->command))
 		{
 			cmd->main->exit_code = exec_builtin(cmd, cmd->main);

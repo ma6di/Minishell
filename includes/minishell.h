@@ -93,6 +93,7 @@ typedef struct s_main
 	int			exit_code;
 	bool		is_sleeping;
 	int			heredoc_fork_permit;
+	int			should_exit;
 }				t_main;
 
 typedef struct s_token

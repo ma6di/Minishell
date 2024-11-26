@@ -20,31 +20,34 @@ static int	is_numeric(const char *str)
 int	ft_exit(t_main *main)
 {
 	t_command	*cmd;
-	int			exit_code;
 
 	cmd = main->command_list;
-	//ft_putendl_fd("exit", 2);
-
-	if (!cmd->args[1]) // No arguments
-		exit(0);
-
-	if (!is_numeric(cmd->args[1])) // Non-numeric argument
+	if (!cmd->args[1]) 
 	{
-		//ft_putstr_fd("minishell: exit: ", 2);
+		main->should_exit = 0;
+		return (0); 
+	}
+	if (!is_numeric(cmd->args[1]))
+	{
 		ft_putstr_fd(cmd->args[1], 2);
 		ft_putendl_fd(": numeric argument required", 2);
-		exit(2); // Exit with code 255 for non-numeric argument
+		main->should_exit = 2;
+		return (2); 
 	}
-
-	if (cmd->args[2]) // More than one argument
+	if (cmd->args[2])
 	{
 		ft_putendl_fd("minishell: exit: too many arguments", 2);
 		return (1);
 	}
-
-	// Single numeric argument
-	exit_code = ft_atoi(cmd->args[1]);
-	exit(exit_code);
-	return (0);
+	if (is_numeric(cmd->args[1]))
+	{
+		if(ft_atoi(cmd->args[1]) < 0)
+		{
+			main->should_exit = 256 + ft_atoi(cmd->args[1]);
+			return (main->should_exit);
+		}
+	}
+	main->should_exit = ft_atoi(cmd->args[1]);
+	return (main->should_exit);
 }
 

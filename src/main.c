@@ -41,6 +41,7 @@ static t_main	*init_main(char **envp)
 	main->command_list = NULL;
 	main->exit_code = 0;
 	main->heredoc_fork_permit = 0;
+	main->should_exit = -1;
 	return (main);
 }
 
@@ -52,12 +53,13 @@ int	main(int argc, char **argv, char **envp)
 	char		*input;
 	t_command	*commands;
 	t_main		*main;
+	int			exit_code;
 
 	(void )		argc;
 	(void )		argv;
 	main = init_main(envp);
 	commands = NULL;
-	while (1)
+	while (main->should_exit < 0)
 	{
 		set_signals_interactive();
 		input = readline("Minishell% ");
@@ -70,14 +72,14 @@ int	main(int argc, char **argv, char **envp)
 		if (ft_strlen(input) > 0)
 		{
 			add_history(input);
-			if (ft_strncmp(input, "exit", ft_strlen(input)) == 0)
-			{
-				printf("exit\n");
-				rl_clear_history();
-				free_main(main);
-				free(input);
-				break ;
-			}
+			// if (ft_strncmp(input, "exit", ft_strlen(input)) == 0)
+			// {
+			// 	printf("exit\n");
+			// 	rl_clear_history();
+			// 	free_main(main);
+			// 	free(input);
+			// 	break ;
+			// }
 			if (g_pid == 130)
 				main->exit_code = 130;
 			set_signals_noniteractive();
@@ -102,11 +104,18 @@ int	main(int argc, char **argv, char **envp)
 		}
 		free(input);
 	}
+	printf("exit\n");
+	exit_code = main->should_exit;
+	rl_clear_history();
+	free_commands(&(main->command_list));
+	free_main(main);
+	//free(input);
 	// commands = lexer(input, envp);
 	// if (commands)
 	// {
 	// 	printf("----- FREEING COMMANDS -----\n");
 	// 	free_commands(&commands);
 	// }
-	return (0);
+	// return (0);
+	exit(exit_code);
 }

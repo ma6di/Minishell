@@ -68,25 +68,21 @@ static int file_size(const char *file)
 
 void is_it_cat(t_command *cmd)
 {
-    if (cmd->args && cmd->args[0] && strncmp(cmd->args[0], "cat", 3) == 0)
+    if (cmd->prev && strncmp(cmd->prev->args[0], "cat", 3) == 0)
 	{
-		if(cmd->next && cmd->has_pipe)
+		int i = 1;
+		while (cmd->prev->args[i])
 		{
-			int i = 1;
-			while (cmd->args[i])
+			int size = file_size(cmd->prev->args[i]);
+			if (size == -1)
+				return;
+			if (size > 64)
 			{
-				int size = file_size(cmd->args[i]);
-				if (size == -1)
-					return;
-				if (size > 64)
-				{
-					cmd->io_fds->outfile = strdup("cat.txt");
-					if (cmd->next && !cmd->next->io_fds->infile)
-						cmd->next->io_fds->infile = strdup("cat.txt");
-					break;
-				}
-				i++;
+				printf("sleeping\n");
+				sleep(10);
+				break;
 			}
-        }
-    }
+			i++;
+		}
+	}
 }
