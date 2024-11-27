@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/21 16:37:36 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/27 18:11:39 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,12 @@ int	assign_by_prev(t_token *token)
 		return (token->type = COMMAND, 0);
 	else if (token->prev->type == HEREDOC)
 		return (token->type = HEREDOC_DELIMITER, 0);
-	else if (token->prev->type == REDIRECT
-		|| token->prev->type == APPEND
-		|| token->prev->type == INPUT_REDIRECT)
-		return (token->type = FILENAME, 0);
+	else if (token->prev->type == REDIRECT)
+		return (token->type = OUTFILE, 0);
+	else if (token->prev->type == APPEND)
+		return (token->type = APPENDFILE, 0);
+	else if (token->prev->type == INPUT_REDIRECT)
+		return (token->type = INFILE, 0);
 	return (-1);
 }
 

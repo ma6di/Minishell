@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:09:29 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/22 17:25:09 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/27 18:24:09 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,12 @@ void	print_token_list(t_token **head)
 			printf("LOGICAL_OR\n");
 		else if (curr->type == REDIRECT)
 			printf("REDIRECT\n");
-		else if (curr->type == FILENAME)
-			printf("FILENAME\n");
+		else if (curr->type == APPENDFILE)
+			printf("APPENDFILE\n");
+		else if (curr->type == INFILE)
+			printf("INFILE\n");
+		else if (curr->type == OUTFILE)
+			printf("OUTFILE\n");
 		else if (curr->type == ARGUMENT)
 			printf("ARGUMENT\n");
 		else if (curr->type == HEREDOC)
@@ -96,6 +100,22 @@ void	print_cmd_list(t_command **head)
 			printf("\n");
 		}
 		printf("END HEREDOC\n");
+		printf("OPERATORS -----\n");
+		if (curr->operators)
+		{
+			k = 0;
+			printf("Operators:\n");
+			while (curr->operators[k])
+			{
+				if (k != 0)
+					printf(",\n");
+				printf("\t{ Filename: %s, ", curr->operators[k]->filename);
+				printf("Type: %d }", curr->operators[k]->type);
+				k++;
+			}
+			printf("\n");
+		}
+		printf("END OPERATORS\n");
 		printf("Has Pipe: %d\n", curr->has_pipe);
 		printf("PID: %d\n", curr->pid);
 		printf("FDS -----\n");

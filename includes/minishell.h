@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/27 16:42:01 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/27 18:23:17 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct s_fds		t_fds;	// Forward declaration
 typedef struct s_token		t_token;	// Forward declaration
 typedef struct s_command	t_command;	// Forward declaration
 typedef struct s_heredoc	t_heredoc;
+typedef struct s_operator	t_operator;
 
 typedef enum e_return_codes
 {
@@ -74,6 +75,9 @@ typedef enum e_token_type
 	ARGUMENT,
 	STRING,
 	FILENAME,
+	INFILE,
+	OUTFILE,
+	APPENDFILE,
 	ENV_VAR,
 	SHELL_VAR
 }	t_token_type;
@@ -111,7 +115,7 @@ typedef struct s_command
 	char				*command; //cat
 	char				**args;
 	t_heredoc			**heredocs; // [t_heredoc, t_heredoc, NULL]
-	//t_operator			**operator; // [t_operator.....]
+	t_operator			**operators; // [t_operator.....]
 	int					nr_of_pipes;
 	int					*pipe_fd;
 	int					has_pipe;
@@ -153,11 +157,12 @@ typedef struct s_heredoc
 // heredoc.txt (in)  filename(in)
 // . < < << > < >> < >> <<
 // [file heredoc missing_file]
-// typedef struct s_operator
-// {
-// 	e_token_type	type; // infile , outfile, append
-// 	char			*filename; // custom
-// }				t_operator;
+
+typedef struct s_operator
+{
+	t_token_type	type; // infile , outfile, append
+	char			*filename; // custom
+}				t_operator;
 
 
 t_command		*lexer(char *input, char **envp, t_main **main);

@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:07:56 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/22 16:55:45 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/27 18:40:34 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ t_command	*init_empty_cmd(t_main **main)
 	new_cmd->command = NULL;
 	new_cmd->args = NULL;
 	new_cmd->heredocs = NULL;
+	new_cmd->operators = NULL;
 	new_cmd->nr_of_pipes = 0;
 	new_cmd->pipe_fd = malloc(2 * sizeof(int));
 	if (!new_cmd->pipe_fd)

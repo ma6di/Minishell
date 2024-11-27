@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:45:20 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/22 17:18:32 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/27 18:34:41 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ static void	handle_argument(t_command **cmd, t_token *curr)
 		{
 			//printf("freed old args array %p\n", (*cmd)->args);
 			free((*cmd)->args);
-			
 		}
 		(*cmd)->args = tmp;
 	}
@@ -89,6 +88,28 @@ t_heredoc	**add_to_heredocs(t_heredoc **old_heredocs, t_heredoc *new_heredoc)
 	return (new_heredocs);
 }
 
+t_operator	**add_to_operators(t_operator **old_operators, t_operator *new_operator)
+{
+	t_operator	**new_operators;
+	int			i;
+
+	i = 0;
+	while (old_operators && old_operators[i])
+		i++;
+	new_operators = malloc((i + 2) * sizeof(char *));
+	if (!new_operators)
+		return (NULL);
+	i = 0;
+	while (old_operators && old_operators[i])
+	{
+		new_operators[i] = old_operators[i];
+		i++;
+	}
+	new_operators[i++] = new_operator;
+	new_operators[i] = NULL;
+	return (new_operators);
+}
+
 void	handle_heredoc(t_command **cmd, t_token *curr)
 {
 	t_heredoc	*heredoc;
@@ -108,6 +129,16 @@ void	handle_heredoc(t_command **cmd, t_token *curr)
 	(*cmd)->main->heredoc_fork_permit++;
 }
 
+static t_operator	*init_operator(void)
+{
+	t_operator	*operator;
+
+	operator = malloc(sizeof(t_operator));
+	//operator->type = NULL;
+	operator->filename = NULL;
+	return (operator);
+}
+
 static void	*handle_types(t_command **cmd, t_command **head_c, t_token *curr, t_main **main)
 {
 	if (curr->type == COMMAND)
@@ -125,10 +156,22 @@ static void	*handle_types(t_command **cmd, t_command **head_c, t_token *curr, t_
 	}
 	else if (curr->type == HEREDOC)
 		handle_heredoc(cmd, curr);
-	else if (curr->type == REDIRECT)
-		(*cmd)->io_fds->outfile = ft_strdup(curr->next->value);
-	else if (curr->type == APPEND)
-		(*cmd)->io_fds->append_outfile = ft_strdup(curr->next->value);
+	//else if (curr->type == REDIRECT)
+	//	(*cmd)->io_fds->outfile = ft_strdup(curr->next->value);
+	else if (curr->type == REDIRECT || curr->type == APPEND || curr->type == INPUT_REDIRECT)
+	{
+		t_operator	*operator;
+		t_operator	**tmp;
+
+		operator = init_operator();
+		operator->filename = ft_strdup(curr->next->value);
+		operator->type = curr->next->type;
+		tmp = add_to_operators((*cmd)->operators, operator);
+		if ((*cmd)->operators)
+			free((*cmd)->operators);
+		(*cmd)->operators = tmp;
+		//(*cmd)->io_fds->append_outfile = ft_strdup(curr->next->value);
+	}
 	else if (curr->type == INPUT_REDIRECT)
 	{
 		if ((*cmd)->io_fds->infile)
