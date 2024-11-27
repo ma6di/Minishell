@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/22 17:40:34 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/27 16:42:01 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,8 @@ typedef enum e_token_state
 {
 	GENERAL,
 	QUOTE,
-	DQUOTE
+	DQUOTE,
+	EMPTY
 }	t_state;
 
 typedef struct s_main
@@ -110,6 +111,7 @@ typedef struct s_command
 	char				*command; //cat
 	char				**args;
 	t_heredoc			**heredocs; // [t_heredoc, t_heredoc, NULL]
+	//t_operator			**operator; // [t_operator.....]
 	int					nr_of_pipes;
 	int					*pipe_fd;
 	int					has_pipe;
@@ -148,6 +150,15 @@ typedef struct s_heredoc
 	char	*expanded_line;
 	int		heredoc_fd;
 }				t_heredoc;
+// heredoc.txt (in)  filename(in)
+// . < < << > < >> < >> <<
+// [file heredoc missing_file]
+// typedef struct s_operator
+// {
+// 	e_token_type	type; // infile , outfile, append
+// 	char			*filename; // custom
+// }				t_operator;
+
 
 t_command		*lexer(char *input, char **envp, t_main **main);
 t_token			**parse(t_token **head, char *input);

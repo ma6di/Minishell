@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/22 12:01:33 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/27 17:17:25 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,8 +115,11 @@ char	*get_value(char *env_key, char **envp)
 		while (envp[i][j] && envp[i][j] != '='
 			&& envp[i][j] == env_key[j])
 			j++;
-		if (envp[i][j++] == '=')
+		if (envp[i][j] == '=' && env_key[j] == '\0')
+		{
+			j++;
 			value = ft_substr(envp[i], j, ft_strlen(envp[i]) - j);
+		}
 		i++;
 	}
 	if (value)

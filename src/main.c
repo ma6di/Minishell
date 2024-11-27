@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/22 17:12:45 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/27 16:19:18 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ int	main(int argc, char **argv, char **envp)
 			//free_commands(&commands);
 			free_commands(&(main->command_list));
 			main->command_list = NULL;
+			commands =NULL;
 		}
 		free(input);
 	}
