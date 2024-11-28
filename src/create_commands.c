@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:45:20 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/28 16:51:51 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 18:09:47 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,14 +145,16 @@ static void	handle_operators(t_command **cmd, t_token *curr, t_token **head_t)
 		handle_heredoc(cmd, curr);
 		operator->filename = ft_strdup("heredoc.txt");
 	}
-	else
-		operator->filename = ft_strdup(curr->next->value);
-	if (curr->type != HEREDOC && curr == *head_t)
+	else if (curr == *head_t || (curr->prev && (curr->prev->type == PIPE 
+				&& (!curr->next->next || curr->next->next->type != COMMAND))))
 	{
 		(*cmd)->command = ft_strdup("echo");
 		handle_argument(cmd, ft_strdup("echo"));
 		handle_argument(cmd, ft_strdup("-n"));
+		operator->filename = ft_strdup(curr->next->value);
 	}
+	else
+		operator->filename = ft_strdup(curr->next->value);
 	operator->type = curr->next->type;
 	tmp = add_to_operators((*cmd)->operators, operator);
 	if ((*cmd)->operators)
@@ -163,13 +165,15 @@ static void	handle_operators(t_command **cmd, t_token *curr, t_token **head_t)
 static t_command	*handle_types(t_command **cmd, t_token **head_t, 
 						t_token *curr, t_main **main)
 {
-	if (curr->type == COMMAND)
+	if (curr->type == COMMAND && !(*cmd)->command)
 	{
 		(*cmd)->command = ft_strdup(curr->value);
 		handle_argument(cmd, curr->value);
 		if (!(*cmd)->args)
 			return (NULL);
 	}
+	else if (curr->type == COMMAND)
+		handle_argument(cmd, curr->value);
 	else if (curr->type == ARGUMENT)
 	{
 		handle_argument(cmd, curr->value);

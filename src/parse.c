@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/28 16:38:17 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 18:20:51 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ char	*handle_space(t_token **head, char *str)
 
 char	*handle_state_g(char **buff, t_token **head, t_state *state, char *str)
 {
+	if (*str == '#')
+		return (NULL);
 	if (*buff && (*str == '\'' || *str == '"'))
 		end_token(buff, head, *state);
 	if (*str == '\'')
@@ -162,7 +164,11 @@ t_token	**parse(t_token **head, char *str)
 	while (*str)
 	{
 		if (state == GENERAL)
+		{
 			str = handle_state_g(&buff, head, &state, str);
+			if (!str)
+				break ;
+		}
 		else if (state == DQUOTE)
 			str = handle_state_dq(&buff, head, &state, str);
 		else if (state == QUOTE)

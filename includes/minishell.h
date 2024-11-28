@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/28 15:35:44 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 18:19:13 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,8 +183,6 @@ void			print_key_val(char ***filtered_envp);
 void			free_two_dim(char **env_keys);
 void			free_three_dim(char ***filtered_envp);
 int				is_whitespace(char c);
-// int				is_lower(char c);
-// int				is_upper(char c);
 void			display_error(char *message, char *value, t_token **head);
 t_token			**join_token(t_token **head);
 t_token			**assign_types(t_token **head);
