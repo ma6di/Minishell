@@ -245,5 +245,7 @@ char			*join_path_and_command(const char *dir, const char *command);
 int 			exp_env_update(char **env_vars, int index, const char *value);
 void			child_pipe_close(t_command *cmd);
 void			is_it_cat(t_command *cmd);
+int				type_redir_exist(t_command *cmd, t_token_type	type);
+
 
 #endif

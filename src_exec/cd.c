@@ -78,7 +78,8 @@ int	ft_cd(t_command *cmd, char **env)
 	char		cwd[MAX_PATH_LENGTH];
 
 	args = cmd->args;
-	if (cmd->io_fds->infile) // Ignore infile commands
+
+	if(type_redir_exist(cmd, INFILE))// Ignore infile commands
 		return (SUCCESS);
 	if (!args[1]) // No arguments provided
 	{

@@ -26,7 +26,7 @@ void	setup_pipe_redirections_parent(t_command *cmd)
 			dup2_in(cmd->prev->pipe_fd);
 		}
 	}
-	if (cmd->next && !cmd->io_fds->outfile)
+	if (cmd->next && !(type_redir_exist(cmd, OUTFILE)))
 	{
 		if (!is_special_builtin(cmd->next->command))
 		{
@@ -40,13 +40,13 @@ void	setup_pipe_redirections_child(t_command *cmd)
 {
 	if (cmd->prev)
 	{
-		if (cmd->prev->pipe_created && !cmd->io_fds->infile)
+		if (cmd->prev->pipe_created && !(type_redir_exist(cmd, INFILE)))
 		{
 			// printf("c dup in pre 0\n");
 			dup2_in(cmd->prev->pipe_fd);
 		}
 	}
-	if (cmd->pipe_created && cmd->next && !cmd->io_fds->outfile)
+	if (cmd->pipe_created && cmd->next && !(type_redir_exist(cmd, OUTFILE)))
 	{
 		// printf("c dup out cur 1\n");
 		dup2_out(cmd->pipe_fd);

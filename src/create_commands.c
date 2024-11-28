@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:45:20 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/28 15:58:19 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 16:51:51 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,22 +33,6 @@ char	**add_to_args(char **old_args, char *new_arg)
 	new_args[i] = NULL;
 	return (new_args);
 }
-
-// static void	handle_argument(t_command **cmd, t_token *curr)
-// {
-// 	char		**tmp;
-
-// 	if (ft_strlen(curr->value) != 0)
-// 	{
-// 		tmp = add_to_args((*cmd)->args, ft_strdup(curr->value));
-// 		if ((*cmd)->args)
-// 		{
-// 			//printf("freed old args array %p\n", (*cmd)->args);
-// 			free((*cmd)->args);
-// 		}
-// 		(*cmd)->args = tmp;
-// 	}
-// }
 
 static void	handle_argument(t_command **cmd, char *value)
 {

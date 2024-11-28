@@ -39,78 +39,95 @@ static int error_code(int err_code, char *file)
     }
 }
 
-static int	setup_input_redirection(t_fds *io_fds, t_command *cmd)
+static int	setup_input_redirection(char	*filename, t_command *cmd)
 {
-	if (io_fds->infile && !is_special_builtin(cmd->command))
+	if (!is_special_builtin(cmd->command))
 	{
-		io_fds->fd_in = open(io_fds->infile, O_RDONLY);
-		if (io_fds->fd_in == -1)
+		cmd->io_fds->fd_in = open(filename, O_RDONLY);
+		if (cmd->io_fds->fd_in == -1)
 		{
-			return (error_code(errno, io_fds->infile));
+			return (error_code(errno, filename));
 		}
-		if (dup2(io_fds->fd_in, STDIN_FILENO) == -1)
+		if (dup2(cmd->io_fds->fd_in, STDIN_FILENO) == -1)
 		{
 			perror("minishell: dup2 input redirection failed");
-			close(io_fds->fd_in);
+			close(cmd->io_fds->fd_in);
 			return (-1);
 		}
-		close(io_fds->fd_in);
+		close(cmd->io_fds->fd_in);
 	}
 	return (0);
 }
 
-static int	setup_output_redirection(t_fds *io_fds)
+static int	setup_output_redirection(char	*filename, t_command *cmd)
 {
-	if (io_fds->outfile)
+
+	cmd->io_fds->fd_out = open(filename, \
+		O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (cmd->io_fds->fd_out == -1)
 	{
-		io_fds->fd_out = open(io_fds->outfile, \
-			O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (io_fds->fd_out == -1)
-		{
-			return (error_code(errno, io_fds->outfile));
-		}
-		if (dup2(io_fds->fd_out, STDOUT_FILENO) == -1)
-		{
-			perror("minishell: dup2 output redirection failed");
-			close(io_fds->fd_out);
-			return (-1);
-		}
-		close(io_fds->fd_out);
+		return (error_code(errno, filename));
 	}
+	if (dup2(cmd->io_fds->fd_out, STDOUT_FILENO) == -1)
+	{
+		perror("minishell: dup2 output redirection failed");
+		close(cmd->io_fds->fd_out);
+		return (-1);
+	}
+	close(cmd->io_fds->fd_out);
 	return (0);
 }
 
-static int	setup_append_redirection(t_fds *io_fds)
+static int	setup_append_redirection(char	*filename, t_command *cmd)
 {
-	if (io_fds->append_outfile)
+
+	cmd->io_fds->fd_out = open(filename, \
+		O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (cmd->io_fds->fd_out == -1)
 	{
-		io_fds->fd_out = open(io_fds->append_outfile, \
-			O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (io_fds->fd_out == -1)
-		{
-			return (error_code(errno, io_fds->append_outfile));
-		}
-		if (dup2(io_fds->fd_out, STDOUT_FILENO) == -1)
-		{
-			perror("minishell: dup2 append output redirection failed");
-			close(io_fds->fd_out);
-			return (-1);
-		}
-		close(io_fds->fd_out);
+		return (error_code(errno, filename));
 	}
+	if (dup2(cmd->io_fds->fd_out, STDOUT_FILENO) == -1)
+	{
+		perror("minishell: dup2 append output redirection failed");
+		close(cmd->io_fds->fd_out);
+		return (-1);
+	}
+	close(cmd->io_fds->fd_out);
 	return (0);
 }
 
 int	setup_file_redirections(t_command *cmd)
 {
-	t_fds	*io_fds;
+	int	i;
 
-	io_fds = cmd->io_fds;
-	if (setup_input_redirection(io_fds, cmd) == -1)
-		return (-1);
-	if (setup_output_redirection(io_fds) == -1)
-		return (-1);
-	if (setup_append_redirection(io_fds) == -1)
-		return (-1);
+	i = 0;
+	while(cmd->operators && cmd->operators[i])
+	{
+		// printf("here77\n");
+
+		t_token_type	type;
+		char			*filename;
+
+		type = cmd->operators[i]->type;
+		filename = cmd->operators[i]->filename;
+		if(type == INFILE)
+		{
+			if (setup_input_redirection(filename, cmd) == -1)
+				return (-1);
+		}
+		if(type == OUTFILE)
+		{
+			if (setup_output_redirection(filename, cmd) == -1)
+				return (-1);
+		}
+		if(type == APPENDFILE)
+		{
+			if (setup_append_redirection(filename, cmd) == -1)
+				return (-1);
+		}
+		i++;
+	}
+	// printf("here77\n");
 	return (SUCCESS);
 }
