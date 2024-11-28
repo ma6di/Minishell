@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 05:09:04 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/27 18:06:50 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,45 @@
 	return (ft_strdup(""));
 }*/
 
+static char *replace_exit_code_in_arg(const char *arg, t_main *main)
+{
+    char    *pos;
+    char    *new_arg;
+    char    *exit_code_str;
+    size_t  prefix_len;
+    size_t  new_arg_len;
+
+    exit_code_str = ft_itoa(main->exit_code); // Convert exit_code to string
+    if (!exit_code_str)
+        return (NULL); // Handle memory allocation failure
+
+    pos = ft_strnstr(arg, "$?", ft_strlen(arg));
+    if (!pos)
+	{
+		free(exit_code_str);
+        return (ft_strdup(arg)); // No `$?`, return a copy of the original string
+	}
+
+    prefix_len = pos - arg; // Length of text before `$?`
+    new_arg_len = prefix_len + ft_strlen(exit_code_str) + ft_strlen(pos + 2) + 1;
+
+    new_arg = malloc(new_arg_len); // Allocate new string
+    if (!new_arg)
+    {
+        free(exit_code_str);
+        return (NULL); // Handle memory allocation failure
+    }
+
+    // Copy parts into the new string using `ft_strlcpy`
+    ft_strlcpy(new_arg, arg, prefix_len + 1);                                 // Copy prefix
+    ft_strlcpy(new_arg + prefix_len, exit_code_str, ft_strlen(exit_code_str) + 1); // Append exit_code
+    ft_strlcpy(new_arg + prefix_len + ft_strlen(exit_code_str), pos + 2, ft_strlen(pos + 2) + 1); // Append remaining string
+
+    free(exit_code_str); // Clean up
+    return (new_arg);
+}
+
+
 char	*get_value(char *env_key, char **envp)
 {
 	int		i;
@@ -79,8 +118,11 @@ char	*get_value(char *env_key, char **envp)
 		while (envp[i][j] && envp[i][j] != '='
 			&& envp[i][j] == env_key[j])
 			j++;
-		if (envp[i][j++] == '=')
+		if (envp[i][j] == '=' && env_key[j] == '\0')
+		{
+			j++;
 			value = ft_substr(envp[i], j, ft_strlen(envp[i]) - j);
+		}
 		i++;
 	}
 	if (value)
@@ -88,7 +130,7 @@ char	*get_value(char *env_key, char **envp)
 	return (ft_strdup(""));
 }
 
-t_token	**expand_keys(t_token **head, char **envp)
+t_token	**expand_keys(t_token **head, char **envp, t_main *main)
 {
 	t_token	*curr;
 	char	*tmp;
@@ -96,9 +138,13 @@ t_token	**expand_keys(t_token **head, char **envp)
 	curr = *head;
 	while (curr)
 	{
-		if (ft_strncmp(curr->value, "$?", ft_strlen(curr->value) + 2) == 0)
-			printf("EXIT CODE\n");
-		else if (curr->state != QUOTE && curr->value[0] == '$'
+		if (curr->state != QUOTE)
+		{
+			tmp = replace_exit_code_in_arg(curr->value, main);
+			free(curr->value);
+			curr->value = tmp;
+		}
+		if (curr->state != QUOTE && curr->value[0] == '$'
 			&& ft_strlen(curr->value) > 1
 			&& !(curr != *head && ft_strncmp(curr->prev->value, "<<", 2) == 0))
 		{
@@ -132,7 +178,7 @@ t_token	**expand_keys(t_token **head, char **envp)
 	return (head);
 }*/
 
-t_token	**expand(t_token **head, char **envp)
+t_token	**expand(t_token **head, char **envp, t_main *main)
 {
 	t_token	*curr;
 	//char	***envp_key_val;
@@ -140,11 +186,13 @@ t_token	**expand(t_token **head, char **envp)
 	//envp_key_val = split_envp(envp);
 	//if (!envp_key_val)
 	//	return (free_three_dim(envp_key_val), NULL);
+	if (!head || !(*head))
+		return (NULL);
 	curr = *head;
 	while (curr)
 	{
 		if (curr->state != QUOTE)
-			head = expand_keys(head, envp);
+			head = expand_keys(head, envp, main);
 		curr = curr->next;
 	}
 	//print_key_val(envp_key_val);

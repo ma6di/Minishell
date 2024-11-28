@@ -6,11 +6,11 @@
 #    By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/18 16:55:20 by nrauh             #+#    #+#              #
-#    Updated: 2024/11/21 17:27:55 by nrauh            ###   ########.fr        #
+#    Updated: 2024/11/22 12:53:04 by nrauh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC = cc
+CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g
 RM = rm -rf
 
@@ -28,7 +28,7 @@ SRC = $(addprefix $(SRC_DIR), main.c lexer.c parse.c expand.c join_token.c \
 	$(addprefix $(SRC_EXEC_DIR), exec.c exec_tools.c pwd.c export.c env.c echo.c \
 	unset.c cd.c file_redir.c exec_external.c exit.c \
 	signals.c heredoc.c pipe_redir.c expantion.c signals2.c export2.c \
-	utilz.c exec_external2.c parent_reset.c)
+	utilz.c exec_external2.c parent_reset.c ft_fprintf.c)
 
 OBJ = $(SRC:.c=.o)
 

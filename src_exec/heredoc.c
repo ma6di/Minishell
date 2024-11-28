@@ -1,12 +1,10 @@
-//NORM OK
 #include "../includes/minishell.h"
-
 static int	ft_check_delimiter(char *line, char *delimiter)
 {
 	if (!line)
 	{
 		write(2, "bash: warning: here-document", 28);
-		write(2," delimited by end-of-file (wanted `", 35);
+		write(2, " delimited by end-of-file (wanted `", 35);
 		write(2, delimiter, ft_strlen(delimiter));
 		write(2, "')\n", 3);
 		return (1);
@@ -21,7 +19,7 @@ static int	ft_check_delimiter(char *line, char *delimiter)
 
 static void	ft_heredoc_wait(t_command *cmd, pid_t pid)
 {
-	int			status;
+	int		status;
 
 	if (waitpid(pid, &status, 0) == -1)
 	{
@@ -34,18 +32,16 @@ static void	ft_heredoc_wait(t_command *cmd, pid_t pid)
 		int signal_number = WTERMSIG(status);
 		if (signal_number == SIGKILL)
 		{
-			write(1,"\n",1);
+			write(1, "\n", 1);
 			cmd->main->exit_code = 130;
 			g_pid = 1;
 		}
 		cmd->main->heredoc_fork_permit = 0;
 	}
 }
-
-
-static void	ft_heredoc_write_to_file(t_command *cmd, t_heredoc *heredoc)
+static void ft_heredoc_write_to_file(t_command *cmd, t_heredoc *heredoc)
 {
-	if (cmd->expand_heredoc_content)
+	if (heredoc->should_expand)
 	{
 		heredoc->expanded_line = \
 			expand_variables_in_line(heredoc->line, cmd->main->env_vars);
@@ -58,8 +54,7 @@ static void	ft_heredoc_write_to_file(t_command *cmd, t_heredoc *heredoc)
 	write(heredoc->heredoc_fd, "\n", 1);
 	free(heredoc->line);
 }
-
-static void	ft_heredoc_readline(t_command *cmd, t_heredoc *heredoc)
+static void ft_heredoc_readline(t_command *cmd, t_heredoc *heredoc)
 {
 	heredoc->filename = "heredoc.txt";
 	heredoc->heredoc_fd = open(heredoc->filename, \
@@ -73,37 +68,46 @@ static void	ft_heredoc_readline(t_command *cmd, t_heredoc *heredoc)
 	{
 		rl_clear_history();
 		heredoc->line = readline("> ");
-		if (ft_check_delimiter(heredoc->line, cmd->heredoc_delimiter))
+		if (ft_check_delimiter(heredoc->line, heredoc->delimiter))
 			break ;
 		ft_heredoc_write_to_file(cmd, heredoc);
 	}
 	close(heredoc->heredoc_fd);
+	free(heredoc->delimiter);
 }
-
 void	exec_heredoc(t_command *cmds)
 {
 	t_command	*cmd;
-	t_heredoc	*heredoc;
+	int			i;
+	int			j;
 
 	if (cmds->main->heredoc_fork_permit)
 	{
 		cmd = cmds;
-		heredoc = malloc(sizeof(t_heredoc));
-		heredoc->pid = fork();
-		if (heredoc->pid == 0)
+		i = 0;
+		cmd->heredoc_pid = fork();
+		if (cmd->heredoc_pid == 0)
 		{
 			set_signals_heredoc();
 			g_pid = getpid();
 			while (cmd)
 			{
 				if (cmd->io_fds->has_heredoc)
-					ft_heredoc_readline(cmd, heredoc);
+					while (cmd->io_fds->has_heredoc > i)
+					{
+						ft_heredoc_readline(cmd, cmd->heredocs[i]);
+						i++;
+					}
 				cmd = cmd->next;
 			}
-			free(heredoc);
+			j = 0;
+			while (cmd->heredocs[j])
+				free(cmd->heredocs[j++]);
+			free(cmd->heredocs);
+			free_commands(&cmds);
 			exit(0);
 		}
 		else
-			ft_heredoc_wait(cmds, heredoc->pid);
+			ft_heredoc_wait(cmds, cmd->heredoc_pid);
 	}
 }

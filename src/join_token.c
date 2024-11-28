@@ -55,6 +55,8 @@ t_token	**join_token(t_token **head)
 	t_token	*curr;
 	char	*joined;
 
+	if (!head || !(*head))
+		return (NULL);
 	curr = *head;
 	while (curr && curr->next)
 	{

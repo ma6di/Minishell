@@ -33,8 +33,11 @@ int	is_whitespace(char c)
 // 	return (0);
 // }
 
-void	display_error(char *message, t_token **head)
+void	display_error(char *message, char *value, t_token **head)
 {
-	perror(message);
+	printf("minishell: %s", message);
+	if (ft_strlen(value) > 0)
+		printf(" `%s'", value);
+	printf("\n");
 	free_tokens(head);
 }
