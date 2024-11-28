@@ -42,13 +42,13 @@ void	setup_pipe_redirections_child(t_command *cmd)
 	{
 		if (cmd->prev->pipe_created && !(type_redir_exist(cmd, INFILE)))
 		{
-			// printf("c dup in pre 0\n");
+			//printf("c dup in pre 0\n");
 			dup2_in(cmd->prev->pipe_fd);
 		}
 	}
-	if (cmd->pipe_created && cmd->next && !(type_redir_exist(cmd, OUTFILE)))
+	if (cmd->pipe_created && cmd->next && !(type_redir_exist(cmd, OUTFILE)) && !(type_redir_exist(cmd, APPENDFILE)))
 	{
-		// printf("c dup out cur 1\n");
+		//printf("c dup out cur 1\n");
 		dup2_out(cmd->pipe_fd);
 	}
 }

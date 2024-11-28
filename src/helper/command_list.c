@@ -61,24 +61,25 @@ t_command	*init_empty_cmd(t_main **main)
 	return (new_cmd);
 }
 
-void	add_command(t_command **head, t_command *new_cmd)
+t_command   *add_command(t_command **head, t_command *new_cmd)
 {
-	t_command	*curr;
+    t_command   *curr;
 
-	if (new_cmd->command == NULL && new_cmd->heredocs != NULL)
-		new_cmd->command = ft_strdup("");
-	if (!head || !(*head))
-	{
-		*head = new_cmd;
-		new_cmd->prev = NULL;
-	}
-	else
-	{
-		curr = *head;
-		while (curr->next)
-			curr = curr->next;
-		curr->next = new_cmd;
-		new_cmd->prev = curr;
-	}
-	new_cmd->next = NULL;
+    if (new_cmd->command == NULL && new_cmd->heredocs != NULL)
+        new_cmd->command = ft_strdup("");
+    if (!head || !(*head))
+    {
+        *head = new_cmd;
+        new_cmd->prev = NULL;
+    }
+    else
+    {
+        curr = *head;
+        while (curr->next)
+            curr = curr->next;
+        curr->next = new_cmd;
+        new_cmd->prev = curr;
+    }
+    new_cmd->next = NULL;
+    return (*head);
 }

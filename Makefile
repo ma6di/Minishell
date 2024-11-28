@@ -28,7 +28,7 @@ SRC = $(addprefix $(SRC_DIR), main.c lexer.c parse.c expand.c join_token.c \
 	$(addprefix $(SRC_EXEC_DIR), exec.c exec_tools.c pwd.c export.c env.c echo.c \
 	unset.c cd.c file_redir.c exec_external.c exit.c \
 	signals.c heredoc.c pipe_redir.c expantion.c signals2.c export2.c \
-	utilz.c exec_external2.c parent_reset.c)
+	utilz.c exec_external2.c parent_reset.c ft_fprintf.c)
 
 OBJ = $(SRC:.c=.o)
 

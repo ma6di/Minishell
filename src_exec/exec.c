@@ -104,6 +104,9 @@ void	execute_commands(t_main **main)
 		parent_pipe_close(cmd);
 		cmd = cmd->next;
 	}
+	safe_close(&original_stdin);
+	safe_close(&original_stdout);
+	
 	while(command)
 	{
 		if(command->pid >= 0)
@@ -112,6 +115,4 @@ void	execute_commands(t_main **main)
 		}
 		command = command->next;
 	}
-	safe_close(&original_stdin);
-	safe_close(&original_stdout);
 }

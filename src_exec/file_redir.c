@@ -39,7 +39,7 @@ static int error_code(int err_code, char *file)
     }
 }
 
-static int	setup_input_redirection(char	*filename, t_command *cmd)
+static int	setup_input_redirection(char *filename, t_command *cmd)
 {
 	if (!is_special_builtin(cmd->command))
 	{
@@ -59,7 +59,7 @@ static int	setup_input_redirection(char	*filename, t_command *cmd)
 	return (0);
 }
 
-static int	setup_output_redirection(char	*filename, t_command *cmd)
+static int	setup_output_redirection(char *filename, t_command *cmd)
 {
 
 	cmd->io_fds->fd_out = open(filename, \
@@ -78,17 +78,19 @@ static int	setup_output_redirection(char	*filename, t_command *cmd)
 	return (0);
 }
 
-static int	setup_append_redirection(char	*filename, t_command *cmd)
+static int	setup_append_redirection(char *filename, t_command *cmd)
 {
-
+	//printf("doing append\n");
 	cmd->io_fds->fd_out = open(filename, \
 		O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (cmd->io_fds->fd_out == -1)
 	{
+		//printf("append error 1\n");
 		return (error_code(errno, filename));
 	}
 	if (dup2(cmd->io_fds->fd_out, STDOUT_FILENO) == -1)
 	{
+		//printf("append error 2\n");
 		perror("minishell: dup2 append output redirection failed");
 		close(cmd->io_fds->fd_out);
 		return (-1);
@@ -104,8 +106,6 @@ int	setup_file_redirections(t_command *cmd)
 	i = 0;
 	while(cmd->operators && cmd->operators[i])
 	{
-		// printf("here77\n");
-
 		t_token_type	type;
 		char			*filename;
 
