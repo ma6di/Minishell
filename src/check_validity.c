@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/21 18:12:05 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 13:46:38 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,16 @@ t_token	**check_validity(t_token **head)
 	if (!head || !(*head))
 		return (NULL);
 	curr = *head;
+	if (curr->type == PIPE)
+	{
+		display_error("syntax error near unexpected token", curr->value, head);
+		return (NULL);
+	}
 	while (curr && curr->next)
 		curr = curr->next;
-	if (is_operator(curr->type) && curr->next == NULL)
+	if ((is_operator(curr->type) && curr->next == NULL))
 	{
-		display_error("syntax error near unexpected token `newline'", head);
+		display_error("syntax error near unexpected token", "newline", head);
 		return (NULL);
 	}
 	return (head);

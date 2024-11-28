@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/27 18:11:39 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 13:27:46 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ int	assign_redirect(t_token *token)
 		return (token->type = INPUT_REDIRECT, 0);
 	else if (ft_strncmp(token->value, "<<", ft_strlen(token->value)) == 0)
 		return (token->type = HEREDOC, 0);
+	else if (ft_strncmp(token->value, "|", ft_strlen(token->value)) == 0)
+		return (token->type = PIPE, 0);
 	else
 		return (-1);
 }

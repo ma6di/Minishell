@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/27 18:41:32 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 13:21:23 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	main(int argc, char **argv, char **envp)
 		if (!input)
 		{
 			//printf("exit\n");
-			free_main(main);
+			//free_main(main);
 			break ;
 		}
 		if (ft_strlen(input) > 0)
@@ -108,7 +108,8 @@ int	main(int argc, char **argv, char **envp)
 	printf("exit\n");
 	exit_code = main->should_exit;
 	rl_clear_history();
-	free_commands(&(main->command_list));
+	main->command_list = NULL;
+	free_commands(&commands);
 	free_main(main);
 	//free(input);
 	// commands = lexer(input, envp);

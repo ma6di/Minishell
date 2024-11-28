@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/27 18:23:17 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 15:35:44 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ void			free_three_dim(char ***filtered_envp);
 int				is_whitespace(char c);
 // int				is_lower(char c);
 // int				is_upper(char c);
-void			display_error(char *message, t_token **head);
+void			display_error(char *message, char *value, t_token **head);
 t_token			**join_token(t_token **head);
 t_token			**assign_types(t_token **head);
 t_token			**check_validity(t_token **head);
@@ -196,7 +196,7 @@ int				is_delimiter(char c);
 t_command		**create_commands(t_command **head_c, t_token **head_t, t_main **main);
 void			init_empty_fds(t_command **new_cmd);
 t_command		*init_empty_cmd(t_main **main);
-void			add_command(t_command **head, t_command *new_cmd);
+t_command		*add_command(t_command **head, t_command *new_cmd);
 char			*get_command_path(const char *command, char **env_vars);
 int				execute_external(t_command *cmd, char **env_vars);
 void			execute_commands(t_main **main);

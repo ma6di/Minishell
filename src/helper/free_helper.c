@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:10:05 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/22 16:42:04 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 13:28:30 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void	free_main(t_main *main)
 	int	i;
 
 	i = 0;
-	while (main->env_vars[i])
+	while (main->env_vars && main->env_vars[i])
 	{
 		free(main->env_vars[i]);
 		i++;

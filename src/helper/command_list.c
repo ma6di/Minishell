@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:07:56 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/27 18:40:34 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 15:36:27 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ t_command	*init_empty_cmd(t_main **main)
 	return (new_cmd);
 }
 
-void	add_command(t_command **head, t_command *new_cmd)
+t_command	*add_command(t_command **head, t_command *new_cmd)
 {
 	t_command	*curr;
 
@@ -81,4 +81,5 @@ void	add_command(t_command **head, t_command *new_cmd)
 		new_cmd->prev = curr;
 	}
 	new_cmd->next = NULL;
+	return (*head);
 }

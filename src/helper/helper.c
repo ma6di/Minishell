@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helper.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 05:47:30 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 12:11:39 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,11 @@ int	is_whitespace(char c)
 // 	return (0);
 // }
 
-void	display_error(char *message, t_token **head)
+void	display_error(char *message, char *value, t_token **head)
 {
-	perror(message);
+	printf("minishell: %s", message);
+	if (value)
+		printf(" `%s'", value);
+	printf("\n");
 	free_tokens(head);
 }
