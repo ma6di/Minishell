@@ -66,7 +66,7 @@ int	main(int argc, char **argv, char **envp)
 		if (!input)
 		{
 			//printf("exit\n");
-			free_main(main);
+			//free_main(main);
 			break ;
 		}
 		if (ft_strlen(input) > 0)

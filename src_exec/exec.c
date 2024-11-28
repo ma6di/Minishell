@@ -68,9 +68,7 @@ void	exec_child(t_command *cmd, t_main **main, int original_stdout, int original
 			safe_close(&original_stdout);
 		}
 		else
-		{
 			cmd->main->exit_code = exec_external(cmd, (*main)->env_vars);
-		}
 		child_pipe_close(cmd);
 		// printf("command %s\n", cmd->command);
 		free_command_child(&cmd);

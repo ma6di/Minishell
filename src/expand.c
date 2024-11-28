@@ -77,7 +77,10 @@ static char *replace_exit_code_in_arg(const char *arg, t_main *main)
 
     pos = ft_strnstr(arg, "$?", ft_strlen(arg));
     if (!pos)
+	{
+		free(exit_code_str);
         return (ft_strdup(arg)); // No `$?`, return a copy of the original string
+	}
 
     prefix_len = pos - arg; // Length of text before `$?`
     new_arg_len = prefix_len + ft_strlen(exit_code_str) + ft_strlen(pos + 2) + 1;

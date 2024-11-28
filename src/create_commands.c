@@ -36,20 +36,17 @@ char	**add_to_args(char **old_args, char *new_arg)
 	return (new_args);
 }
 
-static void	handle_argument(t_command **cmd, t_token *curr)
+static void handle_argument(t_command **cmd, char *value)
 {
-	char		**tmp;
+    char        **tmp;
 
-	if (ft_strlen(curr->value) != 0)
-	{
-		tmp = add_to_args((*cmd)->args, ft_strdup(curr->value));
-		if ((*cmd)->args)
-		{
-			//printf("freed old args array %p\n", (*cmd)->args);
-			free((*cmd)->args);
-		}
-		(*cmd)->args = tmp;
-	}
+    if (ft_strlen(value) != 0)
+    {
+        tmp = add_to_args((*cmd)->args, ft_strdup(value));
+        if ((*cmd)->args)
+            free((*cmd)->args);
+        (*cmd)->args = tmp;
+    }
 }
 
 static t_heredoc	*init_heredoc(void)
@@ -139,52 +136,54 @@ static t_operator	*init_operator(void)
 	return (operator);
 }
 
-static void	*handle_types(t_command **cmd, t_command **head_c, t_token *curr, t_main **main)
+static void *handle_types(t_command **cmd, t_token **head_t, t_token *curr, t_main **main)
 {
-	if (curr->type == COMMAND)
-	{
-		(*cmd)->command = ft_strdup(curr->value);
-		handle_argument(cmd, curr);
-		if (!(*cmd)->args)
-			return (NULL);
-	}
-	else if (curr->type == ARGUMENT)
-	{
-		handle_argument(cmd, curr);
-		if (!(*cmd)->args)
-			return (NULL);
-	}
-	else if (curr->type == HEREDOC)
-		handle_heredoc(cmd, curr);
-	//else if (curr->type == REDIRECT)
-	//	(*cmd)->io_fds->outfile = ft_strdup(curr->next->value);
-	else if (curr->type == REDIRECT || curr->type == APPEND || curr->type == INPUT_REDIRECT)
-	{
-		t_operator	*operator;
-		t_operator	**tmp;
+    if (curr->type == COMMAND)
+    {
+        (*cmd)->command = ft_strdup(curr->value);
+        handle_argument(cmd, curr->value);
+        if (!(*cmd)->args)
+            return (NULL);
+    }
+    else if (curr->type == ARGUMENT)
+    {
+        handle_argument(cmd, curr->value);
+        if (!(*cmd)->args)
+            return (NULL);
+    }
+    else if (curr->type == REDIRECT || curr->type == APPEND || curr->type == INPUT_REDIRECT || curr->type == HEREDOC)
+    {
+        t_operator  *operator;
+        t_operator  **tmp;
 
-		operator = init_operator();
-		operator->filename = ft_strdup(curr->next->value);
-		operator->type = curr->next->type;
-		tmp = add_to_operators((*cmd)->operators, operator);
-		if ((*cmd)->operators)
-			free((*cmd)->operators);
-		(*cmd)->operators = tmp;
-		//(*cmd)->io_fds->append_outfile = ft_strdup(curr->next->value);
-	}
-	else if (curr->type == INPUT_REDIRECT)
-	{
-		if ((*cmd)->io_fds->infile)
-			free((*cmd)->io_fds->infile);
-		(*cmd)->io_fds->infile = ft_strdup(curr->next->value);
-	}
-	else if (curr->type == PIPE)
-	{
-		(*cmd)->has_pipe = 1;
-		add_command(head_c, (*cmd));
-		(*cmd) = init_empty_cmd(main);
-	}
-	return (cmd);
+        operator = init_operator();
+        if (curr->type == HEREDOC)
+        {
+            handle_heredoc(cmd, curr);
+            operator->filename = ft_strdup("heredoc.txt");
+        }
+        else
+            operator->filename = ft_strdup(curr->next->value);
+        if (curr->type != HEREDOC && curr == *head_t)
+        {
+            (*cmd)->command = ft_strdup("echo");
+            handle_argument(cmd, ft_strdup("echo"));
+            handle_argument(cmd, ft_strdup("-n"));
+        }
+        operator->type = curr->next->type;
+        tmp = add_to_operators((*cmd)->operators, operator);
+        if ((*cmd)->operators)
+            free((*cmd)->operators);
+        (*cmd)->operators = tmp;
+        //(*cmd)->io_fds->append_outfile = ft_strdup(curr->next->value);
+    }
+    else if (curr->type == PIPE)
+    {
+        (*cmd)->has_pipe = 1;
+        add_command(&(*main)->command_list, (*cmd));
+        (*cmd) = init_empty_cmd(main);
+    }
+    return (cmd);
 }
 
 t_command	**create_commands(t_command **head_c, t_token **head_t, t_main **main)
@@ -203,7 +202,7 @@ t_command	**create_commands(t_command **head_c, t_token **head_t, t_main **main)
 	}
 	while (curr)
 	{
-		handle_types(&cmd, head_c, curr, main);
+		handle_types(&cmd, head_t, curr, main);
 		curr = curr->next;
 	}
 	if (cmd)

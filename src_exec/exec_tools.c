@@ -48,7 +48,7 @@ void	safe_close(int *fd)
 
 void	handle_special_builtin(t_command **cmd)
 {
-	if (is_special_builtin((*cmd)->command) && !(*cmd)->io_fds->outfile)
+	if (is_special_builtin((*cmd)->command) && !(type_redir_exist((*(cmd)), OUTFILE)))
 	{
 		if ((*cmd)->next && is_special_builtin((*cmd)->next->command))
 		{

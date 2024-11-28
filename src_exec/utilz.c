@@ -86,3 +86,17 @@ void is_it_cat(t_command *cmd)
 		}
 	}
 }
+
+int type_redir_exist(t_command *cmd, t_token_type	type)
+{
+	int	i;
+
+	i = 0;
+	while(cmd->operators && cmd->operators[i])
+	{
+		if(cmd->operators[i]->type == type)
+			return (1);
+		i++;
+	}
+	return (0);
+}
