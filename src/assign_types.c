@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/28 13:27:46 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 16:36:42 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,9 @@ t_token	**assign_types(t_token **head)
 {
 	t_token	*curr;
 
-	curr = *head;
 	if (!head || !(*head))
 		return (NULL);
+	curr = *head;
 	while (curr)
 	{
 		if (ft_strlen(curr->value) == 0)

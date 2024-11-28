@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/28 12:11:39 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 16:38:48 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	is_whitespace(char c)
 void	display_error(char *message, char *value, t_token **head)
 {
 	printf("minishell: %s", message);
-	if (value)
+	if (ft_strlen(value) > 0)
 		printf(" `%s'", value);
 	printf("\n");
 	free_tokens(head);

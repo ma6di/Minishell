@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/28 12:04:37 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 16:38:17 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,6 +174,7 @@ t_token	**parse(t_token **head, char *str)
 	if (state != GENERAL)
 	{
 		display_error("Unclosed quote", "", head);
+		return (NULL);
 	}
 	return (head);
 }

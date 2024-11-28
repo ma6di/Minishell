@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:45:20 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/28 15:58:00 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 15:58:19 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,7 @@ static void	handle_operators(t_command **cmd, t_token *curr, t_token **head_t)
 }
 
 static t_command	*handle_types(t_command **cmd, t_token **head_t, 
-							t_token *curr, t_main **main)
+						t_token *curr, t_main **main)
 {
 	if (curr->type == COMMAND)
 	{

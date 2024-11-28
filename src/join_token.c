@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/21 16:33:03 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/28 16:32:55 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ t_token	**join_token(t_token **head)
 	t_token	*curr;
 	char	*joined;
 
+	if (!head || !(*head))
+		return (NULL);
 	curr = *head;
 	while (curr && curr->next)
 	{
