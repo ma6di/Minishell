@@ -6,19 +6,36 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/28 19:14:24 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/29 09:54:39 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-// static int	is_operator(t_token_type type)
-// {
-// 	if (type == PIPE || type == APPEND || type == INPUT_REDIRECT
-// 		|| type == LOGICAL_OR || type == HEREDOC || type == REDIRECT)
-// 		return (1);
-// 	return (0);
-// }
+// bash operators that expect newline
+// <<< <>
+
+static int	is_herestring(t_token_type curr, t_token_type next)
+{
+	if (curr == HEREDOC && next == INPUT_REDIRECT)
+		return (1);
+	return (0);
+}
+
+static int	is_io_redirect(t_token_type curr, t_token_type next)
+{
+	if (curr == INPUT_REDIRECT && next == REDIRECT)
+		return (1);
+	return (0);
+}
+
+static int	is_operator(t_token_type type)
+{
+	if (type == APPEND || type == INPUT_REDIRECT
+		|| type == HEREDOC || type == REDIRECT)
+		return (1);
+	return (0);
+}
 
 // static int	invalid_operator(t_token *curr)
 // {
@@ -52,29 +69,23 @@ t_token	**check_validity(t_token **head)
 	}
 	while (curr)
 	{
-		if ((curr->type == HEREDOC 
-				|| curr->type == APPEND 
-				|| curr->type == INPUT_REDIRECT 
-				|| curr->type == REDIRECT) 
-			&& curr->next 
-			&& (curr->next->type == HEREDOC 
-				|| curr->next->type == APPEND 
-				|| curr->next->type == INPUT_REDIRECT 
-				|| curr->next->type == REDIRECT))
+		if (curr->next && (is_herestring(curr->type, curr->next->type)
+				|| is_io_redirect(curr->type, curr->next->type)))
 		{
-			display_error("syntax error near unexpected token", curr->value, head);
+			if (!curr->next->next)
+			{
+				display_error("syntax error near unexpected token", 
+					"newline", head);
+				return (NULL);
+			}
+		}
+		else if (is_operator(curr->type)
+			&& curr->next && is_operator(curr->next->type))
+		{
+			display_error("syntax error near unexpected token", 
+				curr->next->value, head);
 			return (NULL);
 		}
-		// if (is_operator(curr->type) && curr->prev && is_operator(curr->prev->type) && curr->prev->type != PIPE)
-		// {
-		// 	display_error("syntax error near unexpected token", curr->value, head);
-		// 	return (NULL);
-		// }
-		// if ((is_operator(curr->type) && curr->next == NULL))
-		// {
-		// 	display_error("syntax error near unexpected token", "newline", head);
-		// 	return (NULL);
-		// }
 		curr = curr->next;
 	}
 	return (head);
