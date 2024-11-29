@@ -65,10 +65,10 @@ static const char *get_home_path(char **env)
 	while (env[i])
 	{
 		if (ft_strncmp(env[i], "HOME=", len) == 0)
-			return (env[i] + len); // Return the value of HOME
+			return (env[i] + len);
 		i++;
 	}
-	return (NULL); // Return NULL if HOME is not found
+	return (NULL);
 }
 
 int	ft_cd(t_command *cmd, char **env)
@@ -79,37 +79,37 @@ int	ft_cd(t_command *cmd, char **env)
 
 	args = cmd->args;
 
-	if(type_redir_exist(cmd, INFILE))// Ignore infile commands
+	if(type_redir_exist(cmd, INFILE))
 		return (SUCCESS);
-	if (!args[1]) // No arguments provided
+	if (!args[1])
 	{
 		path = get_home_path(env);
 		if (!path)
 		{
-			write(2, "Minishell: cd: HOME not set\n", 28);
+			ft_fprintf("Minishell: cd: HOME not set\n");
 			return (1);
 		}
 	}
 	else
 	{
-		if (!is_valid_path(args[1])) // Validate the argument
+		if (!is_valid_path(args[1]))
 		{
-			write(2, "Minishell: cd: invalid path\n", 28);
+			ft_fprintf("Minishell: cd: invalid path\n");
 			return (1);
 		}
 		path = args[1];
 	}
 	if (args[2])
 	{
-		write(2, "Minishell: cd: too many arguments\n", 34);
+		ft_fprintf("Minishell: cd: too many arguments\n");
 		return (1);
 	}
-	if (update_oldpwd(env) == ERROR || chdir(path) < 0) // Attempt to change directory
+	if (update_oldpwd(env) == ERROR || chdir(path) < 0)
 	{
 		cd_print_error(path);
 		return (CD_ERROR);
 	}
-	if (getcwd(cwd, sizeof(cwd))) // Update the current working directory
+	if (getcwd(cwd, sizeof(cwd)))
 		env_update("PWD", cwd, env);
 	return (CD_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/28 18:19:13 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/29 09:57:58 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 # define OP_HEREDOC "<<"
 # define OP_PIPE "|"
 
-# define MAX_PATH_LENGTH PATH_MAX
+# define MAX_PATH_LENGTH 4096
 
 # define BUFF_SIZE 1024
 
@@ -229,7 +229,7 @@ void			setup_pipe_redirections_child(t_command *cmd);
 void			exec_heredoc(t_command *cmds);
 void			remove_heredoc_file(t_main *main);
 void			set_signals_interactive(void);
-void			set_signals_heredoc(void);
+void			set_signals_heredoc(void);	
 void			set_signals_child(void);
 void			signal_quit_message(int signo);
 void			set_signals_sleep_mode(void);
@@ -244,6 +244,7 @@ int 			exp_env_update(char **env_vars, int index, const char *value);
 void			child_pipe_close(t_command *cmd);
 void			is_it_cat(t_command *cmd);
 int				type_redir_exist(t_command *cmd, t_token_type	type);
+void			ft_fprintf(const char *format, ...);
 
 
 #endif

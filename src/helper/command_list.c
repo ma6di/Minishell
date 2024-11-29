@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:07:56 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/28 15:36:27 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/29 10:03:15 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ t_command	*init_empty_cmd(t_main **main)
 
 t_command	*add_command(t_command **head, t_command *new_cmd)
 {
-	t_command	*curr;
+    t_command   *curr;
 
 	if (new_cmd->command == NULL && new_cmd->heredocs != NULL)
 		new_cmd->command = ft_strdup("");
