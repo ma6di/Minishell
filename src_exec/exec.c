@@ -60,7 +60,7 @@ void	exec_child(t_command *cmd, t_main **main, int original_stdout, int original
 		if (setup_file_redirections(cmd) == -1)
 			exit (1);
 		setup_pipe_redirections_child(cmd);
-		//is_it_cat(cmd);
+		// is_it_cat(cmd);
 		if (is_builtin(cmd->command))
 		{
 			cmd->main->exit_code = exec_builtin(cmd, cmd->main);
@@ -92,7 +92,7 @@ void	execute_commands(t_main **main)
 	original_stdin = dup(STDIN_FILENO);
 	while (cmd)
 	{
-		//is_it_cat(cmd);
+		// is_it_cat(cmd);
 		handle_special_builtin(&cmd);
 		pipe_handler(cmd);
 		fork_handler(cmd);

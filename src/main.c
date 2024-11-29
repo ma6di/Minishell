@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/28 13:21:23 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/29 10:27:14 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ int	main(int argc, char **argv, char **envp)
 			main->is_sleeping = false;
 			main->heredoc_fork_permit = 0;
 			//printf("--------------- FREEING COMMANDS ---------------\n");
-			//remove_heredoc_file(main);
+			remove_heredoc_file(main);
 			//free_commands(&commands);
 			free_commands(&(main->command_list));
 			main->command_list = NULL;

@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/29 09:59:17 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/29 11:26:31 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,19 @@
 
 int	assign_redirect(t_token *token)
 {
-	if (ft_strncmp(token->value, ">", ft_strlen(token->value)) == 0)
+	if (ft_strncmp(token->value, ">", ft_strlen(token->value) + 1) == 0)
 		return (token->type = REDIRECT, 0);
-	else if (ft_strncmp(token->value, ">>", ft_strlen(token->value)) == 0)
+	else if (ft_strncmp(token->value, ">>", ft_strlen(token->value) + 2) == 0)
 		return (token->type = APPEND, 0);
-	else if (ft_strncmp(token->value, "<", ft_strlen(token->value)) == 0)
+	else if (ft_strncmp(token->value, "<", ft_strlen(token->value) + 1) == 0)
 		return (token->type = INPUT_REDIRECT, 0);
-	else if (ft_strncmp(token->value, "<<", ft_strlen(token->value)) == 0)
+	else if (ft_strncmp(token->value, "<<<", ft_strlen(token->value) + 3) == 0)
+		return (token->type = HERESTRING, 0);
+	else if (ft_strncmp(token->value, "<<", ft_strlen(token->value) + 2) == 0)
 		return (token->type = HEREDOC, 0);
-	else if (ft_strncmp(token->value, "|", ft_strlen(token->value)) == 0)
+	else if (ft_strncmp(token->value, "<>", ft_strlen(token->value) + 2) == 0)
+		return (token->type = IO_REDIRECT, 0);
+	else if (ft_strncmp(token->value, "|", ft_strlen(token->value) + 1) == 0)
 		return (token->type = PIPE, 0);
 	else
 		return (-1);

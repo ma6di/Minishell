@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/29 09:57:58 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/29 11:31:43 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,12 +74,12 @@ typedef enum e_token_type
 	LOGICAL_OR,
 	ARGUMENT,
 	STRING,
-	FILENAME,
 	INFILE,
 	OUTFILE,
 	APPENDFILE,
 	ENV_VAR,
-	SHELL_VAR
+	HERESTRING,
+	IO_REDIRECT
 }	t_token_type;
 
 typedef enum e_token_state

@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:45:20 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/29 10:02:18 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/29 11:59:01 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,8 +145,8 @@ static void	handle_operators(t_command **cmd, t_token *curr, t_token **head_t)
 		handle_heredoc(cmd, curr);
 		operator->filename = ft_strdup("heredoc.txt");
 	}
-	else if (curr == *head_t || (curr->prev && (curr->prev->type == PIPE 
-				&& (!curr->next->next || curr->next->next->type != COMMAND))))
+	else if ((curr == *head_t || (curr->prev && curr->prev->type == PIPE))
+				&& (!curr->next->next || curr->next->next->type != COMMAND))
 	{
 		(*cmd)->command = ft_strdup("echo");
 		handle_argument(cmd, ft_strdup("echo"));

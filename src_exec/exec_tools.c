@@ -69,7 +69,7 @@ void	handle_special_builtin(t_command **cmd)
 		{
 			if ((*cmd)->prev && !is_special_builtin((*cmd)->prev->command))
 				safe_close(&(*cmd)->prev->pipe_fd[0]);
-			//handle_heredoc(*cmd);
+			// handle_heredoc(*cmd);
 			*cmd = (*cmd)->next;
 			(*cmd)->prev = NULL;
 		}

@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/28 18:20:51 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/29 11:25:25 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,13 @@ char	*handle_operator(char **buff, t_token **head, t_state state, char *str)
 {
 	if (is_operator_char(*str))
 	{
-		*buff = add_to_buffer(buff, *str);
-		if (*(str + 1) == *str)
-			*buff = add_to_buffer(buff, *str++);
+		*buff = add_to_buffer(buff, *str); // < > | first operator
+		if (*(str + 1) == *str) // < > | only add if its the same -> << >> ||
+			*buff = add_to_buffer(buff, *(++str));
+		if (ft_strncmp(*buff, "<<", ft_strlen(*buff) + 2) == 0 && *(str + 1) == OP_INPUT_REDIRECT[0]) // or add if < and < -> <<<
+			*buff = add_to_buffer(buff, *(++str));
+		else if (ft_strncmp(*buff, "<", ft_strlen(*buff) + 1) == 0 && *(str + 1) == OP_REDIRECT[0]) // only add if buff  is < and next is >
+			*buff = add_to_buffer(buff, *(++str));
 		end_token(buff, head, state);
 		while (*(str) && *(str + 1) == ' ')
 			str++;

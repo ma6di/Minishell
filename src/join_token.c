@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/28 18:22:22 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/29 11:53:48 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,15 @@
 
 static int	is_operator(t_token *token)
 {
-	if ((ft_strncmp(token->value, " ", ft_strlen(token->value)) == 0
-			|| ft_strncmp(token->value, "||", ft_strlen(token->value)) == 0
-			|| ft_strncmp(token->value, "|", ft_strlen(token->value)) == 0
-			|| ft_strncmp(token->value, ">>", ft_strlen(token->value)) == 0
-			|| ft_strncmp(token->value, "<", ft_strlen(token->value)) == 0
-			|| ft_strncmp(token->value, "<<", ft_strlen(token->value)) == 0
-			|| ft_strncmp(token->value, ">", ft_strlen(token->value)) == 0)
+	if ((ft_strncmp(token->value, " ", ft_strlen(token->value) + 1) == 0
+			|| ft_strncmp(token->value, "||", ft_strlen(token->value) + 2) == 0
+			|| ft_strncmp(token->value, "|", ft_strlen(token->value) + 1) == 0
+			|| ft_strncmp(token->value, ">>", ft_strlen(token->value) + 2) == 0
+			|| ft_strncmp(token->value, "<", ft_strlen(token->value) + 1) == 0
+			|| ft_strncmp(token->value, "<<", ft_strlen(token->value) + 2) == 0
+			|| ft_strncmp(token->value, "<<<", ft_strlen(token->value) + 3) == 0
+			|| ft_strncmp(token->value, "<>", ft_strlen(token->value) + 2) == 0
+			|| ft_strncmp(token->value, ">", ft_strlen(token->value) + 1) == 0)
 		&& token->state == GENERAL)
 		return (1);
 	return (0);

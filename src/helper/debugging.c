@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:09:29 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/27 18:24:09 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/29 10:59:08 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ void	print_token_list(t_token **head)
 			printf("ARGUMENT\n");
 		else if (curr->type == HEREDOC)
 			printf("HEREDOC\n");
+		else if (curr->type == HERESTRING)
+			printf("HERESTRING\n");
 		else if (curr->type == HEREDOC_DELIMITER)
 			printf("HEREDOC_DELIMITER\n");
 		printf("value length: %zu\n", ft_strlen(curr->value));
