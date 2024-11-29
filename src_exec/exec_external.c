@@ -21,47 +21,13 @@ char	*join_path_and_command(const char *dir, const char *command)
 	return (full_path);
 }
 
-int	command_exists_in_dir(const char *dir, const char *command)
-{
-	char	*full_path;
-	int		exists;
-
-	full_path = join_path_and_command(dir, command);
-	if (!full_path)
-		return (0);
-	exists = (access(full_path, X_OK) == 0);
-	free(full_path);
-	return (exists);
-}
-
-static void	cmd_not_found(t_command *cmd)
-{
-	write(2, "minishell: ", 11);
-	write(2, cmd->command, ft_strlen(cmd->command));
-	write(2, ": command not found\n", 20);
-}
-
-static void	is_a_dir(t_command *cmd)
-{
-	write(2, "minishell: ", 11);
-	write(2, cmd->command, ft_strlen(cmd->command));
-	write(2, ": Is a directory\n", 17);
-}
-
-static void	no_such_dir(t_command *cmd)
-{
-	write(2, "minishell: ", 11);
-	write(2, cmd->command, ft_strlen(cmd->command));
-	write(2, ": No such file or directory\n", 28);
-}
-
 static int is_directory(const char *path)
 {
     struct stat path_stat;
 
     if (stat(path, &path_stat) == -1)
-        return (0); // If stat fails, it's not accessible or doesn't exist
-    return (S_ISDIR(path_stat.st_mode)); // Check if it's a directory
+        return (0);
+    return (S_ISDIR(path_stat.st_mode));
 }
 
 static int error_code(int err_code, t_command *cmd)
@@ -73,19 +39,43 @@ static int error_code(int err_code, t_command *cmd)
     }
     else if (err_code == ENOENT)
     {
-        no_such_dir(cmd);
-        return (127);  // Command not found error code
+        ft_fprintf("minishell: %s: No such file or directory\n", cmd->command);
+        return (127);
     }
     else if (err_code == EISDIR)
     {
-       	is_a_dir(cmd);
-        return (126);  // Directory execution error code
+       	ft_fprintf("minishell: %s: Is a directory\n", cmd->command);
+        return (126);
     }
     else
     {
         perror("minishell");
-        return (1);  // General execution error code
+        return (1);
     }
+}
+
+static int exec_dir(t_command *cmd)
+{
+	if (access(cmd->command, F_OK) != 0)
+	{
+		ft_fprintf("minishell: %s: No such file or directory\n", cmd->command);
+		return (127);
+	}
+	if (is_directory(cmd->command))
+	{
+		ft_fprintf("minishell: %s: Is a directory\n", cmd->command);
+		return (126);
+	}
+	if (access(cmd->command, X_OK) != 0)
+	{
+		fprintf(stderr, "minishell: %s: Permission denied\n", cmd->command);
+		return (126);
+	}
+	if (execve(cmd->command, cmd->args, cmd->main->env_vars) == -1)
+	{
+		return (error_code(errno, cmd));
+	}
+	return (0);
 }
 
 int exec_external(t_command *cmd, char **env_vars)
@@ -98,51 +88,17 @@ int exec_external(t_command *cmd, char **env_vars)
         fprintf(stderr, "minishell: invalid command structure\n");
         return (1);
     }
-
-    // Check if command contains '/' (indicating direct path)
     if (ft_strchr(cmd->command, '/'))
-    {
-        // Check if the command exists and is executable
-        if (access(cmd->command, F_OK) != 0)
-        {
-            no_such_dir(cmd); // No such file or directory
-            return (127);
-        }
-        if (is_directory(cmd->command))
-        {
-            is_a_dir(cmd); // Is a directory
-            return (126);
-        }
-        if (access(cmd->command, X_OK) != 0)
-        {
-            fprintf(stderr, "minishell: %s: Permission denied\n", cmd->command);
-            return (126);
-        }
-
-        // Attempt to execute the direct path
-        exec_result = execve(cmd->command, cmd->args, env_vars);
-        if (exec_result == -1)
-        {
-            return (error_code(errno, cmd)); // Handle specific errors
-        }
-        return (0);
-    }
-
-    // If no '/' in the command, resolve using PATH
+        return (exec_dir(cmd));
     path = get_command_path(cmd->command, env_vars);
     if (!path)
     {
-        cmd_not_found(cmd); // Command not found in PATH
+        ft_fprintf("minishell: %s: command not found\n", cmd->command);
         return (127);
     }
-
-    // Attempt to execute the resolved path
     exec_result = execve(path, cmd->args, env_vars);
     free(path);
     if (exec_result == -1)
-    {
-        return (error_code(errno, cmd)); // Handle specific errors
-    }
-
+        return (error_code(errno, cmd));
     return (0);
 }

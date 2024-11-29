@@ -196,7 +196,7 @@ t_command		*add_command(t_command **head, t_command *new_cmd);
 char			*get_command_path(const char *command, char **env_vars);
 int				execute_external(t_command *cmd, char **env_vars);
 void			execute_commands(t_main **main);
-void			exec_child(t_command *cmd, t_main **main, int original_stdout, int original_stdin);
+void			exec_child(t_command *cmd, t_main **main, int original_std[2]);
 int				is_builtin(char *command);
 int				setup_file_redirections(t_command *cmd);
 void			pipe_handler(t_command *cmd);
@@ -213,13 +213,15 @@ int				ft_exit(t_main *main);
 int				ft_env(t_main *main, t_command *cmd);
 int				ft_echo(t_command *cmd);
 int				ft_cd(t_command *cmd, char **env);
+int				update_oldpwd(char **env);
+const char		*get_home_path(char **env);
 void			safe_close(int *fd);
 void			fork_handler(t_command *cmd);
-void			ft_wait(t_command *cmd);
+void			ft_wait(t_command *cmd, int original_std[2]);
 void			dup2_out( int *pipe_fd);
 void			dup2_in(int *pipe_fd);
 void			parent_pipe_close(t_command *cmd);
-void			ft_fd_reset(t_command *cmd, int original_stdin, int original_stdout);
+void			ft_fd_reset(t_command *cmd, int original_std[2]);
 void			handle_special_builtin(t_command **cmd);
 int				is_special_builtin(char *command);
 void			setup_pipe_redirections_parent(t_command *cmd);
@@ -239,10 +241,15 @@ void			cd_print_error(const char *arg);
 int				command_exists_in_dir(const char *dir, const char *command);
 char			*join_path_and_command(const char *dir, const char *command);
 int 			exp_env_update(char **env_vars, int index, const char *value);
-void			child_pipe_close(t_command *cmd);
 void			is_it_cat(t_command *cmd);
 int				type_redir_exist(t_command *cmd, t_token_type	type);
 void			ft_fprintf(const char *format, ...);
+int				find_and_update_env(const char *key, char *env_entry, char **env_vars, int key_len);
+int				cd_env_update(const char *key, const char *value, char **env_vars);
+void			child_pipe_close(t_command *cmd, int original_std[2]);
+
+
+
 
 
 #endif

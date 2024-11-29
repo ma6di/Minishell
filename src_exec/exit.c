@@ -1,16 +1,15 @@
 //NORM OK
 #include "minishell.h"
 
-// Helper function to check if a string is numeric
 static int	is_numeric(const char *str)
 {
 	if (!str || *str == '\0')
 		return (0);
-	if (*str == '-' || *str == '+') // Handle optional sign
+	if (*str == '-' || *str == '+')
 		str++;
 	while (*str)
 	{
-		if (!ft_isalnum(*str) || !(*str >= '0' && *str <= '9')) // Must be a digit
+		if (!ft_isalnum(*str) || !(*str >= '0' && *str <= '9'))
 			return (0);
 		str++;
 	}

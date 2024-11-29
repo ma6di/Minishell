@@ -52,3 +52,16 @@ char	*get_command_path(const char *command, char **env_vars)
 	full_path = find_command_in_paths(command, paths);
 	return (full_path);
 }
+
+int	command_exists_in_dir(const char *dir, const char *command)
+{
+	char	*full_path;
+	int		exists;
+
+	full_path = join_path_and_command(dir, command);
+	if (!full_path)
+		return (0);
+	exists = (access(full_path, X_OK) == 0);
+	free(full_path);
+	return (exists);
+}

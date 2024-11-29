@@ -26,7 +26,7 @@ SRC = $(addprefix $(SRC_DIR), main.c lexer.c parse.c expand.c join_token.c \
 	helper/debugging.c helper/free_helper.c helper/token_list.c \
 	helper/parse_helper.c helper/command_list.c) \
 	$(addprefix $(SRC_EXEC_DIR), exec.c exec_tools.c pwd.c export.c env.c echo.c \
-	unset.c cd.c file_redir.c exec_external.c exit.c \
+	unset.c cd.c cd2.c file_redir.c exec_external.c exit.c \
 	signals.c heredoc.c pipe_redir.c expantion.c signals2.c export2.c \
 	utilz.c exec_external2.c parent_reset.c ft_fprintf.c)
 

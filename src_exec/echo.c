@@ -1,19 +1,27 @@
 //NORM OK
-#include "minishell.h"
+#include "../includes/minishell.h"
 
-static int	nb_args(char **args)
+static int is_valid_n_option(const char *arg)
 {
-	int	size;
-
-	size = 0;
-	while (args[size])
-		size++;
-	return (size);
+	int	i;
+	
+	i = 1;
+	if (arg[0] != '-' || arg[1] != 'n')
+		return (0);
+	while (arg[++i])
+	{
+		if (arg[i] != 'n')
+			return (0);
+	}
+	return (1);
 }
 
-static void	ft_echo_print(char **args, t_command *cmd, int i)
+static void print_echo_output(char **args, int start, int suppress_newline)
 {
-	(void)(cmd);
+	int	i;
+
+	i = start;
+
 	while (args[i])
 	{
 		ft_putstr_fd(args[i], 1);
@@ -21,27 +29,24 @@ static void	ft_echo_print(char **args, t_command *cmd, int i)
 			ft_putstr_fd(" ", 1);
 		i++;
 	}
+	if (!suppress_newline)
+		ft_putstr_fd("\n", 1);
 }
 
-int	ft_echo(t_command *cmd)
+int ft_echo(t_command *cmd)
 {
-	char	**args;
-	int		i;
-	int		n_option;
+	char **args;
+	int i;
+	int suppress_newline;
 
-	i = 1;
-	n_option = 0;
 	args = cmd->args;
-	if (nb_args(args) > 1)
+	i = 1;
+	suppress_newline = 0;
+	while (args[i] && is_valid_n_option(args[i]))
 	{
-		while (args[i] && ft_strncmp(args[i], "-n", (ft_strlen(args[i])+ft_strlen("-n"))) == 0)
-		{
-			n_option = 1;
-			i++;
-		}
-		ft_echo_print(args, cmd, i);
+		suppress_newline = 1;
+		i++;
 	}
-	if (!n_option)
-		ft_putstr_fd("\n", 1);
+	print_echo_output(args, i, suppress_newline);
 	return (SUCCESS);
 }
