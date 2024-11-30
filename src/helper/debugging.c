@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debugging.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:09:29 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/29 10:59:08 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/30 09:47:56 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,10 @@ void	print_cmd_list(t_command **head)
 				if (k != 0)
 					printf(",\n");
 				printf("\t{ Filename: %s, ", curr->operators[k]->filename);
-				printf("Type: %d }", curr->operators[k]->type);
+				if (curr->operators[k]->type == HEREDOC)
+					printf("Type: HEREDOC\n");
+				else
+					printf("Type: %d }", curr->operators[k]->type);
 				k++;
 			}
 			printf("\n");

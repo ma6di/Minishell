@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/29 12:42:43 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/30 03:52:31 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,7 +227,7 @@ void			setup_pipe_redirections_child(t_command *cmd);
 void			exec_heredoc(t_command *cmds);
 void			remove_heredoc_file(t_main *main);
 void			set_signals_interactive(void);
-void			set_signals_heredoc(void);	
+void			set_signals_heredoc(void);
 void			set_signals_child(void);
 void			signal_quit_message(int signo);
 void			set_signals_sleep_mode(void);

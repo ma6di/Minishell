@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_commands.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:45:20 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/29 12:52:44 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/30 09:51:56 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,7 @@ static void	handle_operators(t_command **cmd, t_token *curr, t_token **head_t)
 	{
 		handle_heredoc(cmd, curr);
 		operator->filename = ft_strdup("heredoc.txt");
+		operator->type = INFILE;
 	}
 	else if ((curr == *head_t || (curr->prev && curr->prev->type == PIPE))
 				&& (!curr->next->next || curr->next->next->type != COMMAND))
@@ -154,15 +155,17 @@ static void	handle_operators(t_command **cmd, t_token *curr, t_token **head_t)
 		operator->filename = ft_strdup(curr->next->value);
 	}
 	else
+	{
 		operator->filename = ft_strdup(curr->next->value);
-	operator->type = curr->next->type;
+		operator->type = curr->next->type;
+	}
 	tmp = add_to_operators((*cmd)->operators, operator);
 	if ((*cmd)->operators)
 		free((*cmd)->operators);
 	(*cmd)->operators = tmp;
 }
 
-static t_command	*handle_types(t_command **cmd, t_token **head_t, 
+static t_command	*handle_types(t_command **cmd, t_token **head_t,
 						t_token *curr, t_main **main)
 {
 	if (curr->type == COMMAND && !(*cmd)->command)
@@ -180,7 +183,7 @@ static t_command	*handle_types(t_command **cmd, t_token **head_t,
 		if (!(*cmd)->args)
 			return (NULL);
 	}
-	else if (curr->type == REDIRECT || curr->type == APPEND 
+	else if (curr->type == REDIRECT || curr->type == APPEND
 		|| curr->type == INPUT_REDIRECT || curr->type == HEREDOC)
 		handle_operators(cmd, curr, head_t);
 	else if (curr->type == PIPE)

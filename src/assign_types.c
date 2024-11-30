@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   assign_types.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/29 11:26:31 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/11/30 09:45:51 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	assign_other_operator(t_token *token)
 
 int assign_by_prev(t_token *token)
 {
-	if ((token->prev->type == HEREDOC_DELIMITER || token->prev->type == INFILE 
+	if ((token->prev->type == HEREDOC_DELIMITER || token->prev->type == INFILE
 			|| token->prev->type == OUTFILE || token->prev->type == APPENDFILE)
 		&& (!token->prev->prev->prev || token->prev->prev->prev->type != COMMAND))
 		return (token->type = COMMAND, 0);
