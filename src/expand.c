@@ -63,7 +63,7 @@
 	return (ft_strdup(""));
 }*/
 
-static char *replace_exit_code_in_arg(const char *arg, t_main *main)
+char *replace_exit_code_in_arg(const char *arg, t_main *main)
 {
     char    *pos;
     char    *new_arg;

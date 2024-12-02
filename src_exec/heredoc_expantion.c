@@ -1,7 +1,7 @@
 //NORM OK
 #include "../includes/minishell.h"
 
-static char	*get_value(const char *var_name, char **envp)
+char	*heredoc_get_value(const char *var_name, char **envp)
 {
 	int	i;
 
@@ -24,48 +24,33 @@ static char	*init_result(char *line)
 
 	res = malloc(strlen(line) + 1);
 	if (!res)
-		perror("malloc");
+		ft_fprintf("malloc failed");
 	else
 		res[0] = '\0';
 	return (res);
 }
 
-static void	append_text(char **res, char *text, size_t len)
+void	append_text(char **res, char *text, size_t len)
 {
 	size_t	cur_len;
+	char	*new_res;
 
+	if (!res || !*res || !text)
+		return ;
 	cur_len = ft_strlen(*res);
-	*res = realloc(*res, cur_len + len + 1);
-	if (!*res)
+	new_res = malloc(cur_len + len + 1);
+	if (!new_res)
 	{
-		perror("realloc");
+		ft_fprintf("malloc failed");
 		return ;
 	}
-	ft_strlcat(*res, text, cur_len + len + 1);
+	ft_strlcpy(new_res, *res, cur_len + 1);
+	ft_strlcat(new_res, text, cur_len + len + 1);
+	free(*res);
+	*res = new_res;
 }
 
-static char	*process_variable(char **res, char *start, char **envp)
-{
-	char	var[256];
-	int		len;
-	char	*val;
-
-	ft_memset(var, 0, sizeof(var));
-	len = 0;
-	while (ft_isalnum(start[len]) || start[len] == '_')
-	{
-		var[len] = start[len];
-		len++;
-	}
-	val = get_value(var, envp);
-	if (!val)
-		val = ft_strdup("");
-	append_text(res, val, ft_strlen(val));
-	free(val);
-	return (start + len);
-}
-
-char	*expand_variables_in_line(char *line, char **envp)
+char	*expand_variables_in_line(char *line, char **envp, t_main *main)
 {
 	char	*res;
 	char	*start;
@@ -79,7 +64,7 @@ char	*expand_variables_in_line(char *line, char **envp)
 		if (!start)
 			break ;
 		append_text(&res, line, start - line);
-		line = process_variable(&res, start + 1, envp);
+		line = process_variable(&res, start + 1, envp, main);
 		if (!line)
 			return (free(res), NULL);
 	}

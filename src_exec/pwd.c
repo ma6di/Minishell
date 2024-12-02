@@ -12,9 +12,7 @@ int	ft_pwd(void)
 	}
 	else
 	{
-		ft_putstr_fd("minishell: pwd: ", 2);
-		ft_putstr_fd(strerror(errno), 2);
-		ft_putendl_fd("", 2);
+		ft_fprintf("minishell: pwd: %s\n", strerror(errno));
 		return (CD_ERROR);
 	}
 }

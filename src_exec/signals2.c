@@ -1,8 +1,7 @@
 //NORM OK
 #include "../includes/minishell.h"
 
-///HEREDOC/////HEREDOC/////HEREDOC/////HEREDOC/////HEREDOC/////HEREDOC//
-
+//HEREDOC//
 static void	signal_interrupt_heredoc(int signo)
 {
 	(void)signo;
@@ -12,9 +11,10 @@ static void	signal_interrupt_heredoc(int signo)
 void	set_signals_heredoc(void)
 {
 	signal(SIGINT, signal_interrupt_heredoc);
+	signal(SIGQUIT, SIG_IGN);
 }
 
-//SLEEP////SLEEP////SLEEP////SLEEP////SLEEP////SLEEP//
+//SLEEP//
 
 void	signal_reset_prompt_sleep(int signo)
 {

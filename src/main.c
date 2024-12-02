@@ -93,7 +93,9 @@ int	main(int argc, char **argv, char **envp)
 			exec_heredoc(main->command_list);
 			set_signals_noniteractive();
 			if (g_pid == 0)
+			{
 				execute_commands(&main);
+			}
 			main->is_sleeping = false;
 			main->heredoc_fork_permit = 0;
 			//printf("--------------- FREEING COMMANDS ---------------\n");

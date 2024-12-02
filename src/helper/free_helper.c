@@ -165,3 +165,14 @@ void	free_three_dim(char ***envp_key_val) // [["HOME", "path"], ["USER", "userna
 	//printf("freeing pointer %p\n", envp_key_val);
 	free(envp_key_val);
 }
+
+void	free_heredoc(t_command *cmd)
+{
+	int	j;
+
+	j = 0;
+	while (cmd->heredocs[j])
+		free(cmd->heredocs[j++]);
+	free(cmd->heredocs);
+	free_commands(&cmd);
+}

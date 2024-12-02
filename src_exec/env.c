@@ -8,7 +8,7 @@ int	ft_env(t_main *main, t_command *cmd)
 	env = main->env_vars;
 	if (cmd->args[1])
 	{
-		ft_putstr_fd("env: too many arguments\n", 2);
+		ft_fprintf("Minishell: env: too many arguments\n");
 		return (CD_ERROR);
 	}
 	if (!env || !*env)
