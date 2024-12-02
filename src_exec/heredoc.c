@@ -31,13 +31,12 @@ static void	ft_heredoc_wait(t_command *cmd, pid_t pid)
 	if (WIFSIGNALED(status))
 	{
 		signal_number = WTERMSIG(status);
-		if (signal_number == SIGKILL)
+		if (signal_number == SIGINT)
 		{
 			write(1, "\n", 1);
 			cmd->main->exit_code = 130;
-			g_pid = 1;
+			cmd->main->heredoc_fork_permit = -1;
 		}
-		cmd->main->heredoc_fork_permit = 0;
 	}
 }
 
@@ -96,7 +95,6 @@ void	exec_heredoc(t_command *cmds)
 		cmd->heredoc_pid = fork();
 		if (cmd->heredoc_pid == 0)
 		{
-			g_pid = getpid();
 			set_signals_heredoc();
 			while (cmd)
 			{

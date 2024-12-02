@@ -40,7 +40,7 @@
 # define MAX_PATH_LENGTH 4096
 # define BUFF_SIZE 1024
 
-extern int	g_pid;
+extern int	g_sigint;
 
 typedef struct s_fds		t_fds;
 typedef struct s_token		t_token;
@@ -218,15 +218,17 @@ int				type_redir_exist(t_command *cmd, t_token_type	type);
 //Ecternal commands
 int				ft_unset(char **args, t_main *main);
 int				ft_pwd(void);
+int				ft_exit(t_main *main);
+int				ft_env(t_main *main, t_command *cmd);
+int				ft_echo(t_command *cmd);
+	//export//
 int				ft_export(char **args, t_main *main, t_command *cmd);
 int				is_in_env(char **env_vars, const char *args);
 int				ft_export_helper(char **args, int error_ret, t_main *main);
 int				exp_env_update(char **env_vars, int index, const char *value);
 int				env_add(char ***env_vars, const char *value);
 char			*get_env_name(const char *src);
-int				ft_exit(t_main *main);
-int				ft_env(t_main *main, t_command *cmd);
-int				ft_echo(t_command *cmd);
+	//cd//
 int				ft_cd(t_command *cmd, char **env);
 int				cd_env_update(const char *key, const char *value, \
 								char **env_vars);

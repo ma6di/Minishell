@@ -1,7 +1,7 @@
 //NORM OK
 #include "../includes/minishell.h"
 
-int	g_pid;
+int	g_sigint;
 
 //CHILD//
 
@@ -16,7 +16,7 @@ void	set_signals_child(void)
 void	signal_reset_prompt(int signo)
 {
 	(void)signo;
-	g_pid = 130;
+	g_sigint = 130;
 	write(1, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();

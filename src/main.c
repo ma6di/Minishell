@@ -80,7 +80,7 @@ int	main(int argc, char **argv, char **envp)
 			// 	free(input);
 			// 	break ;
 			// }
-			if (g_pid == 130)
+			if (g_sigint == 130)
 				main->exit_code = 130;
 			set_signals_noniteractive();
 			commands = lexer(input, main->env_vars, &main);
@@ -89,10 +89,9 @@ int	main(int argc, char **argv, char **envp)
 		}
 		if (commands)
 		{
-			g_pid = 0;
 			exec_heredoc(main->command_list);
 			set_signals_noniteractive();
-			if (g_pid == 0)
+			if (main->heredoc_fork_permit != -1)
 			{
 				execute_commands(&main);
 			}

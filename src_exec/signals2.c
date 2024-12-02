@@ -2,15 +2,10 @@
 #include "../includes/minishell.h"
 
 //HEREDOC//
-static void	signal_interrupt_heredoc(int signo)
-{
-	(void)signo;
-	kill(g_pid, SIGKILL);
-}
 
 void	set_signals_heredoc(void)
 {
-	signal(SIGINT, signal_interrupt_heredoc);
+	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_IGN);
 }
 
