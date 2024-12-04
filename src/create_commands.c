@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_commands.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:45:20 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/30 09:51:56 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/04 16:17:20 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,16 @@ char    **add_to_args(char **old_args, char *new_arg)
 	return (new_args);
 }
 
-static void	handle_argument(t_command **cmd, char *value)
+static void	handle_argument(t_command **cmd, char *value, t_state state)
 {
 	char		**tmp;
 
 	if (ft_strlen(value) != 0)
 	{
-		tmp = add_to_args((*cmd)->args, ft_strdup(value));
+		if (state == EMPTY)
+			tmp = add_to_args((*cmd)->args, ft_strdup(""));
+		else
+			tmp = add_to_args((*cmd)->args, ft_strdup(value));
 		if ((*cmd)->args)
 			free((*cmd)->args);
 		(*cmd)->args = tmp;
@@ -150,8 +153,8 @@ static void	handle_operators(t_command **cmd, t_token *curr, t_token **head_t)
 				&& (!curr->next->next || curr->next->next->type != COMMAND))
 	{
 		(*cmd)->command = ft_strdup("echo");
-		handle_argument(cmd, ft_strdup("echo"));
-		handle_argument(cmd, ft_strdup("-n"));
+		handle_argument(cmd, ft_strdup("echo"), curr->state);
+		handle_argument(cmd, ft_strdup("-n"), curr->state);
 		operator->filename = ft_strdup(curr->next->value);
 	}
 	else
@@ -171,15 +174,15 @@ static t_command	*handle_types(t_command **cmd, t_token **head_t,
 	if (curr->type == COMMAND && !(*cmd)->command)
 	{
 		(*cmd)->command = ft_strdup(curr->value);
-		handle_argument(cmd, curr->value);
+		handle_argument(cmd, curr->value, curr->state);
 		if (!(*cmd)->args)
 			return (NULL);
 	}
 	else if (curr->type == COMMAND)
-		handle_argument(cmd, curr->value);
+		handle_argument(cmd, curr->value, curr->state);
 	else if (curr->type == ARGUMENT)
 	{
-		handle_argument(cmd, curr->value);
+		handle_argument(cmd, curr->value, curr->state);
 		if (!(*cmd)->args)
 			return (NULL);
 	}

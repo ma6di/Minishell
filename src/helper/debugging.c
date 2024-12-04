@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debugging.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:09:29 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/30 09:47:56 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/04 16:04:17 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	print_cmd_list(t_command **head)
 			while (curr->args[j])
 			{
 				if (j != 0)
-					printf(", ");
+					printf(",");
 				printf("%s", curr->args[j++]);
 			}
 			printf("]\n");
