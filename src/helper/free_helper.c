@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:10:05 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/29 11:25:53 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/04 17:23:37 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,21 @@ void	free_commands(t_command **head)
 			free(curr->heredocs[j]);
 			j++;
 		}
+		free(curr->heredocs);
+		j = 0;
+		while (curr->operators && curr->operators[j])
+		{
+			//printf("freeing heredoc %p - %s\n", curr->operators[j]->delimiter, curr->operators[j]->delimiter);
+			free(curr->operators[j]->filename);
+			free(curr->operators[j]);
+			j++;
+		}
+		free(curr->operators);
 		free(curr->pipe_fd);
 		curr->pipe_fd = NULL;
 		//printf("freeing args %p\n", curr->args);
 		free(curr->args);
-		free(curr->heredocs);
+		//free(curr->heredocs);
 		curr->heredocs = NULL;
 		free(curr->io_fds->infile);
 		free(curr->io_fds->outfile);
@@ -96,6 +106,16 @@ void	free_command_child(t_command **cmd)
 			free((*cmd)->heredocs[j]);
 			j++;
 		}
+		free((*cmd)->heredocs);
+		j = 0;
+		while ((*cmd)->operators && (*cmd)->operators[j])
+		{
+			//printf("freeing heredoc %p - %s\n", (*cmd)->operators[j]->delimiter, (*cmd)->operators[j]->delimiter);
+			free((*cmd)->operators[j]->filename);
+			free((*cmd)->operators[j]);
+			j++;
+		}
+		free((*cmd)->operators);
 		free((*cmd)->pipe_fd);
 		(*cmd)->pipe_fd = NULL;
 		//printf("freeing args %p\n", (*cmd)->args);
@@ -171,7 +191,7 @@ void	free_heredoc(t_command *cmd)
 	int	j;
 
 	j = 0;
-	while (cmd->heredocs[j])
+	while (cmd->heredocs && cmd->heredocs[j])
 		free(cmd->heredocs[j++]);
 	free(cmd->heredocs);
 	free_commands(&cmd);

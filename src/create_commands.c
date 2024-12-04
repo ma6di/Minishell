@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:45:20 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/04 16:17:20 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/04 18:17:20 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,10 @@ void    handle_heredoc(t_command **cmd, t_token *curr)
     t_heredoc   **tmp;
 
     heredoc = init_heredoc();
-    heredoc->delimiter = ft_strdup(curr->next->value);
+	if (curr->next->state == EMPTY)
+		heredoc->delimiter = ft_strdup("");
+	else
+    	heredoc->delimiter = ft_strdup(curr->next->value);
     heredoc->should_expand = curr->next->state == GENERAL;
     tmp = add_to_heredocs((*cmd)->heredocs, heredoc);
     if ((*cmd)->heredocs)

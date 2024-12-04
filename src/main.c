@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/29 10:27:14 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/04 18:20:14 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ int	main(int argc, char **argv, char **envp)
 	exit_code = main->should_exit;
 	rl_clear_history();
 	main->command_list = NULL;
+	//free_heredoc(commands);
 	free_commands(&commands);
 	free_main(main);
 	//free(input);

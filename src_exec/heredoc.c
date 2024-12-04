@@ -38,6 +38,7 @@ static void	ft_heredoc_wait(t_command *cmd, pid_t pid)
 			cmd->main->heredoc_fork_permit = -1;
 		}
 	}
+	//free_heredoc(cmd);
 }
 
 static void	ft_heredoc_write_to_file(t_command *cmd, t_heredoc *heredoc)
@@ -88,7 +89,9 @@ static void	ft_heredoc_readline(t_command *cmd, t_heredoc **heredoc)
 void	exec_heredoc(t_command *cmds)
 {
 	t_command	*cmd;
+	t_command	*begin;
 
+	begin = cmds;
 	if (cmds->main->heredoc_fork_permit)
 	{
 		cmd = cmds;
@@ -102,7 +105,9 @@ void	exec_heredoc(t_command *cmds)
 					ft_heredoc_readline(cmd, cmd->heredocs);
 				cmd = cmd->next;
 			}
-			free_heredoc(cmds);
+			free_heredoc(begin);
+			free_main(begin->main);
+			free_command_child(&begin);
 			exit(0);
 		}
 		else

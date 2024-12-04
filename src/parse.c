@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/29 12:53:55 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/04 19:08:17 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ char	*handle_state_dq(char **buff, t_token **head, t_state *state, char *str)
 	{
 		if (((*(str + 1) == ' ' 
 					&& (*(str - 2) && *(str - 2) == ' ')) 
-				|| *(str + 2) == '\0'))
+				|| *(str + 1) == '\0'))
 		{
 			*state = EMPTY;
 			*buff = add_to_buffer(buff, ' ');

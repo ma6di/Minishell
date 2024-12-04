@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/04 16:09:06 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/04 19:11:32 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ t_command	*lexer(char *input, char **envp, t_main **main)
 		printf("assigning types ---------- \n");
 		print_token_list(head_t);
 	}
+	printf("FINISHED ASSIGNING NOW VALIDITY CHECK\n");
 	head_t = check_validity(head_t);
 	head_c = create_commands(head_c, head_t, main);
 	if (head_t && *head_t)

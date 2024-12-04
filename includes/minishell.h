@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/30 03:52:31 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/04 17:37:29 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,12 +104,14 @@ typedef struct s_token
 	struct s_token	*next;
 }					t_token;
 
+// echo hi > file1 | <<end <<two
+
 typedef struct s_command
 {
 	char				*command;
 	char				**args;
-	t_heredoc			**heredocs;
-	t_operator			**operators;
+	t_heredoc			**heredocs; // [heredoc1, heredoc2]
+	t_operator			**operators; // [operator1, operator2]
 	int					nr_of_pipes; //not using
 	int					*pipe_fd;
 	int					has_pipe;
