@@ -107,7 +107,8 @@ void	exec_heredoc(t_command *cmds)
 			}
 			free_heredoc(begin);
 			free_main(begin->main);
-			free_command_child(&begin);
+			if (begin)
+				free_command_child(&begin);
 			exit(0);
 		}
 		else

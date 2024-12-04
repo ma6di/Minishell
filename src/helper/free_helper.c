@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:10:05 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/04 17:23:37 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/04 19:51:09 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	free_commands(t_command **head)
 			free(curr->args[i]);
 			i++;
 		}
+		free(curr->args);
 		j = 0;
 		while (curr->heredocs && curr->heredocs[j])
 		{
@@ -58,6 +59,7 @@ void	free_commands(t_command **head)
 			j++;
 		}
 		free(curr->heredocs);
+		curr->heredocs = NULL;
 		j = 0;
 		while (curr->operators && curr->operators[j])
 		{
@@ -67,17 +69,16 @@ void	free_commands(t_command **head)
 			j++;
 		}
 		free(curr->operators);
+		curr->operators = NULL;
 		free(curr->pipe_fd);
 		curr->pipe_fd = NULL;
 		//printf("freeing args %p\n", curr->args);
-		free(curr->args);
 		//free(curr->heredocs);
-		curr->heredocs = NULL;
 		free(curr->io_fds->infile);
 		free(curr->io_fds->outfile);
 		free(curr->io_fds->append_outfile);
 		free(curr->io_fds);
-		curr->main = NULL;
+		//curr->main = NULL;
 		//printf("freeing command %p\n", curr);
 		free(curr);
 		curr = next;
