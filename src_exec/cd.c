@@ -69,18 +69,16 @@ static int	handle_cd_execution(const char *path, char **env)
 
 int	ft_cd(t_command *cmd, char **env)
 {
-	char		**args;
 	const char	*path;
 
-	args = cmd->args;
 	if (type_redir_exist(cmd, INFILE))
 		return (SUCCESS);
-	if (args[2])
+	if (cmd->args[2])
 	{
 		ft_fprintf("Minishell: cd: too many arguments\n");
 		return (1);
 	}
-	path = get_cd_path(args, env);
+	path = get_cd_path(cmd->args, env);
 	if (!path)
 		return (1);
 	return (handle_cd_execution(path, env));
