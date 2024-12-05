@@ -34,7 +34,7 @@ static int	error_code(int err_code, t_command *cmd)
 {
 	if (err_code == EACCES)
 	{
-		printf("minishell: %s: Permission denied\n", cmd->command);
+		ft_fprintf("minishell: %s: Permission denied\n", cmd->command);
 		return (126);
 	}
 	else if (err_code == ENOENT)

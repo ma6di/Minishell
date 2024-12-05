@@ -12,7 +12,7 @@ static int	is_numeric(t_main *main, char *str)
 		if (!ft_isalnum(*str) || !(*str >= '0' && *str <= '9'))
 		{
 			ft_fprintf("Minishell: exit: %s: numeric ", str);
-			ft_fprintf("argument ./m./required\n");
+			ft_fprintf("argument required\n");
 			main->should_exit = 2;
 			return (0);
 		}

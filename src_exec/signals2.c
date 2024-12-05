@@ -2,10 +2,18 @@
 #include "../includes/minishell.h"
 
 //HEREDOC//
-
-void	set_signals_heredoc(void)
+static void fake_exit()
 {
-	signal(SIGINT, SIG_DFL);
+	char *new_prog = "/bin/false";
+	char *args[] = {"false", NULL};
+	char *env[] = {NULL};
+	if(execve(new_prog, args, env) == -1)
+		perror("true failed");
+}
+
+void	set_signals_heredoc()
+{
+	signal(SIGINT, fake_exit);
 	signal(SIGQUIT, SIG_IGN);
 }
 

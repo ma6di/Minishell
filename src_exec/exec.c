@@ -56,23 +56,36 @@ void	exec_child(t_command *cmd, t_main **main, int original_std[2])
 	set_sig_ch(cmd);
 	if (cmd->pid == 0)
 	{
-		if (ft_strncmp(cmd->command, "", ft_strlen(cmd->command)) == 0)
-			exit (0);
+		// if (ft_strncmp(cmd->command, "", ft_strlen(cmd->command)) == 0)
+		// {
+		// 	char *new_prog = "/bin/true";
+		// 	char *args[] = {"true", NULL};
+		// 	char *env[] = {NULL};
+		// 	if(execve(new_prog, args, env) == -1)
+		// 		perror("true failed");
+		// }
 		if (setup_file_redirections(cmd) == -1)
-			exit (1);
+		{
+			char *new_prog = "/bin/false";
+			char *args[] = {"false", NULL};
+			char *env[] = {NULL};
+			if(execve(new_prog, args, env) == -1)
+				perror("true failed");
+		}
+			// exit (1);
 		setup_pipe_redirections_child(cmd);
 		child_pipe_close(cmd, original_std);
 		if (is_builtin(cmd->command))
 		{
 			cmd->main->exit_code = exec_builtin(cmd, cmd->main);
-			char *new_prog = "/bin/true";
-			char *args[] = {"true", NULL};
-			char *env[] = {NULL};
-			if(execve(new_prog, args, env) == -1)
-				perror("true failed");
 		}
 		else
 			cmd->main->exit_code = exec_external(cmd, (*main)->env_vars);
+		char *new_prog = "/bin/true";
+		char *args[] = {"true", NULL};
+		char *env[] = {NULL};
+		if(execve(new_prog, args, env) == -1)
+			perror("true failed");
 		free_command_child(&cmd);
 		free(cmd);
 		exit_code = (*main)->exit_code;

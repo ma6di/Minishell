@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/05 14:35:12 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/05 17:52:46 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,7 +259,7 @@ void			append_text(char **res, char *text, size_t len);
 
 //Signal
 void			set_signals_interactive(void);
-void			set_signals_heredoc(void);	
+void			set_signals_heredoc(void);
 void			set_signals_child(void);
 void			signal_quit_message(int signo);
 void			set_signals_sleep_mode(void);

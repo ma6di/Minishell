@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/04 19:11:32 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/05 18:51:09 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,12 @@ t_command	*lexer(char *input, char **envp, t_main **main)
 	head_t = expand(head_t, envp, (*main));
 	head_t = join_token(head_t);
 	head_t = assign_types(head_t);
-	if (head_t && *head_t)
-	{
-		printf("assigning types ---------- \n");
-		print_token_list(head_t);
-	}
-	printf("FINISHED ASSIGNING NOW VALIDITY CHECK\n");
+	// if (head_t && *head_t)
+	// {
+	// 	printf("assigning types ---------- \n");
+	// 	print_token_list(head_t);
+	// }
+	// printf("FINISHED ASSIGNING NOW VALIDITY CHECK\n");
 	head_t = check_validity(head_t);
 	head_c = create_commands(head_c, head_t, main);
 	if (head_t && *head_t)
@@ -40,8 +40,7 @@ t_command	*lexer(char *input, char **envp, t_main **main)
 		//print_token_list(head_t);
 		free_tokens(head_t);
 	}
-	if (head_c && *head_c)
-	 	print_cmd_list(head_c);
+//
 	if (!head_c || !(*head_c))
 		return (NULL);
 	return (*head_c);
