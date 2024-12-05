@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/04 17:37:29 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/05 10:40:49 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ typedef enum e_token_type
 	APPENDFILE,
 	ENV_VAR,
 	HERESTRING,
-	IO_REDIRECT
+	IO_REDIRECT,
+	UNINITIALIZED,
 }	t_token_type;
 
 typedef enum e_token_state

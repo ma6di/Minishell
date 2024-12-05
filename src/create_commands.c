@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:45:20 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/04 18:17:20 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/05 10:44:28 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,94 +50,94 @@ static void	handle_argument(t_command **cmd, char *value, t_state state)
 	}
 }
 
-static t_heredoc    *init_heredoc(void)
+static t_heredoc	*init_heredoc(void)
 {
-    t_heredoc   *heredoc;
+	t_heredoc   *heredoc;
 
-    heredoc = malloc(sizeof(t_heredoc));
-    heredoc->delimiter = NULL;
-    heredoc->should_expand = 0;
-    heredoc->line = NULL;
-    heredoc->filename = NULL;
-    heredoc->expanded_line = NULL;
-    heredoc->heredoc_fd = 0;
-    return (heredoc);
+	heredoc = malloc(sizeof(t_heredoc));
+	heredoc->delimiter = NULL;
+	heredoc->should_expand = 0;
+	heredoc->line = NULL;
+	heredoc->filename = NULL;
+	heredoc->expanded_line = NULL;
+	heredoc->heredoc_fd = 0;
+	return (heredoc);
 }
 
-t_heredoc   **add_to_heredocs(t_heredoc **old_heredocs, t_heredoc *new_heredoc)
+t_heredoc	**add_to_heredocs(t_heredoc **old_heredocs, t_heredoc *new_heredoc)
 {
-    t_heredoc   **new_heredocs;
-    int         i;
+	t_heredoc	**new_heredocs;
+	int	i;
 
-    i = 0;
-    while (old_heredocs && old_heredocs[i])
-        i++;
-    new_heredocs = malloc((i + 2) * sizeof(char *));
-    if (!new_heredocs)
-        return (NULL);
-    i = 0;
-    while (old_heredocs && old_heredocs[i])
-    {
-        new_heredocs[i] = old_heredocs[i];
-        i++;
-    }
-    new_heredocs[i++] = new_heredoc;
-    new_heredocs[i] = NULL;
-    return (new_heredocs);
+	i = 0;
+	while (old_heredocs && old_heredocs[i])
+		i++;
+	new_heredocs = malloc((i + 2) * sizeof(char *));
+	if (!new_heredocs)
+		return (NULL);
+	i = 0;
+	while (old_heredocs && old_heredocs[i])
+	{
+		new_heredocs[i] = old_heredocs[i];
+		i++;
+	}
+	new_heredocs[i++] = new_heredoc;
+	new_heredocs[i] = NULL;
+	return (new_heredocs);
 }
 
-t_operator  **add_to_operators(t_operator **old_operators, t_operator *new_operator)
+t_operator	**add_to_operators(t_operator **old_operators, t_operator *new_operator)
 {
-    t_operator  **new_operators;
-    int         i;
+	t_operator	**new_operators;
+	int			i;
 
-    i = 0;
-    while (old_operators && old_operators[i])
-        i++;
-    new_operators = malloc((i + 2) * sizeof(char *));
-    if (!new_operators)
-        return (NULL);
-    i = 0;
-    while (old_operators && old_operators[i])
-    {
-        new_operators[i] = old_operators[i];
-        i++;
-    }
-    new_operators[i++] = new_operator;
-    new_operators[i] = NULL;
-    return (new_operators);
+	i = 0;
+	while (old_operators && old_operators[i])
+		i++;
+	new_operators = malloc((i + 2) * sizeof(char *));
+	if (!new_operators)
+		return (NULL);
+	i = 0;
+	while (old_operators && old_operators[i])
+	{
+		new_operators[i] = old_operators[i];
+		i++;
+	}
+	new_operators[i++] = new_operator;
+	new_operators[i] = NULL;
+	return (new_operators);
 }
 
-void    handle_heredoc(t_command **cmd, t_token *curr)
+void	handle_heredoc(t_command **cmd, t_token *curr)
 {
-    t_heredoc   *heredoc;
-    t_heredoc   **tmp;
+	t_heredoc	*heredoc;
+	t_heredoc	**tmp;
 
-    heredoc = init_heredoc();
+	heredoc = init_heredoc();
 	if (curr->next->state == EMPTY)
 		heredoc->delimiter = ft_strdup("");
 	else
-    	heredoc->delimiter = ft_strdup(curr->next->value);
-    heredoc->should_expand = curr->next->state == GENERAL;
-    tmp = add_to_heredocs((*cmd)->heredocs, heredoc);
-    if ((*cmd)->heredocs)
-        free((*cmd)->heredocs);
-    (*cmd)->heredocs = tmp;
-    (*cmd)->io_fds->has_heredoc++;
-    if ((*cmd)->io_fds->infile)
-        free((*cmd)->io_fds->infile);
-    (*cmd)->io_fds->infile = ft_strdup("heredoc.txt");
-    (*cmd)->main->heredoc_fork_permit++;
+		heredoc->delimiter = ft_strdup(curr->next->value);
+	heredoc->should_expand = curr->next->state == GENERAL;
+	tmp = add_to_heredocs((*cmd)->heredocs, heredoc);
+	if ((*cmd)->heredocs)
+		free((*cmd)->heredocs);
+	(*cmd)->heredocs = tmp;
+	(*cmd)->io_fds->has_heredoc++;
+	if ((*cmd)->io_fds->infile)
+		free((*cmd)->io_fds->infile);
+	(*cmd)->io_fds->infile = ft_strdup("heredoc.txt");
+	(*cmd)->main->heredoc_fork_permit++;
 }
 
-static t_operator   *init_operator(void)
+static t_operator	*init_operator(void)
 {
-    t_operator  *operator;
+	t_operator	*operator;
 
-    operator = malloc(sizeof(t_operator));
-    //operator->type = NULL;
-    operator->filename = NULL;
-    return (operator);
+	operator = malloc(sizeof(t_operator));
+	operator->type = UNINITIALIZED;
+	operator->filename = NULL;
+	return (operator);
 }
 
 static void	handle_operators(t_command **cmd, t_token *curr, t_token **head_t)

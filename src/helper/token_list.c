@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_list.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:07:56 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 05:58:37 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/05 10:41:02 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ void	create_token(t_token **head, char *value, t_state state)
 	new_token = malloc(sizeof(t_token));
 	new_token->value = value;
 	new_token->state = state;
-	//new_token->type = NULL;
-	//new_token->type = get_token_type(value);
+	new_token->type = UNINITIALIZED;
+	new_token->next = NULL;
+	new_token->prev = NULL;
 	add_token(head, new_token);
 }

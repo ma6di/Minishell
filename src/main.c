@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/04 19:45:00 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/05 11:23:35 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ static t_main	*init_main(char **envp)
 		}
 		i++;
 	}
-	//main->is_sleeping = false;
 	main->command_list = NULL;
 	main->exit_code = 0;
 	main->heredoc_fork_permit = 0;
