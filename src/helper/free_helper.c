@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:10:05 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/04 19:51:09 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/05 14:22:42 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void	free_commands(t_command **head)
 			//printf("freeing heredoc %p - %s\n", curr->heredocs[j]->delimiter, curr->heredocs[j]->delimiter);
 			free(curr->heredocs[j]->delimiter);
 			free(curr->heredocs[j]);
+			curr->heredocs[j] = NULL;
 			j++;
 		}
 		free(curr->heredocs);
@@ -66,6 +67,7 @@ void	free_commands(t_command **head)
 			//printf("freeing heredoc %p - %s\n", curr->operators[j]->delimiter, curr->operators[j]->delimiter);
 			free(curr->operators[j]->filename);
 			free(curr->operators[j]);
+			curr->operators[j] = NULL;
 			j++;
 		}
 		free(curr->operators);
@@ -139,10 +141,13 @@ void	free_main(t_main *main)
 	while (main->env_vars && main->env_vars[i])
 	{
 		free(main->env_vars[i]);
+		main->env_vars[i] = NULL;
 		i++;
 	}
 	free(main->env_vars);
+	main->env_vars = NULL;
 	free(main);
+	main = NULL;
 }
 
 void	free_two_dim(char **env_keys)
@@ -150,13 +155,15 @@ void	free_two_dim(char **env_keys)
 	int	i;
 
 	i = 0;
-	while (env_keys[i])
+	while (env_keys && env_keys[i])
 	{
 		//printf("freeing array %s at %p\n", env_keys[i], env_keys[i]);
 		free(env_keys[i]);
+		env_keys[i] = NULL;
 		i++;
 	}
 	free(env_keys);
+	env_keys = NULL;
 }
 
 void	free_three_dim(char ***envp_key_val) // [["HOME", "path"], ["USER", "username"]]

@@ -63,13 +63,20 @@ void	exec_child(t_command *cmd, t_main **main, int original_std[2])
 		setup_pipe_redirections_child(cmd);
 		child_pipe_close(cmd, original_std);
 		if (is_builtin(cmd->command))
+		{
 			cmd->main->exit_code = exec_builtin(cmd, cmd->main);
+			char *new_prog = "/bin/true";
+			char *args[] = {"true", NULL};
+			char *env[] = {NULL};
+			if(execve(new_prog, args, env) == -1)
+				perror("true failed");
+		}
 		else
 			cmd->main->exit_code = exec_external(cmd, (*main)->env_vars);
 		free_command_child(&cmd);
 		free(cmd);
 		exit_code = (*main)->exit_code;
-		free_main((*main));
+		free_main(*main);
 		exit(exit_code);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/05 11:33:29 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/05 16:32:14 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,40 +134,62 @@ t_token	*value_is_cli(t_token *curr, char *value)
 	return (new_token);
 }
 
-t_token	**expand_keys(t_token **head, char **envp, t_main *main)
+// t_token	**expand_keys(t_token **head, char **envp, t_main *main)
+// {
+// 	t_token	*curr;
+// 	char	*tmp;
+
+// 	curr = *head;
+// 	// we go through the wile two times?????
+// 	while (curr)
+// 	{
+// 		// double cause we already ask in the fn before
+// 		if (curr->state != QUOTE)
+// 		{
+// 			tmp = replace_exit_code_in_arg(curr->value, main);
+// 			free(curr->value);
+// 			curr->value = tmp;
+// 		}
+// 		if (curr->state != QUOTE && curr->value[0] == '$'
+// 			&& ft_strlen(curr->value) > 1
+// 			&& !(curr != *head && ft_strncmp(curr->prev->value, "<<", 2) == 0))
+// 		{
+
+// 			tmp = get_value(curr->value + 1, envp);
+// 			free(curr->value);
+// 			if (ft_strchr(tmp, ' '))
+// 			{
+// 				curr = value_is_cli(curr, tmp);
+// 				free(tmp);
+// 			}
+// 			else
+// 				curr->value = tmp;
+// 		}
+// 		curr = curr->next;
+// 	}
+// 	return (head);
+// }
+
+static void	expand_keys(t_token **head, t_token *curr, char **envp, t_main *main)
 {
-	t_token	*curr;
 	char	*tmp;
 
-	curr = *head;
-	// we go through the wile two times?????
-	while (curr)
+	tmp = replace_exit_code_in_arg(curr->value, main);
+	free(curr->value);
+	curr->value = tmp;
+	if (curr->value[0] == '$' && ft_strlen(curr->value) > 1
+		&& !(curr != *head && ft_strncmp(curr->prev->value, "<<", 2) == 0))
 	{
-		// double cause we already ask in the fn before
-		if (curr->state != QUOTE)
+		tmp = get_value(curr->value + 1, envp);
+		free(curr->value);
+		if (ft_strchr(tmp, ' '))
 		{
-			tmp = replace_exit_code_in_arg(curr->value, main);
-			free(curr->value);
+			curr = value_is_cli(curr, tmp);
+			free(tmp);
+		}
+		else
 			curr->value = tmp;
-		}
-		if (curr->state != QUOTE && curr->value[0] == '$'
-			&& ft_strlen(curr->value) > 1
-			&& !(curr != *head && ft_strncmp(curr->prev->value, "<<", 2) == 0))
-		{
-
-			tmp = get_value(curr->value + 1, envp);
-			free(curr->value);
-			if (ft_strchr(tmp, ' '))
-			{
-				curr = value_is_cli(curr, tmp);
-				free(tmp);
-			}
-			else
-				curr->value = tmp;
-		}
-		curr = curr->next;
 	}
-	return (head);
 }
 
 t_token	**expand(t_token **head, char **envp, t_main *main)
@@ -180,7 +202,7 @@ t_token	**expand(t_token **head, char **envp, t_main *main)
 	while (curr)
 	{
 		if (curr->state != QUOTE)
-			head = expand_keys(head, envp, main);
+			expand_keys(head, curr, envp, main);
 		curr = curr->next;
 	}
 	return (head);

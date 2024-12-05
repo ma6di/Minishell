@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/05 10:40:49 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/05 14:35:12 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ typedef struct s_main
 {
 	t_command	*command_list;
 	char		**env_vars;
-	char		**shell_vars;  //not usingq
 	int			exit_code;
 	bool		is_sleeping;  //not using
 	int			heredoc_fork_permit;
@@ -164,7 +163,7 @@ typedef struct s_operator
 t_command		*lexer(char *input, char **envp, t_main **main);
 t_token			**parse(t_token **head, char *input);
 t_token			**expand(t_token **head, char **envp, t_main *main);
-t_token			**expand_keys(t_token **head, char **envp, t_main *main);
+//t_token			**expand_keys(t_token **head, char **envp, t_main *main);
 void			free_tokens(t_token **head);
 void			free_commands(t_command **head);
 void			free_command_child(t_command **cmd);

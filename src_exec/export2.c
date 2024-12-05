@@ -19,10 +19,14 @@ int	env_add(char ***env_vars, const char *value)
 	while (i < count)
 	{
 		new_env_vars[i] = old_env[i];
+		//free(old_env[i]);
 		i++;
 	}
+	//free(old_env);
 	new_env_vars[count] = ft_strdup(value);
 	new_env_vars[count + 1] = NULL;
+	// free_two_dim(*env_vars);
+	// old_env = NULL;
 	*env_vars = new_env_vars;
 	return (SUCCESS);
 }
