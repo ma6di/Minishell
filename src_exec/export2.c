@@ -10,7 +10,6 @@ int env_add(char ***env_vars, const char *value)
 
 	count = 0;
 	old_env = *env_vars;
-	new_env_vars;
 	i = 0;
 	while (old_env && old_env[count])
 		count++;
