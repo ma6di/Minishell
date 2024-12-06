@@ -21,7 +21,6 @@ static int	ft_check_delimiter(char *line, char *delimiter)
 static void	ft_heredoc_wait(t_command *cmd, pid_t pid)
 {
 	int		status;
-	int		signal_number;
 
 	if (waitpid(pid, &status, 0) == -1)
 	{
@@ -40,16 +39,6 @@ static void	ft_heredoc_wait(t_command *cmd, pid_t pid)
 				write(1, "\n", 1);
 				cmd->main->exit_code = 130;
 			}
-		}
-	}
-	if (WIFSIGNALED(status))
-	{
-		signal_number = WTERMSIG(status);
-		if (signal_number == SIGINT)
-		{
-			write(1, "\n", 1);
-			cmd->main->exit_code = 130;
-			cmd->main->heredoc_fork_permit = -1;
 		}
 	}
 }

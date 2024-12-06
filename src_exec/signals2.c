@@ -4,11 +4,7 @@
 //HEREDOC//
 static void fake_exit()
 {
-	char *new_prog = "/bin/false";
-	char *args[] = {"false", NULL};
-	char *env[] = {NULL};
-	if(execve(new_prog, args, env) == -1)
-		perror("true failed");
+	ft_child_exit(1);
 }
 
 void	set_signals_heredoc()

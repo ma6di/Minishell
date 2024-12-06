@@ -48,8 +48,12 @@ char	*get_command_path(const char *command, char **env_vars)
 		return (NULL);
 	paths = tokenize_path(path_env);
 	if (!paths)
+	{
+		free_two_dim(paths);
 		return (NULL);
+	}
 	full_path = find_command_in_paths(command, paths);
+	free_two_dim(paths);
 	return (full_path);
 }
 

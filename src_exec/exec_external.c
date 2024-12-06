@@ -12,6 +12,7 @@ char	*join_path_and_command(const char *dir, const char *command)
 	full_path = malloc(dir_len + cmd_len + 2);
 	if (!full_path)
 	{
+		free(full_path);
 		ft_fprintf("minishell: malloc failed");
 		return (NULL);
 	}
@@ -93,12 +94,15 @@ int	exec_external(t_command *cmd, char **env_vars)
 	path = get_command_path(cmd->command, env_vars);
 	if (!path)
 	{
-		ft_fprintf("Minishell: %s: command not found\n", cmd->command);
+		ft_fprintf("Minishell: %s: command not foundddd\n", cmd->command);
+		free(path);
 		return (127);
 	}
 	exec_result = execve(path, cmd->args, env_vars);
-	free(path);
 	if (exec_result == -1)
+	{
+		free(path);
 		return (error_code(errno, cmd));
+	}
 	return (0);
 }

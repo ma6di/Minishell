@@ -3,33 +3,15 @@
 
 void	pipe_handler(t_command *cmd)
 {
-	if ((cmd->next && cmd->has_pipe && !is_special_builtin(cmd->command)) || \
-		(cmd->next && cmd->has_pipe && is_special_builtin(cmd->command)))
+	if (cmd->next && cmd->has_pipe)
 	{
 		if (pipe(cmd->pipe_fd) == -1)
-		{
 			ft_fprintf("Minishell: pipe creation failed\n");
-			cmd->error_code = 1;
-		}
 		cmd->pipe_created = true;
 	}
 }
 
-void	setup_pipe_redirections_parent(t_command *cmd)
-{
-	if (cmd->prev)
-	{
-		if (!is_special_builtin(cmd->prev->command))
-			dup2_in(cmd->prev->pipe_fd);
-	}
-	if (cmd->next && !(type_redir_exist(cmd, OUTFILE)))
-	{
-		if (!is_special_builtin(cmd->next->command))
-			dup2_out(cmd->pipe_fd);
-	}
-}
-
-void	setup_pipe_redirections_child(t_command *cmd)
+void	setup_pipe_redirections(t_command *cmd)
 {
 	if (cmd->prev)
 	{

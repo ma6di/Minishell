@@ -30,63 +30,78 @@ void	free_tokens(t_token **head)
 	*head = NULL;
 }
 
-void	free_commands(t_command **head)
-{
-	t_command	*curr;
-	t_command	*next;
-	int			i;
-	int			j;
+void free_commands(t_command **head) {
+    t_command *curr;
+    t_command *next;
+    int i;
 
-	curr = *head;
-	while (curr)
-	{
-		i = 0;
-		next = curr->next;
-		free(curr->command);
-		while (curr->args && curr->args[i])
-		{
-			//printf("freeing arg %p - %s\n", curr->args[i], curr->args[i]);
-			free(curr->args[i]);
-			i++;
-		}
-		free(curr->args);
-		j = 0;
-		while (curr->heredocs && curr->heredocs[j])
-		{
-			//printf("freeing heredoc %p - %s\n", curr->heredocs[j]->delimiter, curr->heredocs[j]->delimiter);
-			free(curr->heredocs[j]->delimiter);
-			free(curr->heredocs[j]);
-			curr->heredocs[j] = NULL;
-			j++;
-		}
-		free(curr->heredocs);
-		curr->heredocs = NULL;
-		j = 0;
-		while (curr->operators && curr->operators[j])
-		{
-			//printf("freeing heredoc %p - %s\n", curr->operators[j]->delimiter, curr->operators[j]->delimiter);
-			free(curr->operators[j]->filename);
-			free(curr->operators[j]);
-			curr->operators[j] = NULL;
-			j++;
-		}
-		free(curr->operators);
-		curr->operators = NULL;
-		free(curr->pipe_fd);
-		curr->pipe_fd = NULL;
-		//printf("freeing args %p\n", curr->args);
-		//free(curr->heredocs);
-		free(curr->io_fds->infile);
-		free(curr->io_fds->outfile);
-		free(curr->io_fds->append_outfile);
-		free(curr->io_fds);
-		//curr->main = NULL;
-		//printf("freeing command %p\n", curr);
-		free(curr);
-		curr = next;
-	}
-	*head = NULL;
+    if (!head || !*head)
+        return;
+
+    curr = *head;
+    while (curr) {
+        next = curr->next; // Store the next node
+
+        // Free command string
+        free(curr->command);
+        curr->command = NULL;
+
+        // Free arguments
+        if (curr->args) {
+            for (i = 0; curr->args[i]; i++) {
+                free(curr->args[i]);
+                curr->args[i] = NULL;
+            }
+            free(curr->args);
+            curr->args = NULL;
+        }
+
+        // Free heredocs
+        if (curr->heredocs) {
+            for (i = 0; curr->heredocs[i]; i++) {
+                free(curr->heredocs[i]->delimiter);
+                curr->heredocs[i]->delimiter = NULL;
+                free(curr->heredocs[i]);
+                curr->heredocs[i] = NULL;
+            }
+            free(curr->heredocs);
+            curr->heredocs = NULL;
+        }
+
+        // Free operators
+        if (curr->operators) {
+            for (i = 0; curr->operators[i]; i++) {
+                free(curr->operators[i]->filename);
+                curr->operators[i]->filename = NULL;
+                free(curr->operators[i]);
+                curr->operators[i] = NULL;
+            }
+            free(curr->operators);
+            curr->operators = NULL;
+        }
+
+        // Free pipe file descriptors
+        free(curr->pipe_fd);
+        curr->pipe_fd = NULL;
+
+        // Free IO file descriptors
+        if (curr->io_fds) {
+            free(curr->io_fds->infile);
+            free(curr->io_fds->outfile);
+            free(curr->io_fds->append_outfile);
+            free(curr->io_fds);
+            curr->io_fds = NULL;
+        }
+
+        // Free the current node and move to the next
+        free(curr);
+        curr = next;
+    }
+
+    // Set the head to NULL to indicate the list is empty
+    *head = NULL;
 }
+
 
 void	free_command_child(t_command **cmd)
 {
@@ -133,22 +148,26 @@ void	free_command_child(t_command **cmd)
 		//printf("freeing command %p\n", (*cmd));
 }
 
-void	free_main(t_main *main)
-{
-	int	i;
+void free_main(t_main *main) {
+    int i;
 
-	i = 0;
-	while (main->env_vars && main->env_vars[i])
-	{
-		free(main->env_vars[i]);
-		main->env_vars[i] = NULL;
-		i++;
-	}
-	free(main->env_vars);
-	main->env_vars = NULL;
-	free(main);
-	main = NULL;
+    if (!main)
+        return; // Guard clause to avoid freeing a NULL pointer
+
+    // Free environment variables
+    if (main->env_vars) {
+        for (i = 0; main->env_vars[i]; i++) {
+            free(main->env_vars[i]);
+            main->env_vars[i] = NULL;
+        }
+        free(main->env_vars);
+        main->env_vars = NULL;
+    }
+
+    // Free the main structure
+    free(main);
 }
+
 
 void	free_two_dim(char **env_keys)
 {

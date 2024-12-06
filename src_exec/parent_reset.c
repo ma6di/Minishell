@@ -3,26 +3,10 @@
 
 void	parent_pipe_close(t_command *cmd)
 {
-	if (!is_special_builtin(cmd->command))
-	{
-		if (cmd->next && cmd->has_pipe)
-			safe_close(&cmd->pipe_fd[1]);
-		if (cmd->prev && cmd->prev->has_pipe)
-			safe_close(&cmd->prev->pipe_fd[0]);
-	}
-	if (is_special_builtin(cmd->command))
-	{
-		if (cmd->prev)
-		{
-			if (!is_special_builtin(cmd->prev->command))
-				safe_close(&cmd->prev->pipe_fd[0]);
-		}
-		if (cmd->next)
-		{
-			if (!is_special_builtin(cmd->next->command))
-				safe_close(&cmd->pipe_fd[1]);
-		}
-	}
+	if (cmd->next && cmd->has_pipe)
+		safe_close(&cmd->pipe_fd[1]);
+	if (cmd->prev && cmd->prev->has_pipe)
+		safe_close(&cmd->prev->pipe_fd[0]);
 }
 
 void	child_pipe_close(t_command *cmd, int original_std[2])
@@ -37,29 +21,25 @@ void	child_pipe_close(t_command *cmd, int original_std[2])
 
 static void	stdin_reset(int original_stdin)
 {
-	dup2(original_stdin, STDIN_FILENO);
+	if(dup2(original_stdin, STDIN_FILENO) == -1)
+		ft_fprintf("Minishell: dup2 reset stdin failed\n");
 	safe_close(&original_stdin);
 }
 
 static void	stdout_reset(int original_stdout)
 {
-	dup2(original_stdout, STDOUT_FILENO);
+	if(dup2(original_stdout, STDOUT_FILENO) == -1)
+		ft_fprintf("Minishell: dup2 reset stdout failed\n");
 	safe_close(&original_stdout);
 }
 
-void	ft_fd_reset(t_command *cmd, int original_std[2])
+void	std_fd_reset(t_command *cmd, int original_std[2])
 {
 	if (is_special_builtin(cmd->command))
 	{
-		if (cmd->prev)
-		{
-			if (!is_special_builtin(cmd->prev->command))
-				stdin_reset(original_std[0]);
-		}
-		if (cmd->next)
-		{
-			if (!is_special_builtin(cmd->next->command))
-				stdout_reset(original_std[1]);
-		}
+		stdin_reset(original_std[0]);
+		stdout_reset(original_std[1]);
+		safe_close(&original_std[0]);
+    	safe_close(&original_std[1]);
 	}
 }

@@ -26,7 +26,7 @@ int	exec_special_builtin(t_command *cmd, t_main *main)
 	cmd_len = ft_strlen(cmd->command);
 	if (setup_file_redirections(cmd) == -1)
 		return (1);
-	setup_pipe_redirections_parent(cmd);
+	setup_pipe_redirections(cmd);
 	if (ft_strncmp(cmd->command, "cd", ft_strlen("cd") + cmd_len) == 0)
 		status = ft_cd(cmd, main->env_vars);
 	else if (ft_strncmp(cmd->command, "export", ft_strlen("export") + \
@@ -56,40 +56,23 @@ void	exec_child(t_command *cmd, t_main **main, int original_std[2])
 	set_sig_ch(cmd);
 	if (cmd->pid == 0)
 	{
-		// if (ft_strncmp(cmd->command, "", ft_strlen(cmd->command)) == 0)
-		// {
-		// 	char *new_prog = "/bin/true";
-		// 	char *args[] = {"true", NULL};
-		// 	char *env[] = {NULL};
-		// 	if(execve(new_prog, args, env) == -1)
-		// 		perror("true failed");
-		// }
 		if (setup_file_redirections(cmd) == -1)
-		{
-			char *new_prog = "/bin/false";
-			char *args[] = {"false", NULL};
-			char *env[] = {NULL};
-			if(execve(new_prog, args, env) == -1)
-				perror("true failed");
-		}
-			// exit (1);
-		setup_pipe_redirections_child(cmd);
+			ft_child_exit(1);
+		setup_pipe_redirections(cmd);
 		child_pipe_close(cmd, original_std);
 		if (is_builtin(cmd->command))
 		{
 			cmd->main->exit_code = exec_builtin(cmd, cmd->main);
+			ft_child_exit(cmd->main->exit_code);
 		}
 		else
 			cmd->main->exit_code = exec_external(cmd, (*main)->env_vars);
-		char *new_prog = "/bin/true";
-		char *args[] = {"true", NULL};
-		char *env[] = {NULL};
-		if(execve(new_prog, args, env) == -1)
-			perror("true failed");
-		free_command_child(&cmd);
-		free(cmd);
+		rl_clear_history();
 		exit_code = (*main)->exit_code;
+		free_commands(&(*main)->command_list);
 		free_main(*main);
+		cmd = NULL;
+		*main = NULL;
 		exit(exit_code);
 	}
 }
@@ -102,20 +85,20 @@ void	execute_commands(t_main **main)
 
 	cmd = (*main)->command_list;
 	command = (*main)->command_list;
-	original_std[1] = dup(STDOUT_FILENO);
-	original_std[0] = dup(STDIN_FILENO);
 	while (cmd)
 	{
-		handle_special_builtin(&cmd);
+		original_std[1] = dup(STDOUT_FILENO);
+		original_std[0] = dup(STDIN_FILENO);
 		pipe_handler(cmd);
 		fork_handler(cmd);
 		if (is_special_builtin(cmd->command))
 			(*main)->exit_code = exec_special_builtin(cmd, *main);
 		else
 			exec_child(cmd, main, original_std);
-		ft_fd_reset(cmd, original_std);
+		std_fd_reset(cmd, original_std);
 		parent_pipe_close(cmd);
 		cmd = cmd->next;
 	}
 	ft_wait(command, original_std);
+	return;
 }

@@ -209,8 +209,7 @@ void			dup2_out( int *pipe_fd);
 void			dup2_in(int *pipe_fd);
 void			child_pipe_close(t_command *cmd, int original_std[2]);
 void			parent_pipe_close(t_command *cmd);
-void			setup_pipe_redirections_parent(t_command *cmd);
-void			setup_pipe_redirections_child(t_command *cmd);
+void			setup_pipe_redirections(t_command *cmd);
 
 int				is_builtin(char *command);
 //File redirection
@@ -244,9 +243,11 @@ void			fork_handler(t_command *cmd);
 
 //Utilz
 void			safe_close(int *fd);
-void			ft_fd_reset(t_command *cmd, int original_std[2]);
+void			std_fd_reset(t_command *cmd, int original_std[2]);
 int				is_special_builtin(char *command);
 void			ft_fprintf(const char *format, ...);
+void			ft_child_exit(int exit_code);
+void			ft_fake_exit(char *exit_code_str);
 
 //Heredoc
 void			exec_heredoc(t_command *cmds);

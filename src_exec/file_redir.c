@@ -93,11 +93,20 @@ int	setup_file_redirections(t_command *cmd)
 		type = cmd->operators[i]->type;
 		filename = cmd->operators[i]->filename;
 		if (type == INFILE)
-			return (setup_input_redirection(filename, cmd));
+		{
+			if (setup_input_redirection(filename, cmd) == -1)
+				return (-1);
+		}
 		if (type == OUTFILE)
-			return (setup_output_redirection(filename, cmd));
+		{
+			if (setup_output_redirection(filename, cmd) == -1)
+				return (-1);
+		}
 		if (type == APPENDFILE)
-			return (setup_append_redirection(filename, cmd));
+		{
+			if (setup_append_redirection(filename, cmd) == -1)
+				return (-1);
+		}
 		i++;
 	}
 	return (SUCCESS);
