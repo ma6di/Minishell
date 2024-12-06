@@ -91,9 +91,9 @@ static void	ft_heredoc_readline(t_command *cmd, t_heredoc **heredoc)
 void	exec_heredoc(t_command *cmds)
 {
 	t_command	*cmd;
-	t_command	*begin;
+	// t_command	*begin;
 
-	begin = cmds;
+	// begin = cmds;
 	if (cmds->main->heredoc_fork_permit)
 	{
 		cmd = cmds;
@@ -107,15 +107,11 @@ void	exec_heredoc(t_command *cmds)
 					ft_heredoc_readline(cmd, cmd->heredocs);
 				cmd = cmd->next;
 			}
-			char *new_prog = "/bin/true";
-			char *args[] = {"true", NULL};
-			char *env[] = {NULL};
-			if(execve(new_prog, args, env) == -1)
-				perror("true failed");
-			free_heredoc(begin);
-			free_main(begin->main);
-			if (begin)
-				free_command_child(&begin);
+			ft_child_exit(0);
+			// free_heredoc(begin);
+			// free_main(begin->main);
+			// if (begin)
+			// 	free_command_child(&begin);
 			exit(0);
 		}
 		else

@@ -61,12 +61,10 @@ void	exec_child(t_command *cmd, t_main **main, int original_std[2])
 		setup_pipe_redirections(cmd);
 		child_pipe_close(cmd, original_std);
 		if (is_builtin(cmd->command))
-		{
 			cmd->main->exit_code = exec_builtin(cmd, cmd->main);
-			ft_child_exit(cmd->main->exit_code);
-		}
 		else
 			cmd->main->exit_code = exec_external(cmd, (*main)->env_vars);
+		ft_child_exit(cmd->main->exit_code);
 		rl_clear_history();
 		exit_code = (*main)->exit_code;
 		free_commands(&(*main)->command_list);
@@ -100,5 +98,4 @@ void	execute_commands(t_main **main)
 		cmd = cmd->next;
 	}
 	ft_wait(command, original_std);
-	return;
 }

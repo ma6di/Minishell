@@ -103,68 +103,69 @@ void free_commands(t_command **head) {
 }
 
 
-void	free_command_child(t_command **cmd)
+// void	free_command_child(t_command **cmd)
+// {
+// 		int			i;
+// 		int			j;
+
+// 		i = 0;
+// 		free((*cmd)->command);
+// 		while ((*cmd)->args && (*cmd)->args[i])
+// 		{
+// 			//printf("freeing arg %p - %s\n", (*cmd)->args[i], (*cmd)->args[i]);
+// 			free((*cmd)->args[i]);
+// 			i++;
+// 		}
+// 		j = 0;
+// 		while ((*cmd)->heredocs && (*cmd)->heredocs[j])
+// 		{
+// 			//printf("freeing heredoc %p - %s\n", (*cmd)->heredocs[j]->delimiter, (*cmd)->heredocs[j]->delimiter);
+// 			free((*cmd)->heredocs[j]->delimiter);
+// 			free((*cmd)->heredocs[j]);
+// 			j++;
+// 		}
+// 		free((*cmd)->heredocs);
+// 		j = 0;
+// 		while ((*cmd)->operators && (*cmd)->operators[j])
+// 		{
+// 			//printf("freeing heredoc %p - %s\n", (*cmd)->operators[j]->delimiter, (*cmd)->operators[j]->delimiter);
+// 			free((*cmd)->operators[j]->filename);
+// 			free((*cmd)->operators[j]);
+// 			j++;
+// 		}
+// 		free((*cmd)->operators);
+// 		free((*cmd)->pipe_fd);
+// 		(*cmd)->pipe_fd = NULL;
+// 		//printf("freeing args %p\n", (*cmd)->args);
+// 		free((*cmd)->args);
+// 		free((*cmd)->heredocs);
+// 		(*cmd)->heredocs = NULL;
+// 		free((*cmd)->io_fds->infile);
+// 		free((*cmd)->io_fds->outfile);
+// 		free((*cmd)->io_fds->append_outfile);
+// 		free((*cmd)->io_fds);
+// 		(*cmd)->main = NULL;
+// 		//printf("freeing command %p\n", (*cmd));
+// }
+
+void free_main(t_main *main)
 {
-		int			i;
-		int			j;
-
-		i = 0;
-		free((*cmd)->command);
-		while ((*cmd)->args && (*cmd)->args[i])
-		{
-			//printf("freeing arg %p - %s\n", (*cmd)->args[i], (*cmd)->args[i]);
-			free((*cmd)->args[i]);
-			i++;
-		}
-		j = 0;
-		while ((*cmd)->heredocs && (*cmd)->heredocs[j])
-		{
-			//printf("freeing heredoc %p - %s\n", (*cmd)->heredocs[j]->delimiter, (*cmd)->heredocs[j]->delimiter);
-			free((*cmd)->heredocs[j]->delimiter);
-			free((*cmd)->heredocs[j]);
-			j++;
-		}
-		free((*cmd)->heredocs);
-		j = 0;
-		while ((*cmd)->operators && (*cmd)->operators[j])
-		{
-			//printf("freeing heredoc %p - %s\n", (*cmd)->operators[j]->delimiter, (*cmd)->operators[j]->delimiter);
-			free((*cmd)->operators[j]->filename);
-			free((*cmd)->operators[j]);
-			j++;
-		}
-		free((*cmd)->operators);
-		free((*cmd)->pipe_fd);
-		(*cmd)->pipe_fd = NULL;
-		//printf("freeing args %p\n", (*cmd)->args);
-		free((*cmd)->args);
-		free((*cmd)->heredocs);
-		(*cmd)->heredocs = NULL;
-		free((*cmd)->io_fds->infile);
-		free((*cmd)->io_fds->outfile);
-		free((*cmd)->io_fds->append_outfile);
-		free((*cmd)->io_fds);
-		(*cmd)->main = NULL;
-		//printf("freeing command %p\n", (*cmd));
-}
-
-void free_main(t_main *main) {
     int i;
 
+	i = 0;
     if (!main)
-        return; // Guard clause to avoid freeing a NULL pointer
-
-    // Free environment variables
-    if (main->env_vars) {
-        for (i = 0; main->env_vars[i]; i++) {
+        return;
+    if (main->env_vars)
+	{
+        while ( main->env_vars[i])
+		{
             free(main->env_vars[i]);
             main->env_vars[i] = NULL;
+			i++;
         }
         free(main->env_vars);
         main->env_vars = NULL;
     }
-
-    // Free the main structure
     free(main);
 }
 

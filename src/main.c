@@ -123,6 +123,7 @@ int	main(int argc, char **argv, char **envp)
 	//free_heredoc(commands);
 	free_commands(&commands);
 	free_main(main);
+	main = NULL;
 	//free(input);
 	// commands = lexer(input, envp);
 	// if (commands)
