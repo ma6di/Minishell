@@ -94,7 +94,7 @@ int	exec_external(t_command *cmd, char **env_vars)
 	path = get_command_path(cmd->command, env_vars);
 	if (!path)
 	{
-		ft_fprintf("Minishell: %s: command not foundddd\n", cmd->command);
+		ft_fprintf("Minishell: %s: command not found\n", cmd->command);
 		free(path);
 		return (127);
 	}
