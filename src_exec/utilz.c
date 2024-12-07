@@ -67,7 +67,7 @@ void	ft_child_exit(int exit_code)
 	char	*args[2];
 	char	*env[1];
 
-	env[1] = NULL;
+	env[0] = NULL;
 	if (exit_code == 1)
 		new_prog = "/bin/false";
 	else if (exit_code == 0)

@@ -30,7 +30,8 @@ void	free_tokens(t_token **head)
 	*head = NULL;
 }
 
-void free_commands(t_command **head) {
+void free_commands(t_command **head)
+{
     t_command *curr;
     t_command *next;
     int i;
@@ -39,7 +40,8 @@ void free_commands(t_command **head) {
         return;
 
     curr = *head;
-    while (curr) {
+    while (curr)
+	{
         next = curr->next; // Store the next node
 
         // Free command string
@@ -47,34 +49,46 @@ void free_commands(t_command **head) {
         curr->command = NULL;
 
         // Free arguments
-        if (curr->args) {
-            for (i = 0; curr->args[i]; i++) {
+		i = 0;
+        if (curr->args)
+		{
+            while (curr->args[i])
+			{
                 free(curr->args[i]);
                 curr->args[i] = NULL;
+				i++;
             }
             free(curr->args);
             curr->args = NULL;
         }
 
         // Free heredocs
-        if (curr->heredocs) {
-            for (i = 0; curr->heredocs[i]; i++) {
+		i = 0;
+        if (curr->heredocs)
+		{
+            while (curr->heredocs[i])
+			{
                 free(curr->heredocs[i]->delimiter);
                 curr->heredocs[i]->delimiter = NULL;
                 free(curr->heredocs[i]);
                 curr->heredocs[i] = NULL;
+				i++;
             }
             free(curr->heredocs);
             curr->heredocs = NULL;
         }
 
         // Free operators
-        if (curr->operators) {
-            for (i = 0; curr->operators[i]; i++) {
+		i = 0;
+        if (curr->operators)
+		{
+            while (curr->operators[i])
+			{
                 free(curr->operators[i]->filename);
                 curr->operators[i]->filename = NULL;
                 free(curr->operators[i]);
                 curr->operators[i] = NULL;
+				i++;
             }
             free(curr->operators);
             curr->operators = NULL;

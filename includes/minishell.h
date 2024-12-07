@@ -247,7 +247,6 @@ void			std_fd_reset(t_command *cmd, int original_std[2]);
 int				is_special_builtin(char *command);
 void			ft_fprintf(const char *format, ...);
 void			ft_child_exit(int exit_code);
-void			ft_fake_exit(char *exit_code_str);
 
 //Heredoc
 void			exec_heredoc(t_command *cmds);

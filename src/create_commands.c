@@ -155,16 +155,16 @@ static void	handle_operators(t_command **cmd, t_token *curr, t_token **head_t)
 				&& (!curr->next->next || curr->next->next->type != COMMAND)))
 		{
 			(*cmd)->command = ft_strdup("echo");
-			handle_argument(cmd, ft_strdup("echo"), curr->state);
-			handle_argument(cmd, ft_strdup("-n"), curr->state);
+			handle_argument(cmd, "echo", curr->state);
+			handle_argument(cmd, "-n", curr->state);
 		}
 	}
 	else if (((curr == *head_t || (curr->prev && curr->prev->type == PIPE))
 				&& (!curr->next->next || curr->next->next->type != COMMAND)))
 	{
 		(*cmd)->command = ft_strdup("echo");
-		handle_argument(cmd, ft_strdup("echo"), curr->state);
-		handle_argument(cmd, ft_strdup("-n"), curr->state);
+		handle_argument(cmd, "echo", curr->state);
+		handle_argument(cmd, "-n", curr->state);
 		operator->filename = ft_strdup(curr->next->value);
 		operator->type = curr->next->type;
 	}
