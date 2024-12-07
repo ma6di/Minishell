@@ -1,4 +1,3 @@
-//NORM OK
 #include "../includes/minishell.h"
 
 int	exec_builtin(t_command *cmd, t_main *main)

@@ -1,38 +1,4 @@
-//NORM OK
 #include "../includes/minishell.h"
-
-int env_add(char ***env_vars, const char *value)
-{
-	int count;
-	char **old_env;
-	char **new_env_vars;
-	int i;
-
-	count = 0;
-	old_env = *env_vars;
-	i = 0;
-	while (old_env && old_env[count])
-		count++;
-	new_env_vars = malloc(sizeof(char *) * (count + 2));
-	if (!new_env_vars)
-		return (-1);
-	while (i < count)
-	{
-		new_env_vars[i] = old_env[i];
-		i++;
-	}
-	new_env_vars[count] = ft_strdup(value);
-	if (!new_env_vars[count]) 
-	{
-		free(new_env_vars);
-		return (-1);
-	}
-	new_env_vars[count + 1] = NULL;
-	free(old_env);
-	*env_vars = new_env_vars;
-	return (SUCCESS);
-}
-
 
 static int	compare_env_name(const char *var_name, const char *env_var)
 {

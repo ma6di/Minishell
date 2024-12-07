@@ -61,22 +61,21 @@ int	type_redir_exist(t_command *cmd, t_token_type	type)
 	return (0);
 }
 
-void ft_child_exit(int exit_code)
+void	ft_child_exit(int exit_code)
 {
-	if(exit_code == 1)
-	{
-		char *new_prog = "/bin/false";
-		char *args[] = {"false", NULL};
-		char *env[] = {NULL};
-		if(execve(new_prog, args, env) == -1)
-			perror("true failed");
-	}
-	else if(exit_code == 0)
-	{
-		char *new_prog = "/bin/true";
-		char *args[] = {"true", NULL};
-		char *env[] = {NULL};
-		if(execve(new_prog, args, env) == -1)
-			perror("true failed");		
-	}
+	char	*new_prog;
+	char	*args[2];
+	char	*env[1];
+
+	env[1] = NULL;
+	if (exit_code == 1)
+		new_prog = "/bin/false";
+	else if (exit_code == 0)
+		new_prog = "/bin/true";
+	else
+		return ;
+	args[0] = new_prog;
+	args[1] = NULL;
+	if (execve(new_prog, args, env) == -1)
+		perror("execve failed");
 }

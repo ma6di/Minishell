@@ -83,26 +83,24 @@ static int	setup_append_redirection(char *filename, t_command *cmd)
 
 int	setup_file_redirections(t_command *cmd)
 {
-	t_token_type	type;
 	char			*filename;
 	int				i;
 
 	i = 0;
 	while (cmd->operators && cmd->operators[i])
 	{
-		type = cmd->operators[i]->type;
 		filename = cmd->operators[i]->filename;
-		if (type == INFILE)
+		if (cmd->operators[i]->type == INFILE)
 		{
 			if (setup_input_redirection(filename, cmd) == -1)
 				return (-1);
 		}
-		if (type == OUTFILE)
+		if (cmd->operators[i]->type == OUTFILE)
 		{
 			if (setup_output_redirection(filename, cmd) == -1)
 				return (-1);
 		}
-		if (type == APPENDFILE)
+		if (cmd->operators[i]->type == APPENDFILE)
 		{
 			if (setup_append_redirection(filename, cmd) == -1)
 				return (-1);

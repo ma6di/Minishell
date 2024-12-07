@@ -1,6 +1,5 @@
 #include "../includes/minishell.h"
 
-
 static int	ft_check_delimiter(char *line, char *delimiter)
 {
 	if (!line)
@@ -24,21 +23,17 @@ static void	ft_heredoc_wait(t_command *cmd, pid_t pid)
 
 	if (waitpid(pid, &status, 0) == -1)
 	{
-		ft_fprintf("waitpid failed");
+		ft_fprintf("Minishell: Heredoc waitpid failed");
 		cmd->main->exit_code = 1;
 		return ;
 	}
-	if (pid > 0)
+	if (pid > 0 && WIFEXITED(status))
 	{
-		if (WIFEXITED(status))
+		if (WEXITSTATUS(status) == 1)
 		{
-			int exit_status = WEXITSTATUS(status);
-			if(exit_status == 1)
-			{
-				cmd->main->heredoc_fork_permit = -1;
-				write(1, "\n", 1);
-				cmd->main->exit_code = 130;
-			}
+			cmd->main->heredoc_fork_permit = -1;
+			write(1, "\n", 1);
+			cmd->main->exit_code = 130;
 		}
 	}
 }
@@ -91,9 +86,7 @@ static void	ft_heredoc_readline(t_command *cmd, t_heredoc **heredoc)
 void	exec_heredoc(t_command *cmds)
 {
 	t_command	*cmd;
-	// t_command	*begin;
 
-	// begin = cmds;
 	if (cmds->main->heredoc_fork_permit)
 	{
 		cmd = cmds;
@@ -108,10 +101,6 @@ void	exec_heredoc(t_command *cmds)
 				cmd = cmd->next;
 			}
 			ft_child_exit(0);
-			// free_heredoc(begin);
-			// free_main(begin->main);
-			// if (begin)
-			// 	free_command_child(&begin);
 			exit(0);
 		}
 		else

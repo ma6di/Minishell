@@ -2,12 +2,13 @@
 #include "../includes/minishell.h"
 
 //HEREDOC//
-static void fake_exit()
+static void	fake_exit(int signo)
 {
+	(void)signo;
 	ft_child_exit(1);
 }
 
-void	set_signals_heredoc()
+void	set_signals_heredoc(void)
 {
 	signal(SIGINT, fake_exit);
 	signal(SIGQUIT, SIG_IGN);

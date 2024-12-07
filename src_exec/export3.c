@@ -22,3 +22,45 @@ int	ft_export(char **args, t_main *main, t_command *cmd)
 	error_ret = ft_export_helper(args, 0, main);
 	return (error_ret);
 }
+
+char	**allocate_new_env(char **old_env, int count)
+{
+	char	**new_env_vars;
+	int		i;
+
+	new_env_vars = malloc(sizeof(char *) * (count + 2));
+	if (!new_env_vars)
+		return (NULL);
+	i = 0;
+	while (i < count)
+	{
+		new_env_vars[i] = old_env[i];
+		i++;
+	}
+	new_env_vars[count + 1] = NULL;
+	return (new_env_vars);
+}
+
+int	env_add(char ***env_vars, const char *value)
+{
+	int		count;
+	char	**old_env;
+	char	**new_env_vars;
+
+	old_env = *env_vars;
+	count = 0;
+	while (old_env && old_env[count])
+		count++;
+	new_env_vars = allocate_new_env(old_env, count);
+	if (!new_env_vars)
+		return (-1);
+	new_env_vars[count] = ft_strdup(value);
+	if (!new_env_vars[count])
+	{
+		free(new_env_vars);
+		return (-1);
+	}
+	free(old_env);
+	*env_vars = new_env_vars;
+	return (0);
+}
