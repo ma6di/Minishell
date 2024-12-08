@@ -39,20 +39,11 @@ int	exec_special_builtin(t_command *cmd, t_main *main)
 	return (status);
 }
 
-static void	set_sig_ch(t_command *cmd)
-{
-	if (ft_strncmp(cmd->command, "sleep", ft_strlen("sleep") + \
-	ft_strlen(cmd->command)) == 0)
-		set_signals_sleep_mode();
-	else
-		set_signals_child();
-}
-
 void	exec_child(t_command *cmd, t_main **main, int original_std[2])
 {
 	int	exit_code;
 
-	set_sig_ch(cmd);
+	set_signals_child();
 	if (cmd->pid == 0)
 	{
 		if (setup_file_redirections(cmd) == -1)

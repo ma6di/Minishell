@@ -18,9 +18,9 @@ int	is_builtin(char *command)
 {
 	size_t	cmd_len;
 
-	cmd_len = ft_strlen(command);
 	if (!command)
 		return (0);
+	cmd_len = ft_strlen(command);
 	if (ft_strncmp(command, "echo", ft_strlen("echo") + cmd_len) == 0 || \
 		ft_strncmp(command, "pwd", ft_strlen("pwd") + cmd_len) == 0 || \
 		ft_strncmp(command, "env", ft_strlen("env") + cmd_len) == 0)
@@ -34,9 +34,9 @@ int	is_special_builtin(char *command)
 {
 	size_t	cmd_len;
 
-	cmd_len = ft_strlen(command);
 	if (!command)
 		return (0);
+	cmd_len = ft_strlen(command);
 	if (ft_strncmp(command, "cd", ft_strlen("cd") + cmd_len) == 0 || \
 		ft_strncmp(command, "export", ft_strlen("export") + cmd_len) == 0 || \
 		ft_strncmp(command, "unset", ft_strlen("unset") + cmd_len) == 0 || \
