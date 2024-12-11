@@ -27,7 +27,7 @@ int	exec_special_builtin(t_command *cmd, t_main *main)
 		return (1);
 	setup_pipe_redirections(cmd);
 	if (ft_strncmp(cmd->command, "cd", ft_strlen("cd") + cmd_len) == 0)
-		status = ft_cd(cmd, main->env_vars);
+		status = ft_cd(cmd, &main->env_vars);
 	else if (ft_strncmp(cmd->command, "export", ft_strlen("export") + \
 		cmd_len) == 0)
 		status = ft_export(cmd->args, main, cmd);
@@ -35,7 +35,7 @@ int	exec_special_builtin(t_command *cmd, t_main *main)
 		cmd_len) == 0)
 		status = ft_unset(cmd->args, main);
 	else if (ft_strncmp(cmd->command, "exit", ft_strlen("exit") + cmd_len) == 0)
-		status = ft_exit(main);
+		status = ft_exit(cmd);
 	return (status);
 }
 

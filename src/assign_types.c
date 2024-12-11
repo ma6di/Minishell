@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   assign_types.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/05 09:51:50 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/11 14:52:29 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,10 @@ int	assign_redirect(t_token *token)
 		return (token->type = IO_REDIRECT, 0);
 	else if (ft_strncmp(token->value, "|", ft_strlen(token->value) + 1) == 0)
 		return (token->type = PIPE, 0);
+	else if (ft_strncmp(token->value, "||", ft_strlen(token->value) + 1) == 0)
+		return (token->type = LOGICAL_OR, 0);
+	else if (ft_strncmp(token->value, "&&", ft_strlen(token->value) + 1) == 0)
+		return (token->type = LOGICAL_AND, 0);
 	else
 		return (-1);
 }
@@ -49,7 +53,7 @@ int	assign_by_prev(t_token *token)
 {
 	if ((token->prev->type == HEREDOC_DELIMITER || token->prev->type == INFILE
 			|| token->prev->type == OUTFILE || token->prev->type == APPENDFILE)
-		&& (!token->prev->prev->prev 
+		&& (!token->prev->prev->prev
 			|| token->prev->prev->prev->type != COMMAND))
 		return (token->type = COMMAND, 0);
 	else if (token->prev->type == PIPE

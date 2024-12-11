@@ -13,7 +13,7 @@ static int	is_valid_env(const char *arg)
 	if (equal_pos)
 		name_len = (size_t)(equal_pos - arg);
 	else
-		name_len = strlen(arg);
+		return(0);
 	if (!ft_isalpha(arg[0]) && arg[0] != '_')
 		return (0);
 	i = 1;
@@ -31,7 +31,7 @@ static int	print_error(int error, const char *arg)
 	int	i;
 
 	i = 0;
-	ft_fprintf("export: '");
+	ft_fprintf("Minishell: export: '");
 	while (arg[i] && (arg[i] != '=' || error == -3))
 	{
 		ft_putchar_fd(arg[i], 2);
@@ -94,7 +94,7 @@ int	ft_export_helper(char **args, int error_ret, t_main *main)
 		{
 			error_found = 1;
 			i++;
-			continue ;
+			continue; ;
 		}
 		if (!strchr(args[i], '='))
 			break ;

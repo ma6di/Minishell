@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+         #
+#    By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/18 16:55:20 by nrauh             #+#    #+#              #
-#    Updated: 2024/11/29 12:43:04 by nrauh            ###   ########.fr        #
+#    Updated: 2024/12/11 14:50:06 by nrauh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,8 +21,8 @@ SRC_EXEC_DIR = src_exec/
 NAME = minishell
 LIBFT = libft/libft.a
 
-SRC = $(addprefix $(SRC_DIR), main.c lexer.c parse.c expand.c join_token.c \
-	assign_types.c check_validity.c create_commands.c \
+SRC = $(addprefix $(SRC_DIR), main.c lexer.c parse.c parse2.c expand.c expand2.c \
+	join_token.c assign_types.c check_validity.c create_commands.c \
 	helper/debugging.c helper/free_helper.c helper/token_list.c \
 	helper/parse_helper.c helper/command_list.c) \
 	$(addprefix $(SRC_EXEC_DIR), exec.c exec_tools.c pwd.c export.c env.c echo.c \
