@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   create_commands.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:45:20 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/05 18:40:58 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/11 14:54:51 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char    **add_to_args(char **old_args, char *new_arg)
+char	**add_to_args(char **old_args, char *new_arg)
 {
-    char    **new_args;
-    int     i;
+	char	**new_args;
+	int		i;
 
 	i = 0;
 	while (old_args && old_args[i])
@@ -52,7 +52,7 @@ static void	handle_argument(t_command **cmd, char *value, t_state state)
 
 static t_heredoc	*init_heredoc(void)
 {
-	t_heredoc   *heredoc;
+	t_heredoc	*heredoc;
 
 	heredoc = malloc(sizeof(t_heredoc));
 	heredoc->delimiter = NULL;
@@ -67,7 +67,7 @@ static t_heredoc	*init_heredoc(void)
 t_heredoc	**add_to_heredocs(t_heredoc **old_heredocs, t_heredoc *new_heredoc)
 {
 	t_heredoc	**new_heredocs;
-	int	i;
+	int			i;
 
 	i = 0;
 	while (old_heredocs && old_heredocs[i])
@@ -86,26 +86,26 @@ t_heredoc	**add_to_heredocs(t_heredoc **old_heredocs, t_heredoc *new_heredoc)
 	return (new_heredocs);
 }
 
-t_operator	**add_to_operators(t_operator **old_operators, t_operator *new_operator)
+t_operator	**add_to_operators(t_operator **old_ops, t_operator *new_op)
 {
-	t_operator	**new_operators;
+	t_operator	**new_ops;
 	int			i;
 
 	i = 0;
-	while (old_operators && old_operators[i])
+	while (old_ops && old_ops[i])
 		i++;
-	new_operators = malloc((i + 2) * sizeof(char *));
-	if (!new_operators)
+	new_ops = malloc((i + 2) * sizeof(char *));
+	if (!new_ops)
 		return (NULL);
 	i = 0;
-	while (old_operators && old_operators[i])
+	while (old_ops && old_ops[i])
 	{
-		new_operators[i] = old_operators[i];
+		new_ops[i] = old_ops[i];
 		i++;
 	}
-	new_operators[i++] = new_operator;
-	new_operators[i] = NULL;
-	return (new_operators);
+	new_ops[i++] = new_op;
+	new_ops[i] = NULL;
+	return (new_ops);
 }
 
 void	handle_heredoc(t_command **cmd, t_token *curr)
@@ -209,10 +209,10 @@ static t_command	*handle_types(t_command **cmd, t_token **head_t,
 	return ((*main)->command_list);
 }
 
-t_command   **create_commands(t_command **head_c, t_token **head_t, t_main **main)
+t_command	**create_commands(t_command **head_c, t_token **head_t, t_main **main)
 {
-    t_token     *curr;
-    t_command   *cmd;
+	t_token		*curr;
+	t_command	*cmd;
 
 	if (!head_t || !(*head_t))
 		return (NULL);

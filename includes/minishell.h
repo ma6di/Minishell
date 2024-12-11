@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/05 17:52:46 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/11 15:01:00 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ typedef enum e_token_type
 	HERESTRING,
 	IO_REDIRECT,
 	UNINITIALIZED,
+	LOGICAL_AND,
 }	t_token_type;
 
 typedef enum e_token_state
@@ -160,37 +161,59 @@ typedef struct s_operator
 	char			*filename;
 }				t_operator;
 
+// Lexing
 t_command		*lexer(char *input, char **envp, t_main **main);
+
+// Parsing
 t_token			**parse(t_token **head, char *input);
+void			handle_empty_str(char **buff, t_token **head, \
+					char *str, char c);
+char			*handle_state_dq(char **buff, t_token **head, \
+					t_state *state, char *str);
+char			*handle_state_q(char **buff, t_token **head, \
+					t_state *state, char *str);
+char			*handle_variable(char **buff, t_token **head, \
+					t_state *state, char *str);
+char			*add_to_buffer(char **buffer, char c);
+int				is_operator_char(char c);
+int				is_delimiter(char c);
+
+// Expansion
 t_token			**expand(t_token **head, char **envp, t_main *main);
-//t_token			**expand_keys(t_token **head, char **envp, t_main *main);
+t_token			*insert_new_token(t_token **curr, char **tmp_split, int i);
+t_token			*value_is_cla(t_token *curr, char *value);
+char			**split_cla(char *value);
+char			*replace_exit_code_in_arg(const char *arg, t_main *main);
+
+// Freeing
 void			free_tokens(t_token **head);
 void			free_commands(t_command **head);
 void			free_command_child(t_command **cmd);
 void			free_main(t_main *main);
-void			add_token(t_token **head, t_token *new_token);
+void			free_two_dim(char **env_keys);
+void			free_three_dim(char ***filtered_envp);
+
+// Tokenizing
 void			create_token(t_token **head, char *value, t_state state);
+void			add_token(t_token **head, t_token *new_token);
+void			end_token(char **buffer, t_token **head, t_state state);
 t_token_type	get_token_type(char *value);
+t_token			**join_token(t_token **head);
+t_token			**assign_types(t_token **head);
+t_token			**check_validity(t_token **head);
+
+// Create Commands
+t_command		**create_commands(t_command **head_c, t_token **head_t, \
+									t_main **main);
+t_command		*init_empty_cmd(t_main **main);
+void			init_empty_fds(t_command **new_cmd);
+t_command		*add_command(t_command **head, t_command *new_cmd);
+
+// Debugging Helpers
 void			print_token_list(t_token **head);
 void			print_cmd_list(t_command **head);
 void			print_keys(char **env_keys);
 void			print_key_val(char ***filtered_envp);
-void			free_two_dim(char **env_keys);
-void			free_three_dim(char ***filtered_envp);
-t_token			**join_token(t_token **head);
-t_token			**assign_types(t_token **head);
-t_token			**check_validity(t_token **head);
-char			*add_to_buffer(char **buffer, char c);
-void			end_token(char **buffer, t_token **head, t_state state);
-int				is_operator_char(char c);
-int				is_delimiter(char c);
-t_command		**create_commands(t_command **head_c, t_token **head_t, \
-									t_main **main);
-void			init_empty_fds(t_command **new_cmd);
-t_command		*init_empty_cmd(t_main **main);
-t_command		*add_command(t_command **head, t_command *new_cmd);
-char			*replace_exit_code_in_arg(const char *arg, t_main *main);
-
 
 //Execution
 void			execute_commands(t_main **main);
