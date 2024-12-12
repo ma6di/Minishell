@@ -18,7 +18,10 @@ int	cd_env_update(const char *key, const char *value, char **env_vars)
 	env_entry[key_len] = '=';
 	ft_memcpy(env_entry + key_len + 1, value, value_len + 1);
 	if (find_and_update_env(key, env_entry, env_vars, key_len))
+	{
+		free(env_entry);
 		return (SUCCESS);
+	}
 	free(env_entry);
 	return (0);
 }
