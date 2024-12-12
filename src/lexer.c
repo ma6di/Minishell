@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 17:01:54 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 18:40:31 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,11 @@ t_command	*lexer(char *input, char **envp, t_main **main)
 	head_t = check_validity(head_t);
 	head_c = create_commands(head_c, head_t, main);
 	if (head_t && *head_t)
-	{
-		//print_token_list(head_t);
 		free_tokens(head_t);
-	}
-	// if (head_c && *head_c)
-	//  	print_cmd_list(head_c);
+	// if (head_c)
+	// {
+	// 	print_cmd_list(head_c);
+	// }
 	if (!head_c || !(*head_c))
 		return (NULL);
 	return (*head_c);

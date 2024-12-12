@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 13:56:45 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 18:43:57 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,13 @@ t_token	**check_validity(t_token **head)
 		return (display_error_and_free(curr->value, head), NULL);
 	while (curr && curr->next)
 	{
-		// if ((curr->type == HERESTRING || curr->type == IO_REDIRECT)
-		// 	&& !is_operator(curr->next->type, curr->next->state)
-		// 	&& !curr->next->next)
-		// {
-		// 	if (!curr->next->next)
-		// 		return (display_error_and_free("newline", head), NULL);
-		// }
+		if ((curr->type == HERESTRING || curr->type == IO_REDIRECT)
+			&& !is_operator(curr->next->type, curr->next->state)
+			&& !curr->next->next)
+		{
+			if (!curr->next->next)
+				return (display_error_and_free("newline", head), NULL);
+		}
 		if (check_invalid_ops(curr, curr->next))
 			return (display_error_and_free(curr->next->value, head), NULL);
 		curr = curr->next;

@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 18:08:47 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 18:48:32 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ typedef struct s_main
 	t_command	*command_list;
 	char		**env_vars;
 	int			exit_code;
-	bool		is_sleeping;//not using
+	//bool		is_sleeping;//not using
 	int			heredoc_fork_permit;
 	int			should_exit;
 }				t_main;
@@ -105,20 +105,14 @@ typedef struct s_token
 	struct s_token	*next;
 }					t_token;
 
-// echo hi > file1 | <<end <<two
-
 typedef struct s_command
 {
 	char				*command;
 	char				**args;
 	t_heredoc			**heredocs; // [heredoc1, heredoc2]
 	t_operator			**operators; // [operator1, operator2]
-	int					nr_of_pipes; //not using
 	int					*pipe_fd;
 	int					has_pipe;
-	int					error_code; //not using
-	char				*error_message; //not using
-	char				*result_file; //not using
 	bool				pipe_created;
 	pid_t				pid;
 	pid_t				heredoc_pid;
@@ -130,16 +124,11 @@ typedef struct s_command
 
 typedef struct s_fds
 {
-	char	*infile; //heredoc.txt -> need to free the file before replacing it  //not using
-	char	*outfile; //not using
-	char	*append_outfile; //not using
+	char	*infile; //not using, maybe same as oufile??
+	char	*outfile; //using for sth, otherwise tests fail
 	int		fd_in;
 	int		fd_out;
 	int		has_heredoc; // 2 nr_of_heredoc
-	int		fd_err; //not using
-	int		is_stderr_redirected;//not using
-	int		in_duped;//not using
-	int		out_duped;//not using
 }			t_fds;
 
 typedef struct s_heredoc

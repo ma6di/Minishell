@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 17:53:34 by mcheragh         ###   ########.fr       */
+/*   Updated: 2024/12/12 18:45:15 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static void	process_commands(t_main *main, t_command *commands)
 	set_signals_noniteractive();
 	if (main->heredoc_fork_permit != -1)
 		execute_commands(&main);
-	main->is_sleeping = false;
+	//main->is_sleeping = false;
 	main->heredoc_fork_permit = 0;
 	remove_heredoc_file(main);
 	free_commands(&(main->command_list));

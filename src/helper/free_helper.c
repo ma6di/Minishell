@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:10:05 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 17:48:50 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 18:47:06 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ void	free_fds(t_fds *io_fds)
 	{
 		free(io_fds->infile);
 		free(io_fds->outfile);
-		free(io_fds->append_outfile);
 		free(io_fds);
 		io_fds = NULL;
 	}

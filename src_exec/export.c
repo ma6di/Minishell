@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 16:57:11 by mcheragh          #+#    #+#             */
-/*   Updated: 2024/12/12 17:29:23 by mcheragh         ###   ########.fr       */
+/*   Updated: 2024/12/12 18:24:19 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ int	ft_export_helper(char **args, int error_ret, t_main *main)
 		if (!strchr(args[i], '='))
 		{
 			i++;
-			continue;
+			continue ;
 		}
 		if (process_env_variable(main, args[i]) == -1)
 			break ;
