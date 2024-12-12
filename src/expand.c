@@ -28,64 +28,45 @@ static int	is_operator(t_token *token)
 	return (0);
 }
 
+static char	*generate_new_arg(const char *arg, const char *exit_code_str, \
+								const char *pos)
+{
+	size_t	prefix_len;
+	size_t	new_arg_len;
+	char	*new_arg;
+
+	prefix_len = pos - arg;
+	new_arg_len = prefix_len + ft_strlen(exit_code_str) + \
+					ft_strlen(pos + 2) + 1;
+	new_arg = malloc(new_arg_len);
+	if (!new_arg)
+		return (NULL);
+	ft_strlcpy(new_arg, arg, prefix_len + 1);
+	ft_strlcpy(new_arg + prefix_len, exit_code_str, \
+				ft_strlen(exit_code_str) + 1);
+	ft_strlcpy(new_arg + prefix_len + ft_strlen(exit_code_str), pos + 2, \
+				ft_strlen(pos + 2) + 1);
+	return (new_arg);
+}
+
 char	*replace_exit_code_in_arg(const char *arg, t_main *main)
 {
 	char	*pos;
 	char	*new_arg;
 	char	*exit_code_str;
-	size_t	prefix_len;
-	size_t	new_arg_len;
 
-	exit_code_str = ft_itoa(main->exit_code); // Convert exit_code to string
+	exit_code_str = ft_itoa(main->exit_code);
 	if (!exit_code_str)
-		return (NULL); // Handle memory allocation failure
+		return (NULL);
 	pos = ft_strnstr(arg, "$?", ft_strlen(arg));
 	if (!pos)
 	{
 		free(exit_code_str);
-		return (ft_strdup(arg)); // No `$?`, return a copy of the original string
+		return (ft_strdup(arg));
 	}
-	prefix_len = pos - arg; // Length of text before `$?`
-	new_arg_len = prefix_len + ft_strlen(exit_code_str) + ft_strlen(pos + 2) + 1;
-	new_arg = malloc(new_arg_len); // Allocate new string
-	if (!new_arg)
-	{
-		free(exit_code_str);
-		return (NULL); // Handle memory allocation failure
-	}
-	// Copy parts into the new string using `ft_strlcpy`
-	ft_strlcpy(new_arg, arg, prefix_len + 1); // Copy prefix
-	ft_strlcpy(new_arg + prefix_len, exit_code_str, ft_strlen(exit_code_str) + 1); // Append exit_code
-	ft_strlcpy(new_arg + prefix_len + ft_strlen(exit_code_str), pos + 2, ft_strlen(pos + 2) + 1); // Append remaining string
-	free(exit_code_str); // Clean up
+	new_arg = generate_new_arg(arg, exit_code_str, pos);
+	free(exit_code_str);
 	return (new_arg);
-}
-
-char	*get_value(char *env_key, char **envp)
-{
-	int		i;
-	int		j;
-	char	*value;
-
-	i = 0;
-	if (!envp || !env_key)
-		return (ft_strdup(""));
-	value = NULL;
-	while (envp[i])
-	{
-		j = 0;
-		while (envp[i][j] && envp[i][j] != '=' && envp[i][j] == env_key[j])
-			j++;
-		if (envp[i][j] == '=' && env_key[j] == '\0')
-		{
-			j++;
-			value = ft_substr(envp[i], j, ft_strlen(envp[i]) - j);
-		}
-		i++;
-	}
-	if (value)
-		return (value);
-	return (ft_strdup(""));
 }
 
 static void	exp_keys(t_token **head, t_token *curr, char **envp, t_main *main)

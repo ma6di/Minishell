@@ -72,3 +72,30 @@ t_token	*value_is_cla(t_token *curr, char *value)
 	free(tmp_split);
 	return (new_token);
 }
+
+char	*get_value(char *env_key, char **envp)
+{
+	int		i;
+	int		j;
+	char	*value;
+
+	i = 0;
+	if (!envp || !env_key)
+		return (ft_strdup(""));
+	value = NULL;
+	while (envp[i])
+	{
+		j = 0;
+		while (envp[i][j] && envp[i][j] != '=' && envp[i][j] == env_key[j])
+			j++;
+		if (envp[i][j] == '=' && env_key[j] == '\0')
+		{
+			j++;
+			value = ft_substr(envp[i], j, ft_strlen(envp[i]) - j);
+		}
+		i++;
+	}
+	if (value)
+		return (value);
+	return (ft_strdup(""));
+}
