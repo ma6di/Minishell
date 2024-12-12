@@ -1,4 +1,15 @@
-//NORM OK
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_external.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 16:56:43 by mcheragh          #+#    #+#             */
+/*   Updated: 2024/12/12 16:56:44 by mcheragh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 char	*join_path_and_command(const char *dir, const char *command)

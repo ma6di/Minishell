@@ -1,4 +1,15 @@
-//NORM OK
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 16:57:06 by mcheragh          #+#    #+#             */
+/*   Updated: 2024/12/12 17:00:44 by mcheragh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	is_numeric(t_main *main, char *str)
@@ -23,7 +34,7 @@ static int	is_numeric(t_main *main, char *str)
 
 int	ft_exit(t_command *cmd)
 {
-	if(cmd->next || cmd->prev)
+	if (cmd->next || cmd->prev)
 		return (0);
 	if (!cmd->args[1])
 	{
