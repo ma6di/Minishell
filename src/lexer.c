@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:13:37 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 13:47:54 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 17:01:54 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ t_command	*lexer(char *input, char **envp, t_main **main)
 		free_tokens(head_t);
 	}
 	// if (head_c && *head_c)
-	// 	print_cmd_list(head_c);
+	//  	print_cmd_list(head_c);
 	if (!head_c || !(*head_c))
 		return (NULL);
 	return (*head_c);

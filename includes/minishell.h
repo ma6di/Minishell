@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 13:56:11 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 18:00:33 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,7 +248,8 @@ int				ft_pwd(void);
 int				ft_exit(t_command *cmd);
 int				ft_env(t_main *main, t_command *cmd);
 int				ft_echo(t_command *cmd);
-	//export//
+
+//export//
 int				ft_export(char **args, t_main *main, t_command *cmd);
 int				is_in_env(char **env_vars, const char *args);
 int				ft_export_helper(char **args, int error_ret, t_main *main);

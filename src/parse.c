@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:14:14 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/11 14:35:52 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 17:05:04 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,7 @@ t_token	**parse(t_token **head, char *str)
 		if (*str != '\0')
 			str++;
 	}
-	if (buff)
-		end_token(&buff, head, state);
+	end_token(&buff, head, state);
 	if (state != GENERAL)
 	{
 		ft_fprintf("minishell: Unclosed quote.\n");
