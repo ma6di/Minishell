@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 13:56:11 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 17:12:14 by mcheragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,6 +184,8 @@ t_token			*insert_new_token(t_token **curr, char **tmp_split, int i);
 t_token			*value_is_cla(t_token *curr, char *value);
 char			**split_cla(char *value);
 char			*replace_exit_code_in_arg(const char *arg, t_main *main);
+char			*generate_new_arg(const char *arg, const char *exit_code_str, \
+								const char *pos);
 
 // Freeing
 void			free_tokens(t_token **head);

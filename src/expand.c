@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 13:58:34 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 17:11:44 by mcheragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	is_operator(t_token *token)
 	return (0);
 }
 
-static char	*generate_new_arg(const char *arg, const char *exit_code_str, \
+char	*generate_new_arg(const char *arg, const char *exit_code_str, \
 								const char *pos)
 {
 	size_t	prefix_len;
@@ -49,24 +49,31 @@ static char	*generate_new_arg(const char *arg, const char *exit_code_str, \
 	return (new_arg);
 }
 
-char	*replace_exit_code_in_arg(const char *arg, t_main *main)
+char	*get_value(char *env_key, char **envp)
 {
-	char	*pos;
-	char	*new_arg;
-	char	*exit_code_str;
+	int		i;
+	int		j;
+	char	*value;
 
-	exit_code_str = ft_itoa(main->exit_code);
-	if (!exit_code_str)
-		return (NULL);
-	pos = ft_strnstr(arg, "$?", ft_strlen(arg));
-	if (!pos)
+	i = 0;
+	if (!envp || !env_key)
+		return (ft_strdup(""));
+	value = NULL;
+	while (envp[i])
 	{
-		free(exit_code_str);
-		return (ft_strdup(arg));
+		j = 0;
+		while (envp[i][j] && envp[i][j] != '=' && envp[i][j] == env_key[j])
+			j++;
+		if (envp[i][j] == '=' && env_key[j] == '\0')
+		{
+			j++;
+			value = ft_substr(envp[i], j, ft_strlen(envp[i]) - j);
+		}
+		i++;
 	}
-	new_arg = generate_new_arg(arg, exit_code_str, pos);
-	free(exit_code_str);
-	return (new_arg);
+	if (value)
+		return (value);
+	return (ft_strdup(""));
 }
 
 static void	exp_keys(t_token **head, t_token *curr, char **envp, t_main *main)
