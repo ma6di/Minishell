@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/11 15:01:00 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 12:52:57 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,8 +206,11 @@ t_token			**check_validity(t_token **head);
 t_command		**create_commands(t_command **head_c, t_token **head_t, \
 									t_main **main);
 t_command		*init_empty_cmd(t_main **main);
-void			init_empty_fds(t_command **new_cmd);
 t_command		*add_command(t_command **head, t_command *new_cmd);
+void			handle_heredoc(t_command **cmd, t_token *curr);
+void			handle_operators(t_command **cmd, t_token *curr, \
+								t_token **head_t);
+void			handle_argument(t_command **cmd, char *value, t_state state);
 
 // Debugging Helpers
 void			print_token_list(t_token **head);

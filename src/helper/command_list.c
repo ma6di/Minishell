@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   command_list.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:07:56 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/11 14:56:48 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 12:52:54 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	init_empty_fds(t_command **new_cmd)
+static void	init_empty_fds(t_command **new_cmd)
 {
 	(*new_cmd)->io_fds->infile = NULL;
 	(*new_cmd)->io_fds->outfile = NULL;

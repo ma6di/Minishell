@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_commands.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:45:20 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/11 14:54:51 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 12:53:19 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char	**add_to_args(char **old_args, char *new_arg)
 	return (new_args);
 }
 
-static void	handle_argument(t_command **cmd, char *value, t_state state)
+void	handle_argument(t_command **cmd, char *value, t_state state)
 {
 	char		**tmp;
 
@@ -48,135 +48,6 @@ static void	handle_argument(t_command **cmd, char *value, t_state state)
 			free((*cmd)->args);
 		(*cmd)->args = tmp;
 	}
-}
-
-static t_heredoc	*init_heredoc(void)
-{
-	t_heredoc	*heredoc;
-
-	heredoc = malloc(sizeof(t_heredoc));
-	heredoc->delimiter = NULL;
-	heredoc->should_expand = 0;
-	heredoc->line = NULL;
-	heredoc->filename = NULL;
-	heredoc->expanded_line = NULL;
-	heredoc->heredoc_fd = 0;
-	return (heredoc);
-}
-
-t_heredoc	**add_to_heredocs(t_heredoc **old_heredocs, t_heredoc *new_heredoc)
-{
-	t_heredoc	**new_heredocs;
-	int			i;
-
-	i = 0;
-	while (old_heredocs && old_heredocs[i])
-		i++;
-	new_heredocs = malloc((i + 2) * sizeof(char *));
-	if (!new_heredocs)
-		return (NULL);
-	i = 0;
-	while (old_heredocs && old_heredocs[i])
-	{
-		new_heredocs[i] = old_heredocs[i];
-		i++;
-	}
-	new_heredocs[i++] = new_heredoc;
-	new_heredocs[i] = NULL;
-	return (new_heredocs);
-}
-
-t_operator	**add_to_operators(t_operator **old_ops, t_operator *new_op)
-{
-	t_operator	**new_ops;
-	int			i;
-
-	i = 0;
-	while (old_ops && old_ops[i])
-		i++;
-	new_ops = malloc((i + 2) * sizeof(char *));
-	if (!new_ops)
-		return (NULL);
-	i = 0;
-	while (old_ops && old_ops[i])
-	{
-		new_ops[i] = old_ops[i];
-		i++;
-	}
-	new_ops[i++] = new_op;
-	new_ops[i] = NULL;
-	return (new_ops);
-}
-
-void	handle_heredoc(t_command **cmd, t_token *curr)
-{
-	t_heredoc	*heredoc;
-	t_heredoc	**tmp;
-
-	heredoc = init_heredoc();
-	if (curr->next->state == EMPTY)
-		heredoc->delimiter = ft_strdup("");
-	else
-		heredoc->delimiter = ft_strdup(curr->next->value);
-	heredoc->should_expand = curr->next->state == GENERAL;
-	tmp = add_to_heredocs((*cmd)->heredocs, heredoc);
-	if ((*cmd)->heredocs)
-		free((*cmd)->heredocs);
-	(*cmd)->heredocs = tmp;
-	(*cmd)->io_fds->has_heredoc++;
-	if ((*cmd)->io_fds->infile)
-		free((*cmd)->io_fds->infile);
-	(*cmd)->io_fds->infile = ft_strdup("heredoc.txt");
-	(*cmd)->main->heredoc_fork_permit++;
-}
-
-static t_operator	*init_operator(void)
-{
-	t_operator	*operator;
-
-	operator = malloc(sizeof(t_operator));
-	operator->type = UNINITIALIZED;
-	operator->filename = NULL;
-	return (operator);
-}
-
-static void	handle_operators(t_command **cmd, t_token *curr, t_token **head_t)
-{
-	t_operator		**tmp;
-	t_operator		*operator;
-
-	operator = init_operator();
-	if (curr->type == HEREDOC)
-	{
-		handle_heredoc(cmd, curr);
-		operator->filename = ft_strdup("heredoc.txt");
-		operator->type = INFILE;
-		if (((curr == *head_t || (curr->prev && curr->prev->type == PIPE))
-				&& (!curr->next->next || curr->next->next->type != COMMAND)))
-		{
-			(*cmd)->command = ft_strdup("echo");
-			handle_argument(cmd, "echo", curr->state);
-			handle_argument(cmd, "-n", curr->state);
-		}
-	}
-	else if (((curr == *head_t || (curr->prev && curr->prev->type == PIPE))
-				&& (!curr->next->next || curr->next->next->type != COMMAND)))
-	{
-		(*cmd)->command = ft_strdup("echo");
-		handle_argument(cmd, "echo", curr->state);
-		handle_argument(cmd, "-n", curr->state);
-		operator->filename = ft_strdup(curr->next->value);
-		operator->type = curr->next->type;
-	}
-	else
-	{
-		operator->filename = ft_strdup(curr->next->value);
-		operator->type = curr->next->type;
-	}
-	tmp = add_to_operators((*cmd)->operators, operator);
-	if ((*cmd)->operators)
-		free((*cmd)->operators);
-	(*cmd)->operators = tmp;
 }
 
 static t_command	*handle_types(t_command **cmd, t_token **head_t,
