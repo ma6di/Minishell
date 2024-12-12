@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_list.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:07:56 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 18:48:24 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 19:05:45 by mcheragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 static void	init_empty_fds(t_command **new_cmd)
 {
-	(*new_cmd)->io_fds->infile = NULL;
-	(*new_cmd)->io_fds->outfile = NULL;
 	(*new_cmd)->io_fds->fd_in = 0;
 	(*new_cmd)->io_fds->fd_out = 0;
 	(*new_cmd)->io_fds->has_heredoc = 0;

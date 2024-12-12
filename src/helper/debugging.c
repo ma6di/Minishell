@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debugging.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:09:29 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 18:47:08 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 19:05:52 by mcheragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,8 +124,6 @@ void	print_cmd_list(t_command **head)
 		printf("Has Pipe: %d\n", curr->has_pipe);
 		printf("PID: %d\n", curr->pid);
 		printf("FDS -----\n");
-		printf("Infile: %s\n", curr->io_fds->infile);
-		printf("Outfile: %s\n", curr->io_fds->outfile);
 		printf("Has Heredoc: %d\n", curr->io_fds->has_heredoc);
 		printf("Heredoc fork permit: %d\n", curr->main->heredoc_fork_permit);
 		printf("Main %p\n", curr->main);

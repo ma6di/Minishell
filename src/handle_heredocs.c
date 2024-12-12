@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_heredocs.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 12:46:34 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 12:55:54 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 19:06:14 by mcheragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,5 @@ void	handle_heredoc(t_command **cmd, t_token *curr)
 		free((*cmd)->heredocs);
 	(*cmd)->heredocs = tmp;
 	(*cmd)->io_fds->has_heredoc++;
-	if ((*cmd)->io_fds->infile)
-		free((*cmd)->io_fds->infile);
-	(*cmd)->io_fds->infile = ft_strdup("heredoc.txt");
 	(*cmd)->main->heredoc_fork_permit++;
 }
