@@ -6,7 +6,7 @@
 /*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 17:12:14 by mcheragh         ###   ########.fr       */
+/*   Updated: 2024/12/12 17:49:56 by mcheragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -295,5 +295,10 @@ void			signal_quit_message(int signo);
 void			set_signals_sleep_mode(void);
 void			signal_reset_prompt_sleep(int signo);
 void			set_signals_noniteractive(void);
+
+//Main
+t_main			*init_main(char **envp);
+t_main			*allocate_main(void);
+void			copy_env_vars(t_main *main, char **envp);
 
 #endif

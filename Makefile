@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+         #
+#    By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/18 16:55:20 by nrauh             #+#    #+#              #
-#    Updated: 2024/12/12 12:54:27 by nrauh            ###   ########.fr        #
+#    Updated: 2024/12/12 17:50:27 by mcheragh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ LIBFT = libft/libft.a
 
 SRC = $(addprefix $(SRC_DIR), main.c lexer.c parse.c parse2.c expand.c expand2.c \
 	join_token.c assign_types.c check_validity.c create_commands.c \
-	handle_operators.c handle_heredocs.c \
+	handle_operators.c handle_heredocs.c main2.c\
 	helper/debugging.c helper/free_helper.c helper/token_list.c \
 	helper/parse_helper.c helper/command_list.c) \
 	$(addprefix $(SRC_EXEC_DIR), exec.c exec_tools.c pwd.c export.c env.c echo.c \
