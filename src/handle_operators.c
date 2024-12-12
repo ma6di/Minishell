@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 12:45:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 12:58:04 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 13:52:07 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,24 +65,12 @@ void	handle_operators(t_command **cmd, t_token *curr, t_token **head_t)
 		if (((curr == *head_t || (curr->prev && curr->prev->type == PIPE))
 				&& (!curr->next->next || curr->next->next->type != COMMAND)))
 			add_echo_n(cmd, curr);
-		// {
-		// 	(*cmd)->command = ft_strdup("echo");
-		// 	handle_argument(cmd, "echo", curr->state);
-		// 	handle_argument(cmd, "-n", curr->state);
-		// }
-	}
-	else if (((curr == *head_t || (curr->prev && curr->prev->type == PIPE))
-			&& (!curr->next->next || curr->next->next->type != COMMAND)))
-	{
-		// (*cmd)->command = ft_strdup("echo");
-		// handle_argument(cmd, "echo", curr->state);
-		// handle_argument(cmd, "-n", curr->state);
-		add_echo_n(cmd, curr);
-		operator->filename = ft_strdup(curr->next->value);
-		operator->type = curr->next->type;
 	}
 	else
 	{
+		if (((curr == *head_t || (curr->prev && curr->prev->type == PIPE))
+				&& (!curr->next->next || curr->next->next->type != COMMAND)))
+			add_echo_n(cmd, curr);
 		operator->filename = ft_strdup(curr->next->value);
 		operator->type = curr->next->type;
 	}

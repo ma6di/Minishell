@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 12:52:57 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 13:56:11 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 # define MAX_PATH_LENGTH 4096
 # define BUFF_SIZE 1024
 
-extern int	g_sigint;
+extern int					g_sigint;
 
 typedef struct s_fds		t_fds;
 typedef struct s_token		t_token;
@@ -91,7 +91,7 @@ typedef struct s_main
 	t_command	*command_list;
 	char		**env_vars;
 	int			exit_code;
-	bool		is_sleeping;  //not using
+	bool		is_sleeping;//not using
 	int			heredoc_fork_permit;
 	int			should_exit;
 }				t_main;
@@ -137,9 +137,9 @@ typedef struct s_fds
 	int		fd_out;
 	int		has_heredoc; // 2 nr_of_heredoc
 	int		fd_err; //not using
-	int		is_stderr_redirected;  //not using
-	int		in_duped;  //not using
-	int		out_duped;  //not using
+	int		is_stderr_redirected;//not using
+	int		in_duped;//not using
+	int		out_duped;//not using
 }			t_fds;
 
 typedef struct s_heredoc
@@ -278,8 +278,10 @@ void			ft_child_exit(int exit_code);
 void			exec_heredoc(t_command *cmds);
 void			free_heredoc(t_command *cmd);
 void			remove_heredoc_file(t_main *main);
-char			*expand_variables_in_line(char *line, char **envp, t_main *main);
-char			*process_variable(char **res, char *start, char **envp, t_main *main);
+char			*expand_variables_in_line(char *line, char **envp, \
+					t_main *main);
+char			*process_variable(char **res, char *start, char **envp, \
+					t_main *main);
 char			*heredoc_get_value(const char *var_name, char **envp);
 void			append_text(char **res, char *text, size_t len);
 

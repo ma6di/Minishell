@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/11 14:51:50 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 13:58:34 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	is_operator(t_token *token)
 	return (0);
 }
 
-char *replace_exit_code_in_arg(const char *arg, t_main *main)
+char	*replace_exit_code_in_arg(const char *arg, t_main *main)
 {
 	char	*pos;
 	char	*new_arg;
@@ -39,29 +39,24 @@ char *replace_exit_code_in_arg(const char *arg, t_main *main)
 	exit_code_str = ft_itoa(main->exit_code); // Convert exit_code to string
 	if (!exit_code_str)
 		return (NULL); // Handle memory allocation failure
-
 	pos = ft_strnstr(arg, "$?", ft_strlen(arg));
 	if (!pos)
 	{
 		free(exit_code_str);
 		return (ft_strdup(arg)); // No `$?`, return a copy of the original string
 	}
-
 	prefix_len = pos - arg; // Length of text before `$?`
 	new_arg_len = prefix_len + ft_strlen(exit_code_str) + ft_strlen(pos + 2) + 1;
-
 	new_arg = malloc(new_arg_len); // Allocate new string
 	if (!new_arg)
 	{
 		free(exit_code_str);
 		return (NULL); // Handle memory allocation failure
 	}
-
 	// Copy parts into the new string using `ft_strlcpy`
-	ft_strlcpy(new_arg, arg, prefix_len + 1);								 // Copy prefix
+	ft_strlcpy(new_arg, arg, prefix_len + 1); // Copy prefix
 	ft_strlcpy(new_arg + prefix_len, exit_code_str, ft_strlen(exit_code_str) + 1); // Append exit_code
 	ft_strlcpy(new_arg + prefix_len + ft_strlen(exit_code_str), pos + 2, ft_strlen(pos + 2) + 1); // Append remaining string
-
 	free(exit_code_str); // Clean up
 	return (new_arg);
 }
