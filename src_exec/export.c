@@ -6,7 +6,7 @@
 /*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 16:57:11 by mcheragh          #+#    #+#             */
-/*   Updated: 2024/12/12 17:29:23 by mcheragh         ###   ########.fr       */
+/*   Updated: 2024/12/12 18:45:44 by mcheragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ static int	is_valid_env(const char *arg)
 	equal_pos = strchr(arg, '=');
 	if (equal_pos)
 		name_len = (size_t)(equal_pos - arg);
-	else
+	else if(ft_isalpha(arg[0]) && ft_strchr(arg, '-'))
+        return (0);
+    else
 		return (1);
 	if (!ft_isalpha(arg[0]) && arg[0] != '_')
 		return (0);
@@ -59,7 +61,13 @@ static int	check_and_process_arg(char *arg, int *error_ret)
 {
 	*error_ret = is_valid_env(arg);
 	if (arg[0] == '=')
+    {
 		*error_ret = -3;
+    }
+    else if (!ft_isalpha(arg[0]))
+    {
+        *error_ret = -3;
+    }
 	if (*error_ret <= 0)
 	{
 		print_error(*error_ret, arg);
