@@ -6,7 +6,7 @@
 /*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 16:57:24 by mcheragh          #+#    #+#             */
-/*   Updated: 2024/12/12 17:01:56 by mcheragh         ###   ########.fr       */
+/*   Updated: 2024/12/12 18:43:40 by mcheragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ int	env_add(char ***env_vars, const char *value)
 		free(new_env_vars);
 		return (-1);
 	}
-	free((void *)value);
 	free(old_env);
 	*env_vars = new_env_vars;
 	return (0);
