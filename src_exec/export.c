@@ -6,11 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 16:57:11 by mcheragh          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/12/12 18:24:19 by nrauh            ###   ########.fr       */
-=======
-/*   Updated: 2024/12/12 18:45:44 by mcheragh         ###   ########.fr       */
->>>>>>> origin/export_fixed
+/*   Updated: 2024/12/12 18:58:03 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +23,9 @@ static int	is_valid_env(const char *arg)
 	equal_pos = strchr(arg, '=');
 	if (equal_pos)
 		name_len = (size_t)(equal_pos - arg);
-	else if(ft_isalpha(arg[0]) && ft_strchr(arg, '-'))
-        return (0);
-    else
+	else if (ft_isalpha(arg[0]) && ft_strchr(arg, '-'))
+		return (0);
+	else
 		return (1);
 	if (!ft_isalpha(arg[0]) && arg[0] != '_')
 		return (0);
@@ -65,13 +61,9 @@ static int	check_and_process_arg(char *arg, int *error_ret)
 {
 	*error_ret = is_valid_env(arg);
 	if (arg[0] == '=')
-    {
 		*error_ret = -3;
-    }
-    else if (!ft_isalpha(arg[0]))
-    {
-        *error_ret = -3;
-    }
+	else if (!ft_isalpha(arg[0]))
+		*error_ret = -3;
 	if (*error_ret <= 0)
 	{
 		print_error(*error_ret, arg);
