@@ -242,10 +242,10 @@ int				is_builtin(char *command);
 int				setup_file_redirections(t_command *cmd);
 int				type_redir_exist(t_command *cmd, t_token_type	type);
 
-//Ecternal commands
+//External commands
 int				ft_unset(char **args, t_main *main);
 int				ft_pwd(void);
-int				ft_exit(t_main *main);
+int				ft_exit(t_command *cmd);
 int				ft_env(t_main *main, t_command *cmd);
 int				ft_echo(t_command *cmd);
 	//export//
@@ -256,12 +256,12 @@ int				exp_env_update(char **env_vars, int index, const char *value);
 int				env_add(char ***env_vars, const char *value);
 char			*get_env_name(const char *src);
 	//cd//
-int				ft_cd(t_command *cmd, char **env);
+int				ft_cd(t_command *cmd, char ***env);
 int				cd_env_update(const char *key, const char *value, \
 								char **env_vars);
 int				find_and_update_env(const char *key, char *env_entry, \
 									char **env_vars, int key_len);
-int				update_oldpwd(char **env);
+int				update_oldpwd(char ***env);
 const char		*get_home_path(char **env);
 
 //Fork

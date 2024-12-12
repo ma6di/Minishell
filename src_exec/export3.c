@@ -60,6 +60,7 @@ int	env_add(char ***env_vars, const char *value)
 		free(new_env_vars);
 		return (-1);
 	}
+	free((void*)value);
 	free(old_env);
 	*env_vars = new_env_vars;
 	return (0);

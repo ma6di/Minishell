@@ -18,7 +18,10 @@ int	cd_env_update(const char *key, const char *value, char **env_vars)
 	env_entry[key_len] = '=';
 	ft_memcpy(env_entry + key_len + 1, value, value_len + 1);
 	if (find_and_update_env(key, env_entry, env_vars, key_len))
+	{
+		free(env_entry);
 		return (SUCCESS);
+	}
 	free(env_entry);
 	return (0);
 }
@@ -53,33 +56,37 @@ static const char	*get_cd_path(char **args, char **env)
 	return (path);
 }
 
-static int	handle_cd_execution(const char *path, char **env)
+static int	handle_cd_execution(const char *path, char ***env)
 {
 	char	cwd[MAX_PATH_LENGTH];
-
 	if (update_oldpwd(env) == ERROR || chdir(path) < 0)
 	{
 		ft_fprintf("Minishell: cd: %s: %s\n", path, strerror(errno));
 		return (CD_ERROR);
 	}
 	if (getcwd(cwd, sizeof(cwd)))
-		cd_env_update("PWD", cwd, env);
+		cd_env_update("PWD", cwd, *env);
 	return (CD_SUCCESS);
 }
 
-int	ft_cd(t_command *cmd, char **env)
+int	ft_cd(t_command *cmd, char ***env)
 {
+	int i;
 	const char	*path;
 
+	i = 0;
+	while(cmd->args[i])
+		i++;
 	if (type_redir_exist(cmd, INFILE))
 		return (SUCCESS);
-	if (cmd->args[2])
+	if (i > 2)
 	{
 		ft_fprintf("Minishell: cd: too many arguments\n");
 		return (1);
 	}
-	path = get_cd_path(cmd->args, env);
+	path = get_cd_path(cmd->args, *env);
 	if (!path)
 		return (1);
 	return (handle_cd_execution(path, env));
 }
+ 
