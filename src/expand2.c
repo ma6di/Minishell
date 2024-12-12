@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/11 14:51:45 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 17:11:29 by mcheragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,4 +71,24 @@ t_token	*value_is_cla(t_token *curr, char *value)
 	}
 	free(tmp_split);
 	return (new_token);
+}
+
+char	*replace_exit_code_in_arg(const char *arg, t_main *main)
+{
+	char	*pos;
+	char	*new_arg;
+	char	*exit_code_str;
+
+	exit_code_str = ft_itoa(main->exit_code);
+	if (!exit_code_str)
+		return (NULL);
+	pos = ft_strnstr(arg, "$?", ft_strlen(arg));
+	if (!pos)
+	{
+		free(exit_code_str);
+		return (ft_strdup(arg));
+	}
+	new_arg = generate_new_arg(arg, exit_code_str, pos);
+	free(exit_code_str);
+	return (new_arg);
 }

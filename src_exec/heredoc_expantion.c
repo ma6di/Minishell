@@ -1,4 +1,15 @@
-//NORM OK
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc_expantion.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 16:57:44 by mcheragh          #+#    #+#             */
+/*   Updated: 2024/12/12 16:57:45 by mcheragh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 char	*heredoc_get_value(const char *var_name, char **envp)

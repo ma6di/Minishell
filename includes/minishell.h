@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 18:00:33 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 18:08:47 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,6 +184,8 @@ t_token			*insert_new_token(t_token **curr, char **tmp_split, int i);
 t_token			*value_is_cla(t_token *curr, char *value);
 char			**split_cla(char *value);
 char			*replace_exit_code_in_arg(const char *arg, t_main *main);
+char			*generate_new_arg(const char *arg, const char *exit_code_str, \
+								const char *pos);
 
 // Freeing
 void			free_tokens(t_token **head);
@@ -294,5 +296,10 @@ void			signal_quit_message(int signo);
 void			set_signals_sleep_mode(void);
 void			signal_reset_prompt_sleep(int signo);
 void			set_signals_noniteractive(void);
+
+//Main
+t_main			*init_main(char **envp);
+t_main			*allocate_main(void);
+void			copy_env_vars(t_main *main, char **envp);
 
 #endif

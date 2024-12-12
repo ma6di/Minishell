@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export3.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 16:57:24 by mcheragh          #+#    #+#             */
+/*   Updated: 2024/12/12 17:01:56 by mcheragh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 int	ft_export(char **args, t_main *main, t_command *cmd)
@@ -60,7 +72,7 @@ int	env_add(char ***env_vars, const char *value)
 		free(new_env_vars);
 		return (-1);
 	}
-	free((void*)value);
+	free((void *)value);
 	free(old_env);
 	*env_vars = new_env_vars;
 	return (0);

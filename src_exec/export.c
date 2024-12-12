@@ -1,4 +1,15 @@
-//NORM OK
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 16:57:11 by mcheragh          #+#    #+#             */
+/*   Updated: 2024/12/12 17:29:23 by mcheragh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static int	is_valid_env(const char *arg)
@@ -13,7 +24,7 @@ static int	is_valid_env(const char *arg)
 	if (equal_pos)
 		name_len = (size_t)(equal_pos - arg);
 	else
-		return(0);
+		return (1);
 	if (!ft_isalpha(arg[0]) && arg[0] != '_')
 		return (0);
 	i = 1;
@@ -94,10 +105,13 @@ int	ft_export_helper(char **args, int error_ret, t_main *main)
 		{
 			error_found = 1;
 			i++;
-			continue; ;
+			continue ;
 		}
 		if (!strchr(args[i], '='))
-			break ;
+		{
+			i++;
+			continue;
+		}
 		if (process_env_variable(main, args[i]) == -1)
 			break ;
 		i++;

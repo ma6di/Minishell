@@ -1,4 +1,15 @@
-//NORM OK
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 16:55:23 by mcheragh          #+#    #+#             */
+/*   Updated: 2024/12/12 17:02:05 by mcheragh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 int	cd_env_update(const char *key, const char *value, char **env_vars)
@@ -59,6 +70,7 @@ static const char	*get_cd_path(char **args, char **env)
 static int	handle_cd_execution(const char *path, char ***env)
 {
 	char	cwd[MAX_PATH_LENGTH];
+
 	if (update_oldpwd(env) == ERROR || chdir(path) < 0)
 	{
 		ft_fprintf("Minishell: cd: %s: %s\n", path, strerror(errno));
@@ -71,11 +83,11 @@ static int	handle_cd_execution(const char *path, char ***env)
 
 int	ft_cd(t_command *cmd, char ***env)
 {
-	int i;
+	int			i;
 	const char	*path;
 
 	i = 0;
-	while(cmd->args[i])
+	while (cmd->args[i])
 		i++;
 	if (type_redir_exist(cmd, INFILE))
 		return (SUCCESS);
@@ -89,4 +101,3 @@ int	ft_cd(t_command *cmd, char ***env)
 		return (1);
 	return (handle_cd_execution(path, env));
 }
- 

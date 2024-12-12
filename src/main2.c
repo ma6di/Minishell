@@ -1,34 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   main2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/12 16:56:39 by mcheragh          #+#    #+#             */
-/*   Updated: 2024/12/12 16:56:40 by mcheragh         ###   ########.fr       */
+/*   Created: 2024/10/18 16:22:04 by nrauh             #+#    #+#             */
+/*   Updated: 2024/12/12 18:01:14 by mcheragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	ft_env(t_main *main, t_command *cmd)
+t_main	*init_main(char **envp)
 {
-	char	**env;
+	t_main	*main;
 
-	env = main->env_vars;
-	if (cmd->args[1])
-	{
-		ft_fprintf("Minishell: env: too many arguments\n");
-		return (CD_ERROR);
-	}
-	if (!env || !*env)
-		return (SUCCESS);
-	while (*env)
-	{
-		if (*env && **env)
-			ft_putendl_fd(*env, 1);
-		env++;
-	}
-	return (SUCCESS);
+	main = allocate_main();
+	copy_env_vars(main, envp);
+	return (main);
+}
+
+t_main	*allocate_main(void)
+{
+	t_main	*main;
+
+	main = malloc(sizeof(t_main));
+	if (!main)
+		exit(0);
+	main->command_list = NULL;
+	main->exit_code = 0;
+	main->heredoc_fork_permit = 0;
+	main->should_exit = -1;
+	return (main);
 }
