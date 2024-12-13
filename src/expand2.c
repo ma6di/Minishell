@@ -6,11 +6,32 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 18:12:30 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/13 13:52:31 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+char	*generate_new_arg(const char *arg, const char *exit_code_str, \
+								const char *pos)
+{
+	size_t	prefix_len;
+	size_t	new_arg_len;
+	char	*new_arg;
+
+	prefix_len = pos - arg;
+	new_arg_len = prefix_len + ft_strlen(exit_code_str) + \
+					ft_strlen(pos + 2) + 1;
+	new_arg = malloc(new_arg_len);
+	if (!new_arg)
+		return (NULL);
+	ft_strlcpy(new_arg, arg, prefix_len + 1);
+	ft_strlcpy(new_arg + prefix_len, exit_code_str, \
+				ft_strlen(exit_code_str) + 1);
+	ft_strlcpy(new_arg + prefix_len + ft_strlen(exit_code_str), pos + 2, \
+				ft_strlen(pos + 2) + 1);
+	return (new_arg);
+}
 
 char	**split_cla(char *value)
 {
@@ -18,9 +39,9 @@ char	**split_cla(char *value)
 	int		i;
 
 	i = 0;
-	while (value[i] != ' ')
+	while (value[i] && value[i] != ' ')
 		i++;
-	if (value[i] == '\0' || value[i + 1] == '\0')
+	if (value[i] && (value[i] == '\0' || value[i + 1] == '\0'))
 		return (NULL);
 	tmp_split = malloc(4 * sizeof(char *));
 	if (!tmp_split)

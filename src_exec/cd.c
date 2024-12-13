@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 16:55:23 by mcheragh          #+#    #+#             */
-/*   Updated: 2024/12/12 17:02:05 by mcheragh         ###   ########.fr       */
+/*   Updated: 2024/12/13 12:15:27 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int	ft_cd(t_command *cmd, char ***env)
 	i = 0;
 	while (cmd->args[i])
 		i++;
-	if (type_redir_exist(cmd, INFILE))
+	if (type_redir_exist(cmd, INFILE) || cmd->next)
 		return (SUCCESS);
 	if (i > 2)
 	{

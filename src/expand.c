@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 17:11:44 by mcheragh         ###   ########.fr       */
+/*   Updated: 2024/12/13 14:03:59 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,38 +15,20 @@
 // could be unified with the other is_operator???
 static int	is_operator(t_token *token)
 {
-	if (ft_strncmp(token->value, " ", ft_strlen(token->value) + 1) == 0
-		|| ft_strncmp(token->value, "||", ft_strlen(token->value) + 2) == 0
-		|| ft_strncmp(token->value, "|", ft_strlen(token->value) + 1) == 0
-		|| ft_strncmp(token->value, ">>", ft_strlen(token->value) + 2) == 0
-		|| ft_strncmp(token->value, "<", ft_strlen(token->value) + 1) == 0
-		|| ft_strncmp(token->value, "<<", ft_strlen(token->value) + 2) == 0
-		|| ft_strncmp(token->value, "<<<", ft_strlen(token->value) + 3) == 0
-		|| ft_strncmp(token->value, "<>", ft_strlen(token->value) + 2) == 0
-		|| ft_strncmp(token->value, ">", ft_strlen(token->value) + 1) == 0)
-		return (1);
+	if (token && token->value)
+	{
+		if (ft_strncmp(token->value, " ", ft_strlen(token->value) + 1) == 0
+			|| ft_strncmp(token->value, "||", ft_strlen(token->value) + 2) == 0
+			|| ft_strncmp(token->value, "|", ft_strlen(token->value) + 1) == 0
+			|| ft_strncmp(token->value, ">>", ft_strlen(token->value) + 2) == 0
+			|| ft_strncmp(token->value, "<", ft_strlen(token->value) + 1) == 0
+			|| ft_strncmp(token->value, "<<", ft_strlen(token->value) + 2) == 0
+			|| ft_strncmp(token->value, "<<<", ft_strlen(token->value) + 3) == 0
+			|| ft_strncmp(token->value, "<>", ft_strlen(token->value) + 2) == 0
+			|| ft_strncmp(token->value, ">", ft_strlen(token->value) + 1) == 0)
+			return (1);
+	}
 	return (0);
-}
-
-char	*generate_new_arg(const char *arg, const char *exit_code_str, \
-								const char *pos)
-{
-	size_t	prefix_len;
-	size_t	new_arg_len;
-	char	*new_arg;
-
-	prefix_len = pos - arg;
-	new_arg_len = prefix_len + ft_strlen(exit_code_str) + \
-					ft_strlen(pos + 2) + 1;
-	new_arg = malloc(new_arg_len);
-	if (!new_arg)
-		return (NULL);
-	ft_strlcpy(new_arg, arg, prefix_len + 1);
-	ft_strlcpy(new_arg + prefix_len, exit_code_str, \
-				ft_strlen(exit_code_str) + 1);
-	ft_strlcpy(new_arg + prefix_len + ft_strlen(exit_code_str), pos + 2, \
-				ft_strlen(pos + 2) + 1);
-	return (new_arg);
 }
 
 char	*get_value(char *env_key, char **envp)
@@ -76,6 +58,27 @@ char	*get_value(char *env_key, char **envp)
 	return (ft_strdup(""));
 }
 
+static int	check_for_command(char *str, t_main *main)
+{
+	char	*path;
+	char	*is_command;
+	int		i;
+
+	i = 0;
+	while (str[i] && str[i] != ' ')
+		i++;
+	is_command = ft_substr(str, 0, i);
+	path = get_command_path(is_command, main->env_vars);
+	free(is_command);
+	if (!path)
+	{
+		free(path);
+		return (0);
+	}
+	free(path);
+	return (1);
+}
+
 static void	exp_keys(t_token **head, t_token *curr, char **envp, t_main *main)
 {
 	char	*tmp;
@@ -87,8 +90,9 @@ static void	exp_keys(t_token **head, t_token *curr, char **envp, t_main *main)
 		&& !(curr != *head && ft_strncmp(curr->prev->value, "<<", 2) == 0))
 	{
 		tmp = get_value(curr->value + 1, envp);
+		tmp = check_equal(curr, tmp);
 		free(curr->value);
-		if (ft_strchr(tmp, ' '))
+		if (check_for_command(tmp, main))
 		{
 			curr = value_is_cla(curr, tmp);
 			free(tmp);

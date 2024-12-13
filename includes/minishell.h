@@ -6,7 +6,7 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:23:19 by nrauh             #+#    #+#             */
-/*   Updated: 2024/12/12 18:48:32 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/13 14:04:59 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,6 @@ typedef struct s_main
 	t_command	*command_list;
 	char		**env_vars;
 	int			exit_code;
-	//bool		is_sleeping;//not using
 	int			heredoc_fork_permit;
 	int			should_exit;
 }				t_main;
@@ -109,8 +108,8 @@ typedef struct s_command
 {
 	char				*command;
 	char				**args;
-	t_heredoc			**heredocs; // [heredoc1, heredoc2]
-	t_operator			**operators; // [operator1, operator2]
+	t_heredoc			**heredocs;
+	t_operator			**operators;
 	int					*pipe_fd;
 	int					has_pipe;
 	bool				pipe_created;
@@ -124,11 +123,11 @@ typedef struct s_command
 
 typedef struct s_fds
 {
-	char	*infile; //not using, maybe same as oufile??
-	char	*outfile; //using for sth, otherwise tests fail
+	char	*infile;
+	char	*outfile;
 	int		fd_in;
 	int		fd_out;
-	int		has_heredoc; // 2 nr_of_heredoc
+	int		has_heredoc;
 }			t_fds;
 
 typedef struct s_heredoc
@@ -140,9 +139,6 @@ typedef struct s_heredoc
 	char	*expanded_line;
 	int		heredoc_fd;
 }				t_heredoc;
-// heredoc.txt (in)  filename(in)
-// . < < << > < >> < >> <<
-// [file heredoc missing_file]
 
 typedef struct s_operator
 {
@@ -175,6 +171,7 @@ char			**split_cla(char *value);
 char			*replace_exit_code_in_arg(const char *arg, t_main *main);
 char			*generate_new_arg(const char *arg, const char *exit_code_str, \
 								const char *pos);
+char			*check_equal(t_token *curr, char *tmp);
 
 // Freeing
 void			free_tokens(t_token **head);
