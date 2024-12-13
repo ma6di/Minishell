@@ -1,29 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   expand3.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/12 16:58:05 by mcheragh          #+#    #+#             */
-/*   Updated: 2024/12/12 16:58:06 by mcheragh         ###   ########.fr       */
+/*   Created: 2024/12/13 13:53:22 by nrauh             #+#    #+#             */
+/*   Updated: 2024/12/13 13:55:47 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	ft_pwd(void)
+char	*check_equal(t_token *curr, char *tmp)
 {
-	char	cwd[PATH_MAX];
-
-	if (getcwd(cwd, PATH_MAX))
+	if (ft_strlen(tmp) == 0 && ft_strchr(curr->value, '='))
 	{
-		ft_putendl_fd(cwd, 1);
-		return (SUCCESS);
+		free(tmp);
+		tmp = ft_strdup(ft_strnstr(curr->value, "=", ft_strlen(curr->value)));
 	}
-	else
-	{
-		ft_fprintf("minishell: pwd: %s\n", strerror(errno));
-		return (CD_ERROR);
-	}
+	return (tmp);
 }

@@ -1,53 +1,58 @@
-//NORM OK
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 16:57:06 by mcheragh          #+#    #+#             */
+/*   Updated: 2024/12/12 17:00:44 by mcheragh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// Helper function to check if a string is numeric
-static int	is_numeric(const char *str)
+static int	is_numeric(t_main *main, char *str)
 {
 	if (!str || *str == '\0')
 		return (0);
-	if (*str == '-' || *str == '+') // Handle optional sign
+	if (*str == '-' || *str == '+')
 		str++;
 	while (*str)
 	{
-		if (!ft_isalnum(*str) || !(*str >= '0' && *str <= '9')) // Must be a digit
+		if (!ft_isalnum(*str) || !(*str >= '0' && *str <= '9'))
+		{
+			ft_fprintf("Minishell: exit: %s: numeric ", str);
+			ft_fprintf("argument required\n");
+			main->should_exit = 2;
 			return (0);
+		}
 		str++;
 	}
 	return (1);
 }
 
-int	ft_exit(t_main *main)
+int	ft_exit(t_command *cmd)
 {
-	t_command	*cmd;
-
-	cmd = main->command_list;
-	if (!cmd->args[1]) 
+	if (cmd->next || cmd->prev)
+		return (0);
+	if (!cmd->args[1])
 	{
-		main->should_exit = 0;
-		return (0); 
-	}
-	if (!is_numeric(cmd->args[1]))
-	{
-		ft_putstr_fd(cmd->args[1], 2);
-		ft_putendl_fd(": numeric argument required", 2);
-		main->should_exit = 2;
-		return (2); 
+		cmd->main->should_exit = 0;
+		return (0);
 	}
 	if (cmd->args[2])
 	{
-		ft_putendl_fd("minishell: exit: too many arguments", 2);
+		ft_fprintf("Minishell: exit: too many arguments\n");
 		return (1);
 	}
-	if (is_numeric(cmd->args[1]))
+	if (!is_numeric(cmd->main, cmd->args[1]))
+		return (2);
+	if (is_numeric(cmd->main, cmd->args[1]) && ft_atoi(cmd->args[1]) < 0)
 	{
-		if(ft_atoi(cmd->args[1]) < 0)
-		{
-			main->should_exit = 256 + ft_atoi(cmd->args[1]);
-			return (main->should_exit);
-		}
+		cmd->main->should_exit = 256 + ft_atoi(cmd->args[1]);
+		return (cmd->main->should_exit);
 	}
-	main->should_exit = ft_atoi(cmd->args[1]);
-	return (main->should_exit);
+	cmd->main->should_exit = ft_atoi(cmd->args[1]);
+	return (cmd->main->should_exit);
 }
-

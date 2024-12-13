@@ -6,162 +6,93 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:10:05 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/22 16:42:04 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 18:47:06 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-// frees the list of tokens
-void	free_tokens(t_token **head)
+void	free_two_dim(char **arr)
 {
-	t_token	*curr;
-	t_token	*next;
+	int	i;
 
-	curr = *head;
-	while (curr)
+	i = 0;
+	while (arr && arr[i])
 	{
-		next = curr->next;
-		free(curr->value);
-		curr->value = NULL;
-		free(curr);
-		curr = next;
+		free(arr[i]);
+		arr[i] = NULL;
+		i++;
 	}
-	*head = NULL;
+	free(arr);
+	arr = NULL;
+}
+
+void	free_heredocs(t_heredoc **heredocs)
+{
+	int	i;
+
+	i = 0;
+	while (heredocs && heredocs[i])
+	{
+		free(heredocs[i]->delimiter);
+		heredocs[i]->delimiter = NULL;
+		free(heredocs[i]);
+		heredocs[i] = NULL;
+		i++;
+	}
+	free(heredocs);
+	heredocs = NULL;
+}
+
+void	free_operators(t_operator **operators)
+{
+	int	i;
+
+	i = 0;
+	while (operators && operators[i])
+	{
+		free(operators[i]->filename);
+		operators[i]->filename = NULL;
+		free(operators[i]);
+		operators[i] = NULL;
+		i++;
+	}
+	free(operators);
+	operators = NULL;
+}
+
+void	free_fds(t_fds *io_fds)
+{
+	if (io_fds)
+	{
+		free(io_fds->infile);
+		free(io_fds->outfile);
+		free(io_fds);
+		io_fds = NULL;
+	}
 }
 
 void	free_commands(t_command **head)
 {
 	t_command	*curr;
 	t_command	*next;
-	int			i;
-	int			j;
 
+	if (!head || !*head)
+		return ;
 	curr = *head;
 	while (curr)
 	{
-		i = 0;
 		next = curr->next;
 		free(curr->command);
-		while (curr->args && curr->args[i])
-		{
-			//printf("freeing arg %p - %s\n", curr->args[i], curr->args[i]);
-			free(curr->args[i]);
-			i++;
-		}
-		j = 0;
-		while (curr->heredocs && curr->heredocs[j])
-		{
-			//printf("freeing heredoc %p - %s\n", curr->heredocs[j]->delimiter, curr->heredocs[j]->delimiter);
-			free(curr->heredocs[j]->delimiter);
-			free(curr->heredocs[j]);
-			j++;
-		}
+		curr->command = NULL;
+		free_two_dim(curr->args);
+		free_heredocs(curr->heredocs);
+		free_operators(curr->operators);
 		free(curr->pipe_fd);
 		curr->pipe_fd = NULL;
-		//printf("freeing args %p\n", curr->args);
-		free(curr->args);
-		free(curr->heredocs);
-		curr->heredocs = NULL;
-		free(curr->io_fds->infile);
-		free(curr->io_fds->outfile);
-		free(curr->io_fds->append_outfile);
-		free(curr->io_fds);
-		curr->main = NULL;
-		//printf("freeing command %p\n", curr);
+		free_fds(curr->io_fds);
 		free(curr);
 		curr = next;
 	}
 	*head = NULL;
-}
-
-void	free_command_child(t_command **cmd)
-{
-		int			i;
-		int			j;
-
-		i = 0;
-		free((*cmd)->command);
-		while ((*cmd)->args && (*cmd)->args[i])
-		{
-			//printf("freeing arg %p - %s\n", (*cmd)->args[i], (*cmd)->args[i]);
-			free((*cmd)->args[i]);
-			i++;
-		}
-		j = 0;
-		while ((*cmd)->heredocs && (*cmd)->heredocs[j])
-		{
-			//printf("freeing heredoc %p - %s\n", (*cmd)->heredocs[j]->delimiter, (*cmd)->heredocs[j]->delimiter);
-			free((*cmd)->heredocs[j]->delimiter);
-			free((*cmd)->heredocs[j]);
-			j++;
-		}
-		free((*cmd)->pipe_fd);
-		(*cmd)->pipe_fd = NULL;
-		//printf("freeing args %p\n", (*cmd)->args);
-		free((*cmd)->args);
-		free((*cmd)->heredocs);
-		(*cmd)->heredocs = NULL;
-		free((*cmd)->io_fds->infile);
-		free((*cmd)->io_fds->outfile);
-		free((*cmd)->io_fds->append_outfile);
-		free((*cmd)->io_fds);
-		(*cmd)->main = NULL;
-		//printf("freeing command %p\n", (*cmd));
-}
-
-void	free_main(t_main *main)
-{
-	int	i;
-
-	i = 0;
-	while (main->env_vars[i])
-	{
-		free(main->env_vars[i]);
-		i++;
-	}
-	free(main->env_vars);
-	free(main);
-}
-
-void	free_two_dim(char **env_keys)
-{
-	int	i;
-
-	i = 0;
-	while (env_keys[i])
-	{
-		//printf("freeing array %s at %p\n", env_keys[i], env_keys[i]);
-		free(env_keys[i]);
-		i++;
-	}
-	free(env_keys);
-}
-
-void	free_three_dim(char ***envp_key_val) // [["HOME", "path"], ["USER", "username"]]
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
-	while (envp_key_val[i])
-		i++;
-	//printf("there ARE i %d elements\n", i);
-	i = 0;
-	while (envp_key_val[i]) // 0 ["HOME", "path"] AND 1 ["USER", "username"]
-	{
-		while (envp_key_val[i][j]) // 0 "HOME" 1 "path"
-		{
-			//printf("freeing %s | %p\n", envp_key_val[i][j], envp_key_val[i][j]);
-			free(envp_key_val[i][j]);
-			j++;
-		}
-		j = 0;
-		//printf("freeing pointer i %d %p\n", i, envp_key_val[i]);
-		free(envp_key_val[i]);
-		i++;
-	}
-	//printf("freeing pointer %p\n", envp_key_val);
-	free(envp_key_val);
 }

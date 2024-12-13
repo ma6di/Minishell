@@ -1,20 +1,31 @@
-//NORM OK
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signals2.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 16:58:13 by mcheragh          #+#    #+#             */
+/*   Updated: 2024/12/12 16:58:16 by mcheragh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-///HEREDOC/////HEREDOC/////HEREDOC/////HEREDOC/////HEREDOC/////HEREDOC//
-
-static void	signal_interrupt_heredoc(int signo)
+//HEREDOC//
+static void	fake_exit(int signo)
 {
 	(void)signo;
-	kill(g_pid, SIGKILL);
+	ft_child_exit(1);
 }
 
 void	set_signals_heredoc(void)
 {
-	signal(SIGINT, signal_interrupt_heredoc);
+	signal(SIGINT, fake_exit);
+	signal(SIGQUIT, SIG_IGN);
 }
 
-//SLEEP////SLEEP////SLEEP////SLEEP////SLEEP////SLEEP//
+//SLEEP//
 
 void	signal_reset_prompt_sleep(int signo)
 {

@@ -6,101 +6,30 @@
 /*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 10:34:32 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/27 18:06:50 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/13 14:03:59 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-/*int	count_vars(char *str)
+// could be unified with the other is_operator???
+static int	is_operator(t_token *token)
 {
-	int	count;
-
-	count = 0;
-	while (*str)
+	if (token && token->value)
 	{
-		if (*str == '$')
-			count++;
-		str++;
+		if (ft_strncmp(token->value, " ", ft_strlen(token->value) + 1) == 0
+			|| ft_strncmp(token->value, "||", ft_strlen(token->value) + 2) == 0
+			|| ft_strncmp(token->value, "|", ft_strlen(token->value) + 1) == 0
+			|| ft_strncmp(token->value, ">>", ft_strlen(token->value) + 2) == 0
+			|| ft_strncmp(token->value, "<", ft_strlen(token->value) + 1) == 0
+			|| ft_strncmp(token->value, "<<", ft_strlen(token->value) + 2) == 0
+			|| ft_strncmp(token->value, "<<<", ft_strlen(token->value) + 3) == 0
+			|| ft_strncmp(token->value, "<>", ft_strlen(token->value) + 2) == 0
+			|| ft_strncmp(token->value, ">", ft_strlen(token->value) + 1) == 0)
+			return (1);
 	}
-	return (count);
-}*/
-
-/*char	***split_envp(char **envp)
-{
-	char	***envp_key_val;
-	size_t	count;
-
-	count = 0;
-	while (envp[count])
-		count++;
-	envp_key_val = malloc((count + 1) * sizeof(char **));
-	if (!envp_key_val)
-		return (NULL);
-	envp_key_val[count] = NULL;
-	count = 0;
-	while (envp[count])
-	{
-		envp_key_val[count] = ft_split(envp[count], '=');
-		if (!envp_key_val[count])
-			return (free_three_dim(envp_key_val), NULL);
-		count++;
-	}
-	return (envp_key_val);
-}*/
-
-/*char	*get_value(char *env_key, char ***envp_key_val)
-{
-	int	i;
-
-	i = 0;
-	while (envp_key_val[i])
-	{
-		if (ft_strncmp(env_key, envp_key_val[i][0], ft_strlen(env_key)) == 0)
-			return (ft_strdup(envp_key_val[i][1]));
-		i++;
-	}
-	return (ft_strdup(""));
-}*/
-
-static char *replace_exit_code_in_arg(const char *arg, t_main *main)
-{
-    char    *pos;
-    char    *new_arg;
-    char    *exit_code_str;
-    size_t  prefix_len;
-    size_t  new_arg_len;
-
-    exit_code_str = ft_itoa(main->exit_code); // Convert exit_code to string
-    if (!exit_code_str)
-        return (NULL); // Handle memory allocation failure
-
-    pos = ft_strnstr(arg, "$?", ft_strlen(arg));
-    if (!pos)
-	{
-		free(exit_code_str);
-        return (ft_strdup(arg)); // No `$?`, return a copy of the original string
-	}
-
-    prefix_len = pos - arg; // Length of text before `$?`
-    new_arg_len = prefix_len + ft_strlen(exit_code_str) + ft_strlen(pos + 2) + 1;
-
-    new_arg = malloc(new_arg_len); // Allocate new string
-    if (!new_arg)
-    {
-        free(exit_code_str);
-        return (NULL); // Handle memory allocation failure
-    }
-
-    // Copy parts into the new string using `ft_strlcpy`
-    ft_strlcpy(new_arg, arg, prefix_len + 1);                                 // Copy prefix
-    ft_strlcpy(new_arg + prefix_len, exit_code_str, ft_strlen(exit_code_str) + 1); // Append exit_code
-    ft_strlcpy(new_arg + prefix_len + ft_strlen(exit_code_str), pos + 2, ft_strlen(pos + 2) + 1); // Append remaining string
-
-    free(exit_code_str); // Clean up
-    return (new_arg);
+	return (0);
 }
-
 
 char	*get_value(char *env_key, char **envp)
 {
@@ -115,8 +44,7 @@ char	*get_value(char *env_key, char **envp)
 	while (envp[i])
 	{
 		j = 0;
-		while (envp[i][j] && envp[i][j] != '='
-			&& envp[i][j] == env_key[j])
+		while (envp[i][j] && envp[i][j] != '=' && envp[i][j] == env_key[j])
 			j++;
 		if (envp[i][j] == '=' && env_key[j] == '\0')
 		{
@@ -130,72 +58,64 @@ char	*get_value(char *env_key, char **envp)
 	return (ft_strdup(""));
 }
 
-t_token	**expand_keys(t_token **head, char **envp, t_main *main)
+static int	check_for_command(char *str, t_main *main)
 {
-	t_token	*curr;
-	char	*tmp;
+	char	*path;
+	char	*is_command;
+	int		i;
 
-	curr = *head;
-	while (curr)
+	i = 0;
+	while (str[i] && str[i] != ' ')
+		i++;
+	is_command = ft_substr(str, 0, i);
+	path = get_command_path(is_command, main->env_vars);
+	free(is_command);
+	if (!path)
 	{
-		if (curr->state != QUOTE)
-		{
-			tmp = replace_exit_code_in_arg(curr->value, main);
-			free(curr->value);
-			curr->value = tmp;
-		}
-		if (curr->state != QUOTE && curr->value[0] == '$'
-			&& ft_strlen(curr->value) > 1
-			&& !(curr != *head && ft_strncmp(curr->prev->value, "<<", 2) == 0))
-		{
-
-			tmp = get_value(curr->value + 1, envp);
-			free(curr->value);
-			curr->value = tmp;
-		}
-		curr = curr->next;
+		free(path);
+		return (0);
 	}
-	return (head);
+	free(path);
+	return (1);
 }
 
-/*t_token	**expand_keys(t_token **head, char ***envp_key_val)
+static void	exp_keys(t_token **head, t_token *curr, char **envp, t_main *main)
 {
-	t_token	*curr;
 	char	*tmp;
 
-	curr = *head;
-	while (curr)
+	tmp = replace_exit_code_in_arg(curr->value, main);
+	free(curr->value);
+	curr->value = tmp;
+	if (curr->value[0] == '$' && ft_strlen(curr->value) > 1
+		&& !(curr != *head && ft_strncmp(curr->prev->value, "<<", 2) == 0))
 	{
-		if (curr->state != QUOTE && curr->value[0] == '$'
-			&& ft_strlen(curr->value) > 1)
+		tmp = get_value(curr->value + 1, envp);
+		tmp = check_equal(curr, tmp);
+		free(curr->value);
+		if (check_for_command(tmp, main))
 		{
-			tmp = get_value(curr->value + 1, envp_key_val);
-			free(curr->value);
-			curr->value = tmp;
+			curr = value_is_cla(curr, tmp);
+			free(tmp);
 		}
-		curr = curr->next;
+		else
+			curr->value = tmp;
+		if (is_operator(curr))
+			curr->state = QUOTE;
 	}
-	return (head);
-}*/
+}
 
 t_token	**expand(t_token **head, char **envp, t_main *main)
 {
 	t_token	*curr;
-	//char	***envp_key_val;
 
-	//envp_key_val = split_envp(envp);
-	//if (!envp_key_val)
-	//	return (free_three_dim(envp_key_val), NULL);
 	if (!head || !(*head))
 		return (NULL);
 	curr = *head;
 	while (curr)
 	{
 		if (curr->state != QUOTE)
-			head = expand_keys(head, envp, main);
+			exp_keys(head, curr, envp, main);
 		curr = curr->next;
 	}
-	//print_key_val(envp_key_val);
-	//free_three_dim(envp_key_val);
 	return (head);
 }

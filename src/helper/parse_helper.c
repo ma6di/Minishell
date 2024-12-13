@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_helper.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrauh <nrauh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrauh <nrauh@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:09:06 by nrauh             #+#    #+#             */
-/*   Updated: 2024/11/16 06:05:24 by nrauh            ###   ########.fr       */
+/*   Updated: 2024/12/12 17:10:37 by nrauh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,12 @@ char	*add_to_buffer(char **buffer, char c)
 
 void	end_token(char **buffer, t_token **head, t_state state)
 {
-	create_token(head, ft_strdup(*buffer), state);
-	free(*buffer);
-	*buffer = NULL;
+	if (*buffer)
+	{
+		create_token(head, ft_strdup(*buffer), state);
+		free(*buffer);
+		*buffer = NULL;
+	}
 }
 
 int	is_operator_char(char c)

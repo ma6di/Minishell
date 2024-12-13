@@ -1,4 +1,14 @@
-//NORM OK
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_external2.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mcheragh <mcheragh@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 16:56:48 by mcheragh          #+#    #+#             */
+/*   Updated: 2024/12/12 16:56:49 by mcheragh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
@@ -48,7 +58,24 @@ char	*get_command_path(const char *command, char **env_vars)
 		return (NULL);
 	paths = tokenize_path(path_env);
 	if (!paths)
+	{
+		free_two_dim(paths);
 		return (NULL);
+	}
 	full_path = find_command_in_paths(command, paths);
+	free_two_dim(paths);
 	return (full_path);
+}
+
+int	command_exists_in_dir(const char *dir, const char *command)
+{
+	char	*full_path;
+	int		exists;
+
+	full_path = join_path_and_command(dir, command);
+	if (!full_path)
+		return (0);
+	exists = (access(full_path, X_OK) == 0);
+	free(full_path);
+	return (exists);
 }
